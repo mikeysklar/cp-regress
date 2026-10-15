@@ -1,0 +1,1162 @@
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "code_py_runs", "ok": true, "detail": "marker seen 1 times", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "no_double_start", "ok": true, "detail": "marker seen 1 times (#3502)", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "exception_traceback", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "code_done_message", "ok": true, "detail": "printed by the supervisor", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "no_safe_mode", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "run_reason", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "reset_reason", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "recursion_raises", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "memoryerror_raises", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "survives_exceptions", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "hard_reset_back", "ok": true, "detail": "3.515575408935547 s", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "boot_py_in_boot_out", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2040", "name": "_duration", "ok": true, "value": 53.5}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "present", "ok": true, "detail": "3-3.2", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "bitmap_size", "ok": true, "detail": "8x8", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "bitmap_corner_pixels", "ok": true, "detail": "5 15", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "bitmap_rejects_negative_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "bitmap_rejects_value_over_count", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "bitmap_rejects_out_of_bounds", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "palette_len", "ok": true, "detail": "4", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "palette_transparency", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "tilegrid_xy", "ok": true, "detail": "10,20", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "tilegrid_flip_transpose", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "tilegrid_tile_index", "ok": true, "detail": "3", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "group_append_tilegrid", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "group_rejects_duplicate_tilegrid", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "group_append_empty_group", "ok": true, "detail": "2", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "group_insert", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "group_index", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "group_remove", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "group_hidden_set", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "group_hidden_clear", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "group_hidden_before_append", "ok": true, "detail": "#4193", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "rectangle_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "circle_radius", "ok": true, "detail": "5", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "polygon_points_roundtrip", "ok": true, "detail": "[(0, 0), (10, 0), (10, 10), (0, 10)]", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "vectorio_duplicate_append", "ok": true, "detail": "rejected", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "render_checksum", "ok": true, "detail": "golden 1343502036, now 1343502036", "value": 1343502036, "kind": "golden"}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "tilepalettemapper_construct", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2040", "name": "_duration", "ok": true, "value": 2.0}
+{"test": "perf_core", "board": "metro_rp2040", "name": "present", "ok": true, "detail": "3-3.2", "value": null}
+{"test": "perf_core", "board": "metro_rp2040", "name": "vid_pid", "ok": true, "detail": "('239a', '813e')", "value": null}
+{"test": "perf_core", "board": "metro_rp2040", "name": "int_loop_100k", "ok": true, "detail": "no baseline yet", "value": 1835.724, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2040", "name": "int_loop_100k", "ok": true, "detail": "sum=4999950000", "value": 4999950000}
+{"test": "perf_core", "board": "metro_rp2040", "name": "float_math_20k", "ok": true, "detail": "no baseline yet", "value": 880.7374, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2040", "name": "float_math_20k", "ok": true, "detail": "result=1885729.00", "value": 1885729.0}
+{"test": "perf_core", "board": "metro_rp2040", "name": "str_concat_5k", "ok": true, "detail": "no baseline yet", "value": 4313.874, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2040", "name": "str_concat_5k", "ok": true, "detail": "len=5000", "value": 5000}
+{"test": "perf_core", "board": "metro_rp2040", "name": "dict_ops_10k", "ok": true, "detail": "no baseline yet", "value": 414.5812, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2040", "name": "dict_ops_10k", "ok": true, "detail": "len=1000", "value": 1000}
+{"test": "perf_core", "board": "metro_rp2040", "name": "list_sort_5k", "ok": true, "detail": "no baseline yet", "value": 401.764, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2040", "name": "list_sort_5k", "ok": true, "detail": "sorted", "value": 5000}
+{"test": "perf_core", "board": "metro_rp2040", "name": "json_roundtrip_200", "ok": true, "detail": "no baseline yet", "value": 96.405, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2040", "name": "json_roundtrip_200", "ok": true, "detail": "items=200", "value": 200}
+{"test": "perf_core", "board": "metro_rp2040", "name": "gc_collect", "ok": true, "detail": "no baseline yet", "value": 2.166751, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2040", "name": "gc_collect", "ok": true, "detail": "time=2.17 ms", "value": 2.166751}
+{"test": "perf_core", "board": "metro_rp2040", "name": "bitmap_fill", "ok": true, "detail": "no baseline yet", "value": 109.06984, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2040", "name": "bitmap_fill", "ok": true, "detail": "pixels=4096", "value": 4096}
+{"test": "perf_core", "board": "metro_rp2040", "name": "bitmaptools_fill_region", "ok": true, "detail": "no baseline yet", "value": 211.79196, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2040", "name": "bitmaptools_fill_region", "ok": true, "detail": "fills=20", "value": 20}
+{"test": "perf_core", "board": "metro_rp2040", "name": "sleep_accuracy", "ok": true, "detail": "no baseline yet", "value": 0.04882508, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2040", "name": "sleep_accuracy", "ok": true, "detail": "error=0.0 ms", "value": 0.04882508}
+{"test": "perf_core", "board": "metro_rp2040", "name": "repl_roundtrip_ms", "ok": true, "detail": "no baseline yet", "value": 1214.3575311638415, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2040", "name": "_duration", "ok": true, "value": 11.9}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "present", "ok": true, "detail": "3-3.2", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "i2c_construct", "ok": true, "detail": "I2C bus created (pull-ups present)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "pin_claim_twice", "ok": true, "detail": "D5 in use", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "use_after_deinit", "ok": true, "detail": "Object has been deinitialized and can no longer be used. Create a new object.", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "i2c_singleton", "ok": true, "detail": "I2C() should return same object (issue #1603)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "spi_mosi_only", "ok": true, "detail": "SPI(SCK, MOSI=...) constructed", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "pwm_construct", "ok": true, "detail": "PWM created", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "pwm_frequency_roundtrip", "ok": true, "detail": "500/1000/5000 Hz", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "pwm_duty_roundtrip", "ok": true, "detail": "duty_cycle=16384 (expected ~16384)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "analog_read", "ok": true, "detail": "A0 read 12274 (type int)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "analog_range", "ok": true, "detail": "value=12274 in [0..65535]", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "cpu_temp", "ok": true, "detail": "temp=24.8\u00b0C", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "neopixel_write", "ok": true, "detail": "wrote RGB pixels", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2040", "name": "_duration", "ok": true, "value": 1.9}
+{"test": "repl_console", "board": "metro_rp2040", "name": "present", "ok": true, "detail": "3-3.2", "value": null}
+{"test": "repl_console", "board": "metro_rp2040", "name": "prompt_reachable", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_rp2040", "name": "eval", "ok": true, "detail": "7*6\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_rp2040", "name": "underscore_last_result", "ok": true, "detail": "_\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_rp2040", "name": "interrupt_ctrl_c", "ok": true, "detail": "100 ms after Ctrl-C", "value": null}
+{"test": "repl_console", "board": "metro_rp2040", "name": "interrupt_ms", "ok": true, "detail": "no baseline yet", "value": 100.32892227172852, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "repl_console", "board": "metro_rp2040", "name": "paste_4k", "ok": true, "detail": "expected b'PASTE_RESULT 2775'; tail b\"(s + 74) & 0xFFFFFF  # padding padding padding\\n    return s\\nprint('PASTE_RESULT', cpr_paste())\\n\\r\\nPASTE_RESULT 2775\\r\\n>>> \"", "value": null}
+{"test": "repl_console", "board": "metro_rp2040", "name": "large_output_count", "ok": true, "detail": "got 2000/2000 lines", "value": null}
+{"test": "repl_console", "board": "metro_rp2040", "name": "large_output_order", "ok": true, "detail": "lines in order", "value": null}
+{"test": "repl_console", "board": "metro_rp2040", "name": "large_output_no_error", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_rp2040", "name": "output_kBps", "ok": true, "detail": "no baseline yet", "value": 84.52927792749179, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "repl_console", "board": "metro_rp2040", "name": "ctrl_d_soft_reboot", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_rp2040", "name": "reboot_banner", "ok": true, "detail": "\ud83d\udc0dREPL | 11.0.0-alpha.1-86-g55488150be\u001b\\\r\nAdafruit CircuitPython 11.0.0-alpha.1-86-g55488150be on 2026-10-12; Adafruit Metro RP2040 with rp2040\r\n>>> \r\n>>> \r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_rp2040", "name": "_duration", "ok": true, "value": 11.4}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "board_present", "ok": true, "detail": "3-3.2", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "settings_written", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "getenv_plain", "ok": true, "detail": "'hello'", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "getenv_escape_newline", "ok": true, "detail": "'line1\\nline2'", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "getenv_unicode_escape", "ok": true, "detail": "'emoji\u2764'", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "getenv_unicode_direct", "ok": true, "detail": "'caf\u00e9'", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "getenv_int_value", "ok": true, "detail": "'42'", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "getenv_missing_none", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "getenv_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "getenv_after_bad_value", "ok": true, "detail": "bad lines must not break lookups", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_str", "ok": true, "detail": "'hello' str", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_int", "ok": true, "detail": "42 int", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_negative_int", "ok": true, "detail": "-17 int", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_hex_int", "ok": true, "detail": "31 int", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_bool", "ok": true, "detail": "True bool", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_float", "ok": true, "detail": "1.5 float", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_float_exp", "ok": true, "detail": "2000.0 float", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_inf", "ok": true, "detail": "inf", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_nan", "ok": true, "detail": "nan", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_rejects_Inf", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_rejects_bare_plus", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_rejects_bad_value", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "gs_missing_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "spec_leading_zero", "ok": null, "detail": "accepted 15; toml.io says leading zeros are invalid", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "restored_and_rebooted", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2040", "name": "_duration", "ok": true, "value": 11.8}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "usb_present", "ok": true, "detail": "3-3.2", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "vid_pid_read", "ok": true, "detail": "('239a', '813e')", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "vid_not_empty", "ok": true, "detail": "239a", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "pid_not_empty", "ok": true, "detail": "813e", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "interfaces_exist", "ok": true, "detail": "6 interfaces", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "cdc_present", "ok": true, "detail": "CDC interfaces: ['02']", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "msc_present", "ok": true, "detail": "MSC present: True", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "other_interfaces", "ok": true, "detail": "HID/Audio: ['03', '0a', '01']", "value": 3}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "tty_exists", "ok": true, "detail": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:3.2:1.0", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY3", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "mount_s", "ok": true, "detail": "no baseline yet", "value": 0.034105539321899414, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "boot_out_exists", "ok": true, "detail": "length 207", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "board_id_in_boot", "ok": true, "detail": "expected adafruit_metro_rp2040", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "circuitpython_in_boot", "ok": true, "detail": "version line present", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "write_file", "ok": true, "detail": "/media/<user>/CIRCUITPY3/.cpr_test.txt", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "delete_file", "ok": true, "detail": "deleted", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "board_id", "ok": true, "detail": "adafruit_metro_rp2040", "value": "adafruit_metro_rp2040"}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "cp_version", "ok": true, "detail": "(11, 0, 0, '')", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "enumeration_checks_s", "ok": true, "detail": "no baseline yet", "value": 4.669564962387085, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "metro_rp2040", "name": "_duration", "ok": true, "value": 4.7}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY3", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "host_write", "ok": true, "detail": "262144 bytes", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "host_write_kBps", "ok": true, "detail": "no baseline yet", "value": 62.430861052410634, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "host_burst_created", "ok": true, "detail": "20 files", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "host_readback", "ok": true, "detail": "adler32 efe40281", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "device_read", "ok": true, "detail": "262144 bytes", "value": 262144}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "device_adler32", "ok": true, "detail": "", "value": 4024697473}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "statvfs_read", "ok": true, "detail": "free 14827520 bytes", "value": 14827520}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "device_burst_count", "ok": true, "detail": "expected 20, got 20", "value": 20}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "device_matches_host", "ok": true, "detail": "device efe40281 host efe40281", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "free_space_agree", "ok": true, "detail": "device 14827520 vs host 14827520 bytes, diff 0.0%", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "cleanup", "ok": true, "detail": "", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "mount_after", "ok": true, "detail": "/media/<user>/CIRCUITPY3", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "devnum_unchanged", "ok": true, "detail": "before 127, after 127 (a change means the board re-enumerated)", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2040", "name": "_duration", "ok": true, "value": 24.1}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "code_py_runs", "ok": true, "detail": "marker seen 1 times", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "no_double_start", "ok": true, "detail": "marker seen 1 times (#3502)", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "exception_traceback", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "code_done_message", "ok": true, "detail": "printed by the supervisor", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "no_safe_mode", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "run_reason", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "reset_reason", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "recursion_raises", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "memoryerror_raises", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "survives_exceptions", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "hard_reset_back", "ok": true, "detail": "3.1071929931640625 s", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "boot_py_in_boot_out", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m4_airlift", "name": "_duration", "ok": true, "value": 53.4}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "present", "ok": true, "detail": "3-3.3.1", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "bitmap_size", "ok": true, "detail": "8x8", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "bitmap_corner_pixels", "ok": true, "detail": "5 15", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "bitmap_rejects_negative_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "bitmap_rejects_value_over_count", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "bitmap_rejects_out_of_bounds", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "palette_len", "ok": true, "detail": "4", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "palette_transparency", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "tilegrid_xy", "ok": true, "detail": "10,20", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "tilegrid_flip_transpose", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "tilegrid_tile_index", "ok": true, "detail": "3", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "group_append_tilegrid", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "group_rejects_duplicate_tilegrid", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "group_append_empty_group", "ok": true, "detail": "2", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "group_insert", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "group_index", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "group_remove", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "group_hidden_set", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "group_hidden_clear", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "group_hidden_before_append", "ok": true, "detail": "#4193", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "vectorio", "ok": null, "detail": "vectorio not in this build", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "render_checksum", "ok": true, "detail": "golden 526375412, now 526375412", "value": 526375412, "kind": "golden"}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "tilepalettemapper_construct", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m4_airlift", "name": "_duration", "ok": true, "value": 1.9}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "present", "ok": true, "detail": "3-3.3.1", "value": null}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "vid_pid", "ok": true, "detail": "('239a', '8038')", "value": null}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "int_loop_100k", "ok": true, "detail": "no baseline yet", "value": 1614.014, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "int_loop_100k", "ok": true, "detail": "sum=4999950000", "value": 4999950000}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "float_math_20k", "ok": true, "detail": "no baseline yet", "value": 663.208, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "float_math_20k", "ok": true, "detail": "result=1885731.00", "value": 1885731.0}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "str_concat_5k", "ok": true, "detail": "no baseline yet", "value": 4446.166, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "str_concat_5k", "ok": true, "detail": "len=5000", "value": 5000}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "dict_ops_10k", "ok": true, "detail": "no baseline yet", "value": 316.8946, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "dict_ops_10k", "ok": true, "detail": "len=1000", "value": 1000}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "list_sort_5k", "ok": true, "detail": "no baseline yet", "value": 393.6768, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "list_sort_5k", "ok": true, "detail": "sorted", "value": 5000}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "json_roundtrip_200", "ok": true, "detail": "no baseline yet", "value": 102.66114, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "json_roundtrip_200", "ok": true, "detail": "items=200", "value": 200}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "gc_collect", "ok": true, "detail": "no baseline yet", "value": 1.708995, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "gc_collect", "ok": true, "detail": "time=1.71 ms", "value": 1.708995}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "bitmap_fill", "ok": true, "detail": "no baseline yet", "value": 101.44044, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "bitmap_fill", "ok": true, "detail": "pixels=4096", "value": 4096}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "bitmaptools_fill_region", "ok": true, "detail": "no baseline yet", "value": 189.94136, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "bitmaptools_fill_region", "ok": true, "detail": "fills=20", "value": 20}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "sleep_accuracy", "ok": true, "detail": "no baseline yet", "value": 0.02441711, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "sleep_accuracy", "ok": true, "detail": "error=0.0 ms", "value": 0.02441711}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "repl_roundtrip_ms", "ok": true, "detail": "no baseline yet", "value": 1214.1905608586967, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m4_airlift", "name": "_duration", "ok": true, "value": 11.4}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "present", "ok": true, "detail": "3-3.3.1", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "i2c_construct", "ok": true, "detail": "I2C bus created (pull-ups present)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "pin_claim_twice", "ok": true, "detail": "D5 in use", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "use_after_deinit", "ok": true, "detail": "Object has been deinitialized and can no longer be used. Create a new object.", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "i2c_singleton", "ok": true, "detail": "I2C() should return same object (issue #1603)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "spi_mosi_only", "ok": true, "detail": "SPI(SCK, MOSI=...) constructed", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "pwm_construct", "ok": true, "detail": "PWM created", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "pwm_frequency_roundtrip", "ok": true, "detail": "500/1000/5000 Hz", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "pwm_duty_roundtrip", "ok": true, "detail": "duty_cycle=16381 (expected ~16384)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "analog_read", "ok": true, "detail": "A0 read 19108 (type int)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "analog_range", "ok": true, "detail": "value=19108 in [0..65535]", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "cpu_temp", "ok": true, "detail": "temp=32.0\u00b0C", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "neopixel_write", "ok": true, "detail": "wrote RGB pixels", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m4_airlift", "name": "_duration", "ok": true, "value": 1.9}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "present", "ok": true, "detail": "3-3.3.1", "value": null}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "prompt_reachable", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "eval", "ok": true, "detail": "7*6\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "underscore_last_result", "ok": true, "detail": "_\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "interrupt_ctrl_c", "ok": true, "detail": "100 ms after Ctrl-C", "value": null}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "interrupt_ms", "ok": true, "detail": "no baseline yet", "value": 100.47507286071777, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "paste_4k", "ok": true, "detail": "expected b'PASTE_RESULT 2775'; tail b\"(s + 74) & 0xFFFFFF  # padding padding padding\\n    return s\\nprint('PASTE_RESULT', cpr_paste())\\n\\r\\nPASTE_RESULT 2775\\r\\n>>> \"", "value": null}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "large_output_count", "ok": true, "detail": "got 2000/2000 lines", "value": null}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "large_output_order", "ok": true, "detail": "lines in order", "value": null}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "large_output_no_error", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "output_kBps", "ok": true, "detail": "no baseline yet", "value": 98.98574393191318, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "ctrl_d_soft_reboot", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "reboot_banner", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nAdafruit CircuitPython 11.0.0-alpha.1-86-g55488150be on 2026-10-12; Adafruit Metro M4 Airlift Lite with samd51j19\r\n>>> \r\n>>> \r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_m4_airlift", "name": "_duration", "ok": true, "value": 11.0}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "board_present", "ok": true, "detail": "3-3.3.1", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "settings_written", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "getenv_plain", "ok": true, "detail": "'hello'", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "getenv_escape_newline", "ok": true, "detail": "'line1\\nline2'", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "getenv_unicode_escape", "ok": true, "detail": "'emoji\u2764'", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "getenv_unicode_direct", "ok": true, "detail": "'caf\u00e9'", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "getenv_int_value", "ok": true, "detail": "'42'", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "getenv_missing_none", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "getenv_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "getenv_after_bad_value", "ok": true, "detail": "bad lines must not break lookups", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_str", "ok": true, "detail": "'hello' str", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_int", "ok": true, "detail": "42 int", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_negative_int", "ok": true, "detail": "-17 int", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_hex_int", "ok": true, "detail": "31 int", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_bool", "ok": true, "detail": "True bool", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_float", "ok": true, "detail": "1.5 float", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_float_exp", "ok": true, "detail": "2000.0 float", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_inf", "ok": true, "detail": "inf", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_nan", "ok": true, "detail": "nan", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_rejects_Inf", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_rejects_bare_plus", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_rejects_bad_value", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "gs_missing_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "spec_leading_zero", "ok": null, "detail": "accepted 15; toml.io says leading zeros are invalid", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "restored_and_rebooted", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_m4_airlift", "name": "_duration", "ok": true, "value": 9.4}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "usb_present", "ok": true, "detail": "3-3.3.1", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "vid_pid_read", "ok": true, "detail": "('239a', '8038')", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "vid_not_empty", "ok": true, "detail": "239a", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "pid_not_empty", "ok": true, "detail": "8038", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "interfaces_exist", "ok": true, "detail": "6 interfaces", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "cdc_present", "ok": true, "detail": "CDC interfaces: ['02']", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "msc_present", "ok": true, "detail": "MSC present: True", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "other_interfaces", "ok": true, "detail": "HID/Audio: ['03', '0a', '01']", "value": 3}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "tty_exists", "ok": true, "detail": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:3.3.1:1.0", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY2", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "mount_s", "ok": true, "detail": "no baseline yet", "value": 0.0026760101318359375, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "boot_out_exists", "ok": true, "detail": "length 238", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "board_id_in_boot", "ok": true, "detail": "expected metro_m4_airlift_lite", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "circuitpython_in_boot", "ok": true, "detail": "version line present", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "write_file", "ok": true, "detail": "/media/<user>/CIRCUITPY2/.cpr_test.txt", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "delete_file", "ok": true, "detail": "deleted", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "board_id", "ok": true, "detail": "metro_m4_airlift_lite", "value": "metro_m4_airlift_lite"}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "cp_version", "ok": true, "detail": "(11, 0, 0, '')", "value": null}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "enumeration_checks_s", "ok": true, "detail": "no baseline yet", "value": 2.7843282222747803, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "metro_m4_airlift", "name": "_duration", "ok": true, "value": 2.8}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY2", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "host_write", "ok": true, "detail": "262144 bytes", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "host_write_kBps", "ok": true, "detail": "no baseline yet", "value": 61.04657996119597, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "host_burst_created", "ok": true, "detail": "20 files", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "host_readback", "ok": true, "detail": "adler32 efe40281", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "device_read", "ok": true, "detail": "262144 bytes", "value": 262144}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "device_adler32", "ok": true, "detail": "", "value": 4024697473}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "statvfs_read", "ok": true, "detail": "free 1357824 bytes", "value": 1357824}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "device_burst_count", "ok": true, "detail": "expected 20, got 20", "value": 20}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "device_matches_host", "ok": true, "detail": "device efe40281 host efe40281", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "free_space_agree", "ok": true, "detail": "device 1357824 vs host 1357824 bytes, diff 0.0%", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "cleanup", "ok": true, "detail": "", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "mount_after", "ok": true, "detail": "/media/<user>/CIRCUITPY2", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "devnum_unchanged", "ok": true, "detail": "before 2, after 2 (a change means the board re-enumerated)", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m4_airlift", "name": "_duration", "ok": true, "value": 24.5}
+{"test": "code_py_lifecycle", "board": "metro_m0", "name": "code_py_runs", "ok": true, "detail": "marker seen 1 times", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m0", "name": "no_double_start", "ok": true, "detail": "marker seen 1 times (#3502)", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m0", "name": "exception_traceback", "ok": true, "detail": ".0-alpha.1-48-g37c207ccaf\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m0", "name": "code_done_message", "ok": true, "detail": "printed by the supervisor", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m0", "name": "no_safe_mode", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m0", "name": "run_reason", "ok": true, "detail": ".0-alpha.1-48-g37c207ccaf\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m0", "name": "reset_reason", "ok": true, "detail": ".0-alpha.1-48-g37c207ccaf\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m0", "name": "recursion_raises", "ok": true, "detail": ".0-alpha.1-48-g37c207ccaf\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m0", "name": "memoryerror_raises", "ok": true, "detail": ".0-alpha.1-48-g37c207ccaf\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m0", "name": "survives_exceptions", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m0", "name": "boot_py_in_boot_out", "ok": null, "detail": "board lacks reset_ok", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_m0", "name": "_duration", "ok": true, "value": 41.1}
+{"test": "displayio_headless", "board": "metro_m0", "name": "present", "ok": true, "detail": "3-3.3.2", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "bitmap_size", "ok": true, "detail": "8x8", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "bitmap_corner_pixels", "ok": true, "detail": "5 15", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "bitmap_rejects_negative_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "bitmap_rejects_value_over_count", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "bitmap_rejects_out_of_bounds", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "palette_len", "ok": true, "detail": "4", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "palette_transparency", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "tilegrid_xy", "ok": true, "detail": "10,20", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "tilegrid_flip_transpose", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "tilegrid_tile_index", "ok": true, "detail": "3", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "group_append_tilegrid", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "group_rejects_duplicate_tilegrid", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "group_append_empty_group", "ok": true, "detail": "2", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "group_insert", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "group_index", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "group_remove", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "group_hidden_set", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "group_hidden_clear", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "group_hidden_before_append", "ok": true, "detail": "#4193", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "vectorio", "ok": null, "detail": "vectorio not in this build", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "bitmaptools", "ok": null, "detail": "bitmaptools not in this build", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "tilepalettemapper", "ok": null, "detail": "not in this build", "value": null}
+{"test": "displayio_headless", "board": "metro_m0", "name": "_duration", "ok": true, "value": 3.4}
+{"test": "perf_core", "board": "metro_m0", "name": "present", "ok": true, "detail": "3-3.3.2", "value": null}
+{"test": "perf_core", "board": "metro_m0", "name": "vid_pid", "ok": true, "detail": "('239a', '8014')", "value": null}
+{"test": "perf_core", "board": "metro_m0", "name": "int_loop_100k", "ok": true, "detail": "no baseline yet", "value": 865.1734, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m0", "name": "int_loop_100k", "ok": true, "detail": "sum=199990000", "value": 199990000}
+{"test": "perf_core", "board": "metro_m0", "name": "float_math_20k", "ok": true, "detail": "no baseline yet", "value": 1096.4356, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m0", "name": "float_math_20k", "ok": true, "detail": "result=168851.46", "value": 168851.46}
+{"test": "perf_core", "board": "metro_m0", "name": "str_concat_5k", "ok": true, "detail": "no baseline yet", "value": 880.9206, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m0", "name": "str_concat_5k", "ok": true, "detail": "len=1000", "value": 1000}
+{"test": "perf_core", "board": "metro_m0", "name": "dict_ops_10k", "ok": true, "detail": "no baseline yet", "value": 298.2788, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m0", "name": "dict_ops_10k", "ok": true, "detail": "len=200", "value": 200}
+{"test": "perf_core", "board": "metro_m0", "name": "list_sort_5k", "ok": true, "detail": "no baseline yet", "value": 300.293, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m0", "name": "list_sort_5k", "ok": true, "detail": "sorted", "value": 1000}
+{"test": "perf_core", "board": "metro_m0", "name": "json_roundtrip_200", "ok": null, "detail": "json module not available", "value": null}
+{"test": "perf_core", "board": "metro_m0", "name": "gc_collect", "ok": true, "detail": "no baseline yet", "value": 1.831053, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m0", "name": "gc_collect", "ok": true, "detail": "time=1.83 ms", "value": 1.831053}
+{"test": "perf_core", "board": "metro_m0", "name": "bitmap_fill", "ok": true, "detail": "no baseline yet", "value": 101.80664, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m0", "name": "bitmap_fill", "ok": true, "detail": "pixels=1024", "value": 1024}
+{"test": "perf_core", "board": "metro_m0", "name": "bitmaptools_fill_region", "ok": null, "detail": "bitmaptools not available", "value": null}
+{"test": "perf_core", "board": "metro_m0", "name": "sleep_accuracy", "ok": true, "detail": "no baseline yet", "value": 0.05127106, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m0", "name": "sleep_accuracy", "ok": true, "detail": "error=0.1 ms", "value": 0.05127106}
+{"test": "perf_core", "board": "metro_m0", "name": "repl_roundtrip_ms", "ok": true, "detail": "no baseline yet", "value": 1212.7048489637673, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_m0", "name": "_duration", "ok": true, "value": 9.0}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "present", "ok": true, "detail": "3-3.3.2", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "i2c_pullup_err", "ok": true, "detail": "No pull up found on SDA or SCL; check your wiring", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "pin_claim_twice", "ok": true, "detail": "D5 in use", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "use_after_deinit", "ok": true, "detail": "Object has been deinitialized and can no longer be used. Create a new object.", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "i2c_singleton", "ok": null, "detail": "no I2C pull-ups on this board; add an I2C sensor to wiring", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "spi_mosi_only", "ok": true, "detail": "SPI(SCK, MOSI=...) constructed", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "pwm_construct", "ok": true, "detail": "PWM created", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "pwm_frequency_roundtrip", "ok": true, "detail": "500/1000/5000 Hz", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "pwm_duty_roundtrip", "ok": true, "detail": "duty_cycle=16378 (expected ~16384)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "analog_read", "ok": true, "detail": "A0 read 28807 (type int)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "analog_range", "ok": true, "detail": "value=28807 in [0..65535]", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "cpu_temp", "ok": true, "detail": "temp=23.6\u00b0C", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "neopixel_write", "ok": null, "detail": "M0 NEOPIXEL is SWCLK; blocked while the SWD probe is attached", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_m0", "name": "_duration", "ok": true, "value": 3.8}
+{"test": "repl_console", "board": "metro_m0", "name": "present", "ok": true, "detail": "3-3.3.2", "value": null}
+{"test": "repl_console", "board": "metro_m0", "name": "prompt_reachable", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_m0", "name": "eval", "ok": true, "detail": "7*6\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_m0", "name": "underscore_last_result", "ok": true, "detail": "_\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_m0", "name": "interrupt_ctrl_c", "ok": true, "detail": "100 ms after Ctrl-C", "value": null}
+{"test": "repl_console", "board": "metro_m0", "name": "interrupt_ms", "ok": true, "detail": "no baseline yet", "value": 100.45933723449707, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "repl_console", "board": "metro_m0", "name": "paste_4k", "ok": true, "detail": "expected b'PASTE_RESULT 2775'; tail b\"(s + 74) & 0xFFFFFF  # padding padding padding\\n    return s\\nprint('PASTE_RESULT', cpr_paste())\\n\\r\\nPASTE_RESULT 2775\\r\\n>>> \"", "value": null}
+{"test": "repl_console", "board": "metro_m0", "name": "large_output_count", "ok": true, "detail": "got 2000/2000 lines", "value": null}
+{"test": "repl_console", "board": "metro_m0", "name": "large_output_order", "ok": true, "detail": "lines in order", "value": null}
+{"test": "repl_console", "board": "metro_m0", "name": "large_output_no_error", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_m0", "name": "output_kBps", "ok": true, "detail": "no baseline yet", "value": 45.47921373446304, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "repl_console", "board": "metro_m0", "name": "ctrl_d_soft_reboot", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_m0", "name": "reboot_banner", "ok": true, "detail": " 11.0.0-alpha.1-48-g37c207ccaf\u001b\\\r\nAdafruit CircuitPython 11.0.0-alpha.1-48-g37c207ccaf on 2026-10-08; Adafruit Metro M0 Express with samd21g18\r\n>>> \r\n>>> \r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_m0", "name": "_duration", "ok": true, "value": 13.7}
+{"test": "settings_toml", "board": "metro_m0", "name": "board_present", "ok": true, "detail": "3-3.3.2", "value": null}
+{"test": "settings_toml", "board": "metro_m0", "name": "settings_written", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_m0", "name": "getenv", "ok": null, "detail": "settings.toml reading not in this build", "value": null}
+{"test": "settings_toml", "board": "metro_m0", "name": "restored_and_rebooted", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_m0", "name": "_duration", "ok": true, "value": 11.1}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "usb_present", "ok": true, "detail": "3-3.3.2", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "vid_pid_read", "ok": true, "detail": "('239a', '8014')", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "vid_not_empty", "ok": true, "detail": "239a", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "pid_not_empty", "ok": true, "detail": "8014", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "interfaces_exist", "ok": true, "detail": "6 interfaces", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "cdc_present", "ok": true, "detail": "CDC interfaces: ['02']", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "msc_present", "ok": true, "detail": "MSC present: True", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "other_interfaces", "ok": true, "detail": "HID/Audio: ['03', '0a', '01']", "value": 3}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "tty_exists", "ok": true, "detail": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:3.3.2:1.0", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY12", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "mount_s", "ok": true, "detail": "no baseline yet", "value": 0.0025360584259033203, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "boot_out_exists", "ok": true, "detail": "length 171", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "board_id_in_boot", "ok": true, "detail": "expected metro_m0_express", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "circuitpython_in_boot", "ok": true, "detail": "version line present", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "write_file", "ok": true, "detail": "/media/<user>/CIRCUITPY12/.cpr_test.txt", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "delete_file", "ok": true, "detail": "deleted", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "board_id", "ok": true, "detail": "metro_m0_express", "value": "metro_m0_express"}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "cp_version", "ok": true, "detail": "(11, 0, 0, '')", "value": null}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "enumeration_checks_s", "ok": true, "detail": "no baseline yet", "value": 2.0082955360412598, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "metro_m0", "name": "_duration", "ok": true, "value": 2.0}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY12", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "host_write", "ok": true, "detail": "65536 bytes", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "host_write_kBps", "ok": true, "detail": "no baseline yet", "value": 45.828619504706545, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "host_burst_created", "ok": true, "detail": "20 files", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "host_readback", "ok": true, "detail": "adler32 60ad71c6", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "device_read", "ok": true, "detail": "65536 bytes", "value": 65536}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "device_adler32", "ok": true, "detail": "", "value": 1621979590}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "statvfs_read", "ok": true, "detail": "free 1378304 bytes", "value": 1378304}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "device_burst_count", "ok": true, "detail": "expected 20, got 20", "value": 20}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "device_matches_host", "ok": true, "detail": "device 60ad71c6 host 60ad71c6", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "free_space_agree", "ok": true, "detail": "device 1378304 vs host 1378304 bytes, diff 0.0%", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "cleanup", "ok": true, "detail": "", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "mount_after", "ok": true, "detail": "/media/<user>/CIRCUITPY12", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "devnum_unchanged", "ok": true, "detail": "before 108, after 108 (a change means the board re-enumerated)", "value": null}
+{"test": "usb_msc_rw", "board": "metro_m0", "name": "_duration", "ok": true, "value": 24.4}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "code_py_runs", "ok": true, "detail": "marker seen 1 times", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "no_double_start", "ok": true, "detail": "marker seen 1 times (#3502)", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "exception_traceback", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "code_done_message", "ok": true, "detail": "printed by the supervisor", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "no_safe_mode", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "run_reason", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "reset_reason", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "recursion_raises", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "memoryerror_raises", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "survives_exceptions", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "hard_reset_back", "ok": true, "detail": "4.270148992538452 s", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "boot_py_in_boot_out", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_nrf52840", "name": "_duration", "ok": true, "value": 52.1}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "present", "ok": true, "detail": "3-3.3.3", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "bitmap_size", "ok": true, "detail": "8x8", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "bitmap_corner_pixels", "ok": true, "detail": "5 15", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "bitmap_rejects_negative_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "bitmap_rejects_value_over_count", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "bitmap_rejects_out_of_bounds", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "palette_len", "ok": true, "detail": "4", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "palette_transparency", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "tilegrid_xy", "ok": true, "detail": "10,20", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "tilegrid_flip_transpose", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "tilegrid_tile_index", "ok": true, "detail": "3", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "group_append_tilegrid", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "group_rejects_duplicate_tilegrid", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "group_append_empty_group", "ok": true, "detail": "2", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "group_insert", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "group_index", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "group_remove", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "group_hidden_set", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "group_hidden_clear", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "group_hidden_before_append", "ok": true, "detail": "#4193", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "rectangle_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "circle_radius", "ok": true, "detail": "5", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "polygon_points_roundtrip", "ok": true, "detail": "[(0, 0), (10, 0), (10, 10), (0, 10)]", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "vectorio_duplicate_append", "ok": true, "detail": "rejected", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "render_checksum", "ok": true, "detail": "golden 526375412, now 526375412", "value": 526375412, "kind": "golden"}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "tilepalettemapper_construct", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_nrf52840", "name": "_duration", "ok": true, "value": 2.1}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "present", "ok": true, "detail": "3-3.3.3", "value": null}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "vid_pid", "ok": true, "detail": "('239a', '802a')", "value": null}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "int_loop_100k", "ok": true, "detail": "no baseline yet", "value": 3253.753, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "int_loop_100k", "ok": true, "detail": "sum=4999950000", "value": 4999950000}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "float_math_20k", "ok": true, "detail": "no baseline yet", "value": 1322.357, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "float_math_20k", "ok": true, "detail": "result=1885731.00", "value": 1885731.0}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "str_concat_5k", "ok": true, "detail": "no baseline yet", "value": 8087.096, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "str_concat_5k", "ok": true, "detail": "len=5000", "value": 5000}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "dict_ops_10k", "ok": true, "detail": "no baseline yet", "value": 680.6642, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "dict_ops_10k", "ok": true, "detail": "len=1000", "value": 1000}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "list_sort_5k", "ok": true, "detail": "no baseline yet", "value": 689.6668, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "list_sort_5k", "ok": true, "detail": "sorted", "value": 5000}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "json_roundtrip_200", "ok": true, "detail": "no baseline yet", "value": 168.8538, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "json_roundtrip_200", "ok": true, "detail": "items=200", "value": 200}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "gc_collect", "ok": true, "detail": "no baseline yet", "value": 3.540048, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "gc_collect", "ok": true, "detail": "time=3.54 ms", "value": 3.540048}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "bitmap_fill", "ok": true, "detail": "no baseline yet", "value": 193.0237, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "bitmap_fill", "ok": true, "detail": "pixels=4096", "value": 4096}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "bitmaptools_fill_region", "ok": true, "detail": "no baseline yet", "value": 293.5486, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "bitmaptools_fill_region", "ok": true, "detail": "fills=20", "value": 20}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "sleep_accuracy", "ok": true, "detail": "no baseline yet", "value": 0.030513, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "sleep_accuracy", "ok": true, "detail": "error=0.0 ms", "value": 0.030513}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "repl_roundtrip_ms", "ok": true, "detail": "no baseline yet", "value": 1214.2737926915288, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "feather_nrf52840", "name": "_duration", "ok": true, "value": 18.4}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "present", "ok": true, "detail": "3-3.3.3", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "i2c_pullup_err", "ok": true, "detail": "No pull up found on SDA or SCL; check your wiring", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "pin_claim_twice", "ok": true, "detail": "D5 in use", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "use_after_deinit", "ok": true, "detail": "Object has been deinitialized and can no longer be used. Create a new object.", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "i2c_singleton", "ok": null, "detail": "no I2C pull-ups on this board; add an I2C sensor to wiring", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "spi_mosi_only", "ok": true, "detail": "SPI(SCK, MOSI=...) constructed", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "pwm_construct", "ok": true, "detail": "PWM created", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "pwm_frequency_roundtrip", "ok": true, "detail": "500/1000/5000 Hz", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "pwm_duty_roundtrip", "ok": true, "detail": "duty_cycle=16384 (expected ~16384)", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "analog_read", "ok": true, "detail": "A0 read 2640 (type int)", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "analog_range", "ok": true, "detail": "value=2640 in [0..65535]", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "cpu_temp", "ok": true, "detail": "temp=25.5\u00b0C", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "neopixel_write", "ok": true, "detail": "wrote RGB pixels", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_nrf52840", "name": "_duration", "ok": true, "value": 2.1}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "present", "ok": true, "detail": "3-3.3.3", "value": null}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "prompt_reachable", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "eval", "ok": true, "detail": "7*6\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "underscore_last_result", "ok": true, "detail": "_\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "interrupt_ctrl_c", "ok": true, "detail": "100 ms after Ctrl-C", "value": null}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "interrupt_ms", "ok": true, "detail": "no baseline yet", "value": 100.36230087280273, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "paste_4k", "ok": true, "detail": "expected b'PASTE_RESULT 2775'; tail b\"(s + 74) & 0xFFFFFF  # padding padding padding\\n    return s\\nprint('PASTE_RESULT', cpr_paste())\\n\\r\\nPASTE_RESULT 2775\\r\\n>>> \"", "value": null}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "large_output_count", "ok": true, "detail": "got 2000/2000 lines", "value": null}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "large_output_order", "ok": true, "detail": "lines in order", "value": null}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "large_output_no_error", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "output_kBps", "ok": true, "detail": "no baseline yet", "value": 80.43364150455375, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "ctrl_d_soft_reboot", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "reboot_banner", "ok": true, "detail": "-alpha.1-86-g55488150be\u001b\\\r\nAdafruit CircuitPython 11.0.0-alpha.1-86-g55488150be on 2026-10-12; Adafruit Feather nRF52840 Express with nRF52840\r\n>>> \r\n>>> \r\n>>> ", "value": null}
+{"test": "repl_console", "board": "feather_nrf52840", "name": "_duration", "ok": true, "value": 10.0}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "board_present", "ok": true, "detail": "3-3.3.3", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "settings_written", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "getenv_plain", "ok": true, "detail": "'hello'", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "getenv_escape_newline", "ok": true, "detail": "'line1\\nline2'", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "getenv_unicode_escape", "ok": true, "detail": "'emoji\u2764'", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "getenv_unicode_direct", "ok": true, "detail": "'caf\u00e9'", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "getenv_int_value", "ok": true, "detail": "'42'", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "getenv_missing_none", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "getenv_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "getenv_after_bad_value", "ok": true, "detail": "bad lines must not break lookups", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_str", "ok": true, "detail": "'hello' str", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_int", "ok": true, "detail": "42 int", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_negative_int", "ok": true, "detail": "-17 int", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_hex_int", "ok": true, "detail": "31 int", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_bool", "ok": true, "detail": "True bool", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_float", "ok": true, "detail": "1.5 float", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_float_exp", "ok": true, "detail": "2000.0 float", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_inf", "ok": true, "detail": "inf", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_nan", "ok": true, "detail": "nan", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_rejects_Inf", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_rejects_bare_plus", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_rejects_bad_value", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "gs_missing_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "spec_leading_zero", "ok": null, "detail": "accepted 15; toml.io says leading zeros are invalid", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "restored_and_rebooted", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_nrf52840", "name": "_duration", "ok": true, "value": 4.9}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "usb_present", "ok": true, "detail": "3-3.3.3", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "vid_pid_read", "ok": true, "detail": "('239a', '802a')", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "vid_not_empty", "ok": true, "detail": "239a", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "pid_not_empty", "ok": true, "detail": "802a", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "interfaces_exist", "ok": true, "detail": "6 interfaces", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "cdc_present", "ok": true, "detail": "CDC interfaces: ['02']", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "msc_present", "ok": true, "detail": "MSC present: True", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "other_interfaces", "ok": true, "detail": "HID/Audio: ['03', '0a', '01']", "value": 3}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "tty_exists", "ok": true, "detail": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:3.3.3:1.0", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY4", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "mount_s", "ok": true, "detail": "no baseline yet", "value": 0.002469778060913086, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "boot_out_exists", "ok": true, "detail": "length 227", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "board_id_in_boot", "ok": true, "detail": "expected feather_nrf52840_express", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "circuitpython_in_boot", "ok": true, "detail": "version line present", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "write_file", "ok": true, "detail": "/media/<user>/CIRCUITPY4/.cpr_test.txt", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "delete_file", "ok": true, "detail": "deleted", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "board_id", "ok": true, "detail": "feather_nrf52840_express", "value": "feather_nrf52840_express"}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "cp_version", "ok": true, "detail": "(11, 0, 0, '')", "value": null}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "enumeration_checks_s", "ok": true, "detail": "no baseline yet", "value": 1.6622285842895508, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "feather_nrf52840", "name": "_duration", "ok": true, "value": 1.7}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY4", "value": null}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "host_write", "ok": true, "detail": "262144 bytes", "value": null}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "host_write_kBps", "ok": true, "detail": "no baseline yet", "value": 43.450845439502125, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "host_burst_created", "ok": true, "detail": "20 files", "value": null}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "host_readback", "ok": true, "detail": "adler32 efe40281", "value": null}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "device_read", "ok": true, "detail": "262144 bytes", "value": 262144}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "device_adler32", "ok": true, "detail": "", "value": 4024697473}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "statvfs_read", "ok": true, "detail": "free 499712 bytes", "value": 499712}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "device_burst_count", "ok": true, "detail": "expected 20, got 20", "value": 20}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "device_matches_host", "ok": true, "detail": "device efe40281 host efe40281", "value": null}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "free_space_agree", "ok": true, "detail": "device 499712 vs host 499712 bytes, diff 0.0%", "value": null}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "cleanup", "ok": true, "detail": "", "value": null}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "mount_after", "ok": true, "detail": "/media/<user>/CIRCUITPY4", "value": null}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "devnum_unchanged", "ok": true, "detail": "before 4, after 4 (a change means the board re-enumerated)", "value": null}
+{"test": "usb_msc_rw", "board": "feather_nrf52840", "name": "_duration", "ok": true, "value": 29.0}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "code_py_runs", "ok": true, "detail": "marker seen 1 times", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "no_double_start", "ok": true, "detail": "marker seen 1 times (#3502)", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "exception_traceback", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "code_done_message", "ok": true, "detail": "printed by the supervisor", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "no_safe_mode", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "run_reason", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "reset_reason", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "recursion_raises", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "memoryerror_raises", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "survives_exceptions", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "hard_reset_back", "ok": true, "detail": "2.808407783508301 s", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "boot_py_in_boot_out", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s2", "name": "_duration", "ok": true, "value": 54.2}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "present", "ok": true, "detail": "3-3.3.4.1", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "bitmap_size", "ok": true, "detail": "8x8", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "bitmap_corner_pixels", "ok": true, "detail": "5 15", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "bitmap_rejects_negative_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "bitmap_rejects_value_over_count", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "bitmap_rejects_out_of_bounds", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "palette_len", "ok": true, "detail": "4", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "palette_transparency", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "tilegrid_xy", "ok": true, "detail": "10,20", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "tilegrid_flip_transpose", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "tilegrid_tile_index", "ok": true, "detail": "3", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "group_append_tilegrid", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "group_rejects_duplicate_tilegrid", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "group_append_empty_group", "ok": true, "detail": "2", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "group_insert", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "group_index", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "group_remove", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "group_hidden_set", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "group_hidden_clear", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "group_hidden_before_append", "ok": true, "detail": "#4193", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "rectangle_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "circle_radius", "ok": true, "detail": "5", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "polygon_points_roundtrip", "ok": true, "detail": "[(0, 0), (10, 0), (10, 10), (0, 10)]", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "vectorio_duplicate_append", "ok": true, "detail": "rejected", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "render_checksum", "ok": true, "detail": "golden 526375412, now 526375412", "value": 526375412, "kind": "golden"}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "tilepalettemapper_construct", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s2", "name": "_duration", "ok": true, "value": 2.1}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "present", "ok": true, "detail": "3-3.3.4.1", "value": null}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "vid_pid", "ok": true, "detail": "('239a', '80e0')", "value": null}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "int_loop_100k", "ok": true, "detail": "no baseline yet", "value": 1447.815, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "int_loop_100k", "ok": true, "detail": "sum=4999950000", "value": 4999950000}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "float_math_20k", "ok": true, "detail": "no baseline yet", "value": 1488.3424, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "float_math_20k", "ok": true, "detail": "result=1885731.00", "value": 1885731.0}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "str_concat_5k", "ok": true, "detail": "no baseline yet", "value": 3664.123, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "str_concat_5k", "ok": true, "detail": "len=5000", "value": 5000}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "dict_ops_10k", "ok": true, "detail": "no baseline yet", "value": 268.6463, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "dict_ops_10k", "ok": true, "detail": "len=1000", "value": 1000}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "list_sort_5k", "ok": true, "detail": "no baseline yet", "value": 339.5996, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "list_sort_5k", "ok": true, "detail": "sorted", "value": 5000}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "json_roundtrip_200", "ok": true, "detail": "no baseline yet", "value": 80.59694, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "json_roundtrip_200", "ok": true, "detail": "items=200", "value": 200}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "gc_collect", "ok": true, "detail": "no baseline yet", "value": 1.525887, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "gc_collect", "ok": true, "detail": "time=1.53 ms", "value": 1.525887}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "bitmap_fill", "ok": true, "detail": "no baseline yet", "value": 163.1165, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "bitmap_fill", "ok": true, "detail": "pixels=4096", "value": 4096}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "bitmaptools_fill_region", "ok": true, "detail": "no baseline yet", "value": 90.2405, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "bitmaptools_fill_region", "ok": true, "detail": "fills=20", "value": 20}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "sleep_accuracy", "ok": true, "detail": "no baseline yet", "value": 0.04272002, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "sleep_accuracy", "ok": true, "detail": "error=0.0 ms", "value": 0.04272002}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "repl_roundtrip_ms", "ok": true, "detail": "no baseline yet", "value": 1213.4892609901726, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s2", "name": "_duration", "ok": true, "value": 11.2}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s2", "name": "present", "ok": true, "detail": "3-3.3.4.1", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s2", "name": "i2c_construct", "ok": true, "detail": "I2C bus created (pull-ups present)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s2", "name": "pin_claim_twice", "ok": true, "detail": "RX in use", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s2", "name": "use_after_deinit", "ok": true, "detail": "Object has been deinitialized and can no longer be used. Create a new object.", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s2", "name": "i2c_singleton", "ok": true, "detail": "I2C() should return same object (issue #1603)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s2", "name": "spi_mosi_only", "ok": true, "detail": "SPI(SCK, MOSI=...) constructed", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s2", "name": "pwm_construct", "ok": null, "detail": "no suitable PWM pin found", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s2", "name": "analog_read", "ok": true, "detail": "A0 read 37712 (type int)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s2", "name": "analog_range", "ok": true, "detail": "value=37712 in [0..65535]", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s2", "name": "cpu_temp", "ok": true, "detail": "temp=15.0\u00b0C", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s2", "name": "neopixel_write", "ok": true, "detail": "wrote RGB pixels", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s2", "name": "_duration", "ok": true, "value": 1.9}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "present", "ok": true, "detail": "3-3.3.4.1", "value": null}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "prompt_reachable", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "eval", "ok": true, "detail": "7*6\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "underscore_last_result", "ok": true, "detail": "_\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "interrupt_ctrl_c", "ok": true, "detail": "100 ms after Ctrl-C", "value": null}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "interrupt_ms", "ok": true, "detail": "no baseline yet", "value": 100.30674934387207, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "paste_4k", "ok": true, "detail": "expected b'PASTE_RESULT 2775'; tail b\"(s + 74) & 0xFFFFFF  # padding padding padding\\n    return s\\nprint('PASTE_RESULT', cpr_paste())\\n\\r\\nPASTE_RESULT 2775\\r\\n>>> \"", "value": null}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "large_output_count", "ok": true, "detail": "got 2000/2000 lines", "value": null}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "large_output_order", "ok": true, "detail": "lines in order", "value": null}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "large_output_no_error", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "output_kBps", "ok": true, "detail": "no baseline yet", "value": 70.98222989219516, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "ctrl_d_soft_reboot", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "reboot_banner", "ok": true, "detail": "EPL | 11.0.0-alpha.1-86-g55488150be\u001b\\\r\nAdafruit CircuitPython 11.0.0-alpha.1-86-g55488150be on 2026-10-12; Adafruit Metro ESP32S2 with ESP32S2\r\n>>> \r\n>>> \r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_esp32s2", "name": "_duration", "ok": true, "value": 11.9}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "board_present", "ok": true, "detail": "3-3.3.4.1", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "settings_written", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "getenv_plain", "ok": true, "detail": "'hello'", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "getenv_escape_newline", "ok": true, "detail": "'line1\\nline2'", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "getenv_unicode_escape", "ok": true, "detail": "'emoji\u2764'", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "getenv_unicode_direct", "ok": true, "detail": "'caf\u00e9'", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "getenv_int_value", "ok": true, "detail": "'42'", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "getenv_missing_none", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "getenv_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "getenv_after_bad_value", "ok": true, "detail": "bad lines must not break lookups", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_str", "ok": true, "detail": "'hello' str", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_int", "ok": true, "detail": "42 int", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_negative_int", "ok": true, "detail": "-17 int", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_hex_int", "ok": true, "detail": "31 int", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_bool", "ok": true, "detail": "True bool", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_float", "ok": true, "detail": "1.5 float", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_float_exp", "ok": true, "detail": "2000.0 float", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_inf", "ok": true, "detail": "inf", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_nan", "ok": true, "detail": "nan", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_rejects_Inf", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_rejects_bare_plus", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_rejects_bad_value", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "gs_missing_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "spec_leading_zero", "ok": null, "detail": "accepted 15; toml.io says leading zeros are invalid", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "restored_and_rebooted", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s2", "name": "_duration", "ok": true, "value": 11.1}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "usb_present", "ok": true, "detail": "3-3.3.4.1", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "vid_pid_read", "ok": true, "detail": "('239a', '80e0')", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "vid_not_empty", "ok": true, "detail": "239a", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "pid_not_empty", "ok": true, "detail": "80e0", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "interfaces_exist", "ok": true, "detail": "4 interfaces", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "cdc_present", "ok": true, "detail": "CDC interfaces: ['02']", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "msc_present", "ok": true, "detail": "MSC present: True", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "other_interfaces", "ok": true, "detail": "HID/Audio: ['03', '0a']", "value": 2}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "tty_exists", "ok": true, "detail": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:3.3.4.1:1.0", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY1", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "mount_s", "ok": true, "detail": "no baseline yet", "value": 0.004663228988647461, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "boot_out_exists", "ok": true, "detail": "length 231", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "board_id_in_boot", "ok": true, "detail": "expected adafruit_metro_esp32s2", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "circuitpython_in_boot", "ok": true, "detail": "version line present", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "write_file", "ok": true, "detail": "/media/<user>/CIRCUITPY1/.cpr_test.txt", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "delete_file", "ok": true, "detail": "deleted", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "board_id", "ok": true, "detail": "adafruit_metro_esp32s2", "value": "adafruit_metro_esp32s2"}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "cp_version", "ok": true, "detail": "(11, 0, 0, '')", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "enumeration_checks_s", "ok": true, "detail": "no baseline yet", "value": 2.753807544708252, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "metro_esp32s2", "name": "_duration", "ok": true, "value": 2.8}
+{"test": "usb_msc_rw", "board": "metro_esp32s2", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY1", "value": null}
+{"test": "usb_msc_rw", "board": "metro_esp32s2", "name": "rest", "ok": null, "detail": "CIRCUITPY has 18432 bytes free, too little for the MSC test; clear files on the drive to run it", "value": null}
+{"test": "usb_msc_rw", "board": "metro_esp32s2", "name": "_duration", "ok": true, "value": 0.0}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "code_py_runs", "ok": true, "detail": "marker seen 1 times", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "no_double_start", "ok": true, "detail": "marker seen 1 times (#3502)", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "exception_traceback", "ok": true, "detail": "ha.1-86-g55488150be-dirty\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "code_done_message", "ok": true, "detail": "printed by the supervisor", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "no_safe_mode", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "run_reason", "ok": true, "detail": "ha.1-86-g55488150be-dirty\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "reset_reason", "ok": true, "detail": "ha.1-86-g55488150be-dirty\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "recursion_raises", "ok": true, "detail": "ha.1-86-g55488150be-dirty\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "memoryerror_raises", "ok": true, "detail": "ha.1-86-g55488150be-dirty\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "survives_exceptions", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "hard_reset_back", "ok": true, "detail": "4.352813005447388 s", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "boot_py_in_boot_out", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_rp2350", "name": "_duration", "ok": true, "value": 51.9}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "present", "ok": true, "detail": "3-3.3.4.2", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "bitmap_size", "ok": true, "detail": "8x8", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "bitmap_corner_pixels", "ok": true, "detail": "5 15", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "bitmap_rejects_negative_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "bitmap_rejects_value_over_count", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "bitmap_rejects_out_of_bounds", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "palette_len", "ok": true, "detail": "4", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "palette_transparency", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "tilegrid_xy", "ok": true, "detail": "10,20", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "tilegrid_flip_transpose", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "tilegrid_tile_index", "ok": true, "detail": "3", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "group_append_tilegrid", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "group_rejects_duplicate_tilegrid", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "group_append_empty_group", "ok": true, "detail": "2", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "group_insert", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "group_index", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "group_remove", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "group_hidden_set", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "group_hidden_clear", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "group_hidden_before_append", "ok": true, "detail": "#4193", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "rectangle_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "circle_radius", "ok": true, "detail": "5", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "polygon_points_roundtrip", "ok": true, "detail": "[(0, 0), (10, 0), (10, 10), (0, 10)]", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "vectorio_duplicate_append", "ok": true, "detail": "rejected", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "render_checksum", "ok": true, "detail": "golden 526375412, now 526375412", "value": 526375412, "kind": "golden"}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "tilepalettemapper_construct", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_rp2350", "name": "_duration", "ok": true, "value": 1.8}
+{"test": "perf_core", "board": "metro_rp2350", "name": "present", "ok": true, "detail": "3-3.3.4.2", "value": null}
+{"test": "perf_core", "board": "metro_rp2350", "name": "vid_pid", "ok": true, "detail": "('239a', '814e')", "value": null}
+{"test": "perf_core", "board": "metro_rp2350", "name": "int_loop_100k", "ok": true, "detail": "no baseline yet", "value": 973.2362, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2350", "name": "int_loop_100k", "ok": true, "detail": "sum=4999950000", "value": 4999950000}
+{"test": "perf_core", "board": "metro_rp2350", "name": "float_math_20k", "ok": true, "detail": "no baseline yet", "value": 371.3074, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2350", "name": "float_math_20k", "ok": true, "detail": "result=1885731.00", "value": 1885731.0}
+{"test": "perf_core", "board": "metro_rp2350", "name": "str_concat_5k", "ok": true, "detail": "no baseline yet", "value": 2657.074, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2350", "name": "str_concat_5k", "ok": true, "detail": "len=5000", "value": 5000}
+{"test": "perf_core", "board": "metro_rp2350", "name": "dict_ops_10k", "ok": true, "detail": "no baseline yet", "value": 224.54836, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2350", "name": "dict_ops_10k", "ok": true, "detail": "len=1000", "value": 1000}
+{"test": "perf_core", "board": "metro_rp2350", "name": "list_sort_5k", "ok": true, "detail": "no baseline yet", "value": 238.6169, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2350", "name": "list_sort_5k", "ok": true, "detail": "sorted", "value": 5000}
+{"test": "perf_core", "board": "metro_rp2350", "name": "json_roundtrip_200", "ok": true, "detail": "no baseline yet", "value": 62.74414, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2350", "name": "json_roundtrip_200", "ok": true, "detail": "items=200", "value": 200}
+{"test": "perf_core", "board": "metro_rp2350", "name": "gc_collect", "ok": true, "detail": "no baseline yet", "value": 1.251225, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2350", "name": "gc_collect", "ok": true, "detail": "time=1.25 ms", "value": 1.251225}
+{"test": "perf_core", "board": "metro_rp2350", "name": "bitmap_fill", "ok": true, "detail": "no baseline yet", "value": 55.93872, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2350", "name": "bitmap_fill", "ok": true, "detail": "pixels=4096", "value": 4096}
+{"test": "perf_core", "board": "metro_rp2350", "name": "bitmaptools_fill_region", "ok": true, "detail": "no baseline yet", "value": 109.98532, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2350", "name": "bitmaptools_fill_region", "ok": true, "detail": "fills=20", "value": 20}
+{"test": "perf_core", "board": "metro_rp2350", "name": "sleep_accuracy", "ok": true, "detail": "no baseline yet", "value": 0.029299924, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2350", "name": "sleep_accuracy", "ok": true, "detail": "error=0.0 ms", "value": 0.029299924}
+{"test": "perf_core", "board": "metro_rp2350", "name": "repl_roundtrip_ms", "ok": true, "detail": "no baseline yet", "value": 1213.3193919435143, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_rp2350", "name": "_duration", "ok": true, "value": 8.1}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "present", "ok": true, "detail": "3-3.3.4.2", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "i2c_construct", "ok": true, "detail": "I2C bus created (pull-ups present)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "pin_claim_twice", "ok": true, "detail": "D5 in use", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "use_after_deinit", "ok": true, "detail": "Object has been deinitialized and can no longer be used. Create a new object.", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "i2c_singleton", "ok": true, "detail": "I2C() should return same object (issue #1603)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "spi_mosi_only", "ok": true, "detail": "SPI(SCK, MOSI=...) constructed", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "pwm_construct", "ok": true, "detail": "PWM created", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "pwm_frequency_roundtrip", "ok": true, "detail": "500/1000/5000 Hz", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "pwm_duty_roundtrip", "ok": true, "detail": "duty_cycle=16384 (expected ~16384)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "analog_read", "ok": true, "detail": "A0 read 11666 (type int)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "analog_range", "ok": true, "detail": "value=11666 in [0..65535]", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "cpu_temp", "ok": true, "detail": "temp=29.0\u00b0C", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "neopixel_write", "ok": true, "detail": "wrote RGB pixels", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_rp2350", "name": "_duration", "ok": true, "value": 1.7}
+{"test": "repl_console", "board": "metro_rp2350", "name": "present", "ok": true, "detail": "3-3.3.4.2", "value": null}
+{"test": "repl_console", "board": "metro_rp2350", "name": "prompt_reachable", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_rp2350", "name": "eval", "ok": true, "detail": "7*6\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_rp2350", "name": "underscore_last_result", "ok": true, "detail": "_\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_rp2350", "name": "interrupt_ctrl_c", "ok": true, "detail": "100 ms after Ctrl-C", "value": null}
+{"test": "repl_console", "board": "metro_rp2350", "name": "interrupt_ms", "ok": true, "detail": "no baseline yet", "value": 100.34394264221191, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "repl_console", "board": "metro_rp2350", "name": "paste_4k", "ok": true, "detail": "expected b'PASTE_RESULT 2775'; tail b\"(s + 74) & 0xFFFFFF  # padding padding padding\\n    return s\\nprint('PASTE_RESULT', cpr_paste())\\n\\r\\nPASTE_RESULT 2775\\r\\n>>> \"", "value": null}
+{"test": "repl_console", "board": "metro_rp2350", "name": "large_output_count", "ok": true, "detail": "got 2000/2000 lines", "value": null}
+{"test": "repl_console", "board": "metro_rp2350", "name": "large_output_order", "ok": true, "detail": "lines in order", "value": null}
+{"test": "repl_console", "board": "metro_rp2350", "name": "large_output_no_error", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_rp2350", "name": "output_kBps", "ok": true, "detail": "no baseline yet", "value": 102.01478168284393, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "repl_console", "board": "metro_rp2350", "name": "ctrl_d_soft_reboot", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_rp2350", "name": "reboot_banner", "ok": true, "detail": "0-alpha.1-86-g55488150be-dirty\u001b\\\r\nAdafruit CircuitPython 11.0.0-alpha.1-86-g55488150be-dirty on 2026-10-13; Adafruit Metro RP2350 with rp2350b\r\n>>> \r\n>>> \r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_rp2350", "name": "_duration", "ok": true, "value": 9.6}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "board_present", "ok": true, "detail": "3-3.3.4.2", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "settings_written", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "getenv_plain", "ok": true, "detail": "'hello'", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "getenv_escape_newline", "ok": true, "detail": "'line1\\nline2'", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "getenv_unicode_escape", "ok": true, "detail": "'emoji\u2764'", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "getenv_unicode_direct", "ok": true, "detail": "'caf\u00e9'", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "getenv_int_value", "ok": true, "detail": "'42'", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "getenv_missing_none", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "getenv_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "getenv_after_bad_value", "ok": true, "detail": "bad lines must not break lookups", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_str", "ok": true, "detail": "'hello' str", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_int", "ok": true, "detail": "42 int", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_negative_int", "ok": true, "detail": "-17 int", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_hex_int", "ok": true, "detail": "31 int", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_bool", "ok": true, "detail": "True bool", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_float", "ok": true, "detail": "1.5 float", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_float_exp", "ok": true, "detail": "2000.0 float", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_inf", "ok": true, "detail": "inf", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_nan", "ok": true, "detail": "nan", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_rejects_Inf", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_rejects_bare_plus", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_rejects_bad_value", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "gs_missing_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "spec_leading_zero", "ok": null, "detail": "accepted 15; toml.io says leading zeros are invalid", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "restored_and_rebooted", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_rp2350", "name": "_duration", "ok": true, "value": 7.6}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "usb_present", "ok": true, "detail": "3-3.3.4.2", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "vid_pid_read", "ok": true, "detail": "('239a', '814e')", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "vid_not_empty", "ok": true, "detail": "239a", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "pid_not_empty", "ok": true, "detail": "814e", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "interfaces_exist", "ok": true, "detail": "6 interfaces", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "cdc_present", "ok": true, "detail": "CDC interfaces: ['02']", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "msc_present", "ok": true, "detail": "MSC present: True", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "other_interfaces", "ok": true, "detail": "HID/Audio: ['03', '0a', '01']", "value": 3}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "tty_exists", "ok": true, "detail": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:3.3.4.2:1.0", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "mount_s", "ok": true, "detail": "no baseline yet", "value": 0.007101535797119141, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "boot_out_exists", "ok": true, "detail": "length 217", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "board_id_in_boot", "ok": true, "detail": "expected adafruit_metro_rp2350", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "circuitpython_in_boot", "ok": true, "detail": "version line present", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "write_file", "ok": true, "detail": "/media/<user>/CIRCUITPY/.cpr_test.txt", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "delete_file", "ok": true, "detail": "deleted", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "board_id", "ok": true, "detail": "adafruit_metro_rp2350", "value": "adafruit_metro_rp2350"}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "cp_version", "ok": true, "detail": "(11, 0, 0, '')", "value": null}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "enumeration_checks_s", "ok": true, "detail": "no baseline yet", "value": 1.716782808303833, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "metro_rp2350", "name": "_duration", "ok": true, "value": 1.7}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "host_write", "ok": true, "detail": "262144 bytes", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "host_write_kBps", "ok": true, "detail": "no baseline yet", "value": 64.25533670441787, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "host_burst_created", "ok": true, "detail": "20 files", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "host_readback", "ok": true, "detail": "adler32 efe40281", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "device_read", "ok": true, "detail": "262144 bytes", "value": 262144}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "device_adler32", "ok": true, "detail": "", "value": 4024697473}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "statvfs_read", "ok": true, "detail": "free 15083520 bytes", "value": 15083520}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "device_burst_count", "ok": true, "detail": "expected 20, got 20", "value": 20}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "device_matches_host", "ok": true, "detail": "device efe40281 host efe40281", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "free_space_agree", "ok": true, "detail": "device 15083520 vs host 15083520 bytes, diff 0.0%", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "cleanup", "ok": true, "detail": "", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "mount_after", "ok": true, "detail": "/media/<user>/CIRCUITPY", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "devnum_unchanged", "ok": true, "detail": "before 6, after 6 (a change means the board re-enumerated)", "value": null}
+{"test": "usb_msc_rw", "board": "metro_rp2350", "name": "_duration", "ok": true, "value": 18.9}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "code_py_runs", "ok": true, "detail": "marker seen 1 times", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "no_double_start", "ok": true, "detail": "marker seen 1 times (#3502)", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "exception_traceback", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "code_done_message", "ok": true, "detail": "printed by the supervisor", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "no_safe_mode", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "run_reason", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "reset_reason", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "recursion_raises", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "memoryerror_raises", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "survives_exceptions", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "hard_reset_back", "ok": true, "detail": "9.8409264087677 s", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "boot_py_in_boot_out", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "metro_esp32s3", "name": "_duration", "ok": true, "value": 57.0}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "present", "ok": true, "detail": "3-3.3.4.3", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "bitmap_size", "ok": true, "detail": "8x8", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "bitmap_corner_pixels", "ok": true, "detail": "5 15", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "bitmap_rejects_negative_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "bitmap_rejects_value_over_count", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "bitmap_rejects_out_of_bounds", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "palette_len", "ok": true, "detail": "4", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "palette_transparency", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "tilegrid_xy", "ok": true, "detail": "10,20", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "tilegrid_flip_transpose", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "tilegrid_tile_index", "ok": true, "detail": "3", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "group_append_tilegrid", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "group_rejects_duplicate_tilegrid", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "group_append_empty_group", "ok": true, "detail": "2", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "group_insert", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "group_index", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "group_remove", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "group_hidden_set", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "group_hidden_clear", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "group_hidden_before_append", "ok": true, "detail": "#4193", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "rectangle_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "circle_radius", "ok": true, "detail": "5", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "polygon_points_roundtrip", "ok": true, "detail": "[(0, 0), (10, 0), (10, 10), (0, 10)]", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "vectorio_duplicate_append", "ok": true, "detail": "rejected", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "render_checksum", "ok": true, "detail": "golden 526375412, now 526375412", "value": 526375412, "kind": "golden"}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "tilepalettemapper_construct", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "metro_esp32s3", "name": "_duration", "ok": true, "value": 1.8}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "present", "ok": true, "detail": "3-3.3.4.3", "value": null}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "vid_pid", "ok": true, "detail": "('239a', '0145')", "value": null}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "int_loop_100k", "ok": true, "detail": "no baseline yet", "value": 595.154, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "int_loop_100k", "ok": true, "detail": "sum=4999950000", "value": 4999950000}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "float_math_20k", "ok": true, "detail": "no baseline yet", "value": 244.2322, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "float_math_20k", "ok": true, "detail": "result=1885731.00", "value": 1885731.0}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "str_concat_5k", "ok": true, "detail": "no baseline yet", "value": 2176.148, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "str_concat_5k", "ok": true, "detail": "len=5000", "value": 5000}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "dict_ops_10k", "ok": true, "detail": "no baseline yet", "value": 122.95532, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "dict_ops_10k", "ok": true, "detail": "len=1000", "value": 1000}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "list_sort_5k", "ok": true, "detail": "no baseline yet", "value": 156.9519, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "list_sort_5k", "ok": true, "detail": "sorted", "value": 5000}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "json_roundtrip_200", "ok": true, "detail": "no baseline yet", "value": 45.25758, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "json_roundtrip_200", "ok": true, "detail": "items=200", "value": 200}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "gc_collect", "ok": true, "detail": "no baseline yet", "value": 0.976562, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "gc_collect", "ok": true, "detail": "time=0.98 ms", "value": 0.976562}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "bitmap_fill", "ok": true, "detail": "no baseline yet", "value": 38.90992, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "bitmap_fill", "ok": true, "detail": "pixels=4096", "value": 4096}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "bitmaptools_fill_region", "ok": true, "detail": "no baseline yet", "value": 72.3572, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "bitmaptools_fill_region", "ok": true, "detail": "fills=20", "value": 20}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "sleep_accuracy", "ok": true, "detail": "no baseline yet", "value": 0.04272002, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "sleep_accuracy", "ok": true, "detail": "error=0.0 ms", "value": 0.04272002}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "repl_roundtrip_ms", "ok": true, "detail": "no baseline yet", "value": 1213.2470360957086, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "perf_core", "board": "metro_esp32s3", "name": "_duration", "ok": true, "value": 7.0}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "present", "ok": true, "detail": "3-3.3.4.3", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "i2c_construct", "ok": true, "detail": "I2C bus created (pull-ups present)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "pin_claim_twice", "ok": true, "detail": "D5 in use", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "use_after_deinit", "ok": true, "detail": "Object has been deinitialized and can no longer be used. Create a new object.", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "i2c_singleton", "ok": true, "detail": "I2C() should return same object (issue #1603)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "spi_mosi_only", "ok": true, "detail": "SPI(SCK, MOSI=...) constructed", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "pwm_construct", "ok": true, "detail": "PWM created", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "pwm_frequency_roundtrip", "ok": true, "detail": "500/1000/5000 Hz", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "pwm_duty_roundtrip", "ok": true, "detail": "duty_cycle=16384 (expected ~16384)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "analog_read", "ok": true, "detail": "A0 read 47880 (type int)", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "analog_range", "ok": true, "detail": "value=47880 in [0..65535]", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "cpu_temp", "ok": true, "detail": "temp=32.9\u00b0C", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "neopixel_write", "ok": true, "detail": "wrote RGB pixels", "value": null}
+{"test": "peripherals_selfcheck", "board": "metro_esp32s3", "name": "_duration", "ok": true, "value": 1.8}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "present", "ok": true, "detail": "3-3.3.4.3", "value": null}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "prompt_reachable", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "eval", "ok": true, "detail": "7*6\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "underscore_last_result", "ok": true, "detail": "_\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "interrupt_ctrl_c", "ok": true, "detail": "100 ms after Ctrl-C", "value": null}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "interrupt_ms", "ok": true, "detail": "no baseline yet", "value": 100.33130645751953, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "paste_4k", "ok": true, "detail": "expected b'PASTE_RESULT 2775'; tail b\"(s + 74) & 0xFFFFFF  # padding padding padding\\n    return s\\nprint('PASTE_RESULT', cpr_paste())\\n\\r\\nPASTE_RESULT 2775\\r\\n>>> \"", "value": null}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "large_output_count", "ok": true, "detail": "got 2000/2000 lines", "value": null}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "large_output_order", "ok": true, "detail": "lines in order", "value": null}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "large_output_no_error", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "output_kBps", "ok": true, "detail": "no baseline yet", "value": 79.08528862423982, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "ctrl_d_soft_reboot", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "reboot_banner", "ok": true, "detail": "EPL | 11.0.0-alpha.1-86-g55488150be\u001b\\\r\nAdafruit CircuitPython 11.0.0-alpha.1-86-g55488150be on 2026-10-12; Adafruit Metro ESP32S3 with ESP32S3\r\n>>> \r\n>>> \r\n>>> ", "value": null}
+{"test": "repl_console", "board": "metro_esp32s3", "name": "_duration", "ok": true, "value": 10.0}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "board_present", "ok": true, "detail": "3-3.3.4.3", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "settings_written", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "getenv_plain", "ok": true, "detail": "'hello'", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "getenv_escape_newline", "ok": true, "detail": "'line1\\nline2'", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "getenv_unicode_escape", "ok": true, "detail": "'emoji\u2764'", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "getenv_unicode_direct", "ok": true, "detail": "'caf\u00e9'", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "getenv_int_value", "ok": true, "detail": "'42'", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "getenv_missing_none", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "getenv_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "getenv_after_bad_value", "ok": true, "detail": "bad lines must not break lookups", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_str", "ok": true, "detail": "'hello' str", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_int", "ok": true, "detail": "42 int", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_negative_int", "ok": true, "detail": "-17 int", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_hex_int", "ok": true, "detail": "31 int", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_bool", "ok": true, "detail": "True bool", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_float", "ok": true, "detail": "1.5 float", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_float_exp", "ok": true, "detail": "2000.0 float", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_inf", "ok": true, "detail": "inf", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_nan", "ok": true, "detail": "nan", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_rejects_Inf", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_rejects_bare_plus", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_rejects_bad_value", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "gs_missing_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "spec_leading_zero", "ok": null, "detail": "accepted 15; toml.io says leading zeros are invalid", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "restored_and_rebooted", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "metro_esp32s3", "name": "_duration", "ok": true, "value": 11.8}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "usb_present", "ok": true, "detail": "3-3.3.4.3", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "vid_pid_read", "ok": true, "detail": "('239a', '0145')", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "vid_not_empty", "ok": true, "detail": "239a", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "pid_not_empty", "ok": true, "detail": "0145", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "interfaces_exist", "ok": true, "detail": "4 interfaces", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "cdc_present", "ok": true, "detail": "CDC interfaces: ['02']", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "msc_present", "ok": true, "detail": "MSC present: True", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "other_interfaces", "ok": true, "detail": "HID/Audio: ['03', '0a']", "value": 2}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "tty_exists", "ok": true, "detail": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:3.3.4.3:1.0", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY9", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "mount_s", "ok": true, "detail": "no baseline yet", "value": 0.005369663238525391, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "boot_out_exists", "ok": true, "detail": "length 231", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "board_id_in_boot", "ok": true, "detail": "expected adafruit_metro_esp32s3", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "circuitpython_in_boot", "ok": true, "detail": "version line present", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "write_file", "ok": true, "detail": "/media/<user>/CIRCUITPY9/.cpr_test.txt", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "delete_file", "ok": true, "detail": "deleted", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "board_id", "ok": true, "detail": "adafruit_metro_esp32s3", "value": "adafruit_metro_esp32s3"}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "cp_version", "ok": true, "detail": "(11, 0, 0, '')", "value": null}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "enumeration_checks_s", "ok": true, "detail": "no baseline yet", "value": 1.6159658432006836, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "metro_esp32s3", "name": "_duration", "ok": true, "value": 1.6}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY9", "value": null}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "host_write", "ok": true, "detail": "262144 bytes", "value": null}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "host_write_kBps", "ok": true, "detail": "no baseline yet", "value": 72.11914798612588, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "host_burst_created", "ok": true, "detail": "20 files", "value": null}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "host_readback", "ok": true, "detail": "adler32 efe40281", "value": null}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "device_read", "ok": true, "detail": "262144 bytes", "value": 262144}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "device_adler32", "ok": true, "detail": "", "value": 4024697473}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "statvfs_read", "ok": true, "detail": "free 12992512 bytes", "value": 12992512}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "device_burst_count", "ok": true, "detail": "expected 20, got 20", "value": 20}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "device_matches_host", "ok": true, "detail": "device efe40281 host efe40281", "value": null}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "free_space_agree", "ok": true, "detail": "device 12992512 vs host 12992512 bytes, diff 0.0%", "value": null}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "cleanup", "ok": true, "detail": "", "value": null}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "mount_after", "ok": true, "detail": "/media/<user>/CIRCUITPY9", "value": null}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "devnum_unchanged", "ok": true, "detail": "before 10, after 10 (a change means the board re-enumerated)", "value": null}
+{"test": "usb_msc_rw", "board": "metro_esp32s3", "name": "_duration", "ok": true, "value": 16.4}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "code_py_runs", "ok": true, "detail": "marker seen 1 times", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "no_double_start", "ok": true, "detail": "marker seen 1 times (#3502)", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "exception_traceback", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "code_done_message", "ok": true, "detail": "printed by the supervisor", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "no_safe_mode", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "run_reason", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "reset_reason", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "recursion_raises", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "memoryerror_raises", "ok": true, "detail": ".0-alpha.1-86-g55488150be\u001b\\\r\nCode done running.\r\n\u001b[2K\u001b[0GAuto-reload is on. Simply save files over USB to run them or enter REPL to disable.\r\n\r\nPress any key to enter the REPL. Use CTRL-D to reload.\r\n", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "survives_exceptions", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "hard_reset_back", "ok": true, "detail": "3.5914504528045654 s", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "boot_py_in_boot_out", "ok": true, "detail": "", "value": null}
+{"test": "code_py_lifecycle", "board": "feather_stm32f405", "name": "_duration", "ok": true, "value": 54.2}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "present", "ok": true, "detail": "3-3.3.4.4", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "bitmap_size", "ok": true, "detail": "8x8", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "bitmap_corner_pixels", "ok": true, "detail": "5 15", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "bitmap_rejects_negative_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "bitmap_rejects_value_over_count", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "bitmap_rejects_out_of_bounds", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "palette_len", "ok": true, "detail": "4", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "palette_transparency", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "tilegrid_xy", "ok": true, "detail": "10,20", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "tilegrid_flip_transpose", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "tilegrid_tile_index", "ok": true, "detail": "3", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "group_append_tilegrid", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "group_rejects_duplicate_tilegrid", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "group_append_empty_group", "ok": true, "detail": "2", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "group_insert", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "group_index", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "group_remove", "ok": true, "detail": "1", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "group_hidden_set", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "group_hidden_clear", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "group_hidden_before_append", "ok": true, "detail": "#4193", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "rectangle_size", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "circle_radius", "ok": true, "detail": "5", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "polygon_points_roundtrip", "ok": true, "detail": "[(0, 0), (10, 0), (10, 10), (0, 10)]", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "vectorio_duplicate_append", "ok": true, "detail": "rejected", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "render_checksum", "ok": true, "detail": "golden 526375412, now 526375412", "value": 526375412, "kind": "golden"}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "tilepalettemapper_construct", "ok": true, "detail": "", "value": null}
+{"test": "displayio_headless", "board": "feather_stm32f405", "name": "_duration", "ok": true, "value": 1.8}
+{"test": "perf_core", "board": "feather_stm32f405", "name": "present", "ok": true, "detail": "3-3.3.4.4", "value": null}
+{"test": "perf_core", "board": "feather_stm32f405", "name": "vid_pid", "ok": true, "detail": "('239a', '805a')", "value": null}
+{"test": "perf_core", "board": "feather_stm32f405", "name": "harness", "ok": false, "detail": "SerialException: device reports readiness to read but returned no data (device disconnected or multiple access on port?)\nimeout=max(5, end - time.time()))\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"~/cp-regress/lib/farmlib.py\", line 273, in read_until\n    buf += self._pull()\n           ^^^^^^^^^^^^\n  File \"~/cp-regress/lib/farmlib.py\", line 253, in _pull\n    chunk = self.s.read(4096)\n            ^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3/d", "value": null}
+{"test": "perf_core", "board": "feather_stm32f405", "name": "_duration", "ok": true, "value": 9.0}
+{"test": "perf_core", "board": "feather_stm32f405", "name": "board_survived", "ok": false, "detail": "safe mode: supervisor.SafeModeReason.HARD_FAULT", "value": null}
+{"test": "perf_core", "board": "feather_stm32f405", "name": "_recovered", "ok": true, "detail": ""}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "present", "ok": true, "detail": "3-3.3.4.4", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "i2c_construct", "ok": true, "detail": "I2C bus created (pull-ups present)", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "pin_claim_twice", "ok": true, "detail": "D5 in use", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "use_after_deinit", "ok": true, "detail": "Object has been deinitialized and can no longer be used. Create a new object.", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "i2c_singleton", "ok": true, "detail": "I2C() should return same object (issue #1603)", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "spi_mosi_only", "ok": true, "detail": "SPI(SCK, MOSI=...) constructed", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "pwm_construct", "ok": true, "detail": "PWM created", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "pwm_frequency_roundtrip", "ok": true, "detail": "500/1000/5000 Hz", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "pwm_duty_roundtrip", "ok": true, "detail": "duty_cycle=16384 (expected ~16384)", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "analog_read", "ok": true, "detail": "A0 read 5377 (type int)", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "analog_range", "ok": true, "detail": "value=5377 in [0..65535]", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "cpu_temp", "ok": true, "detail": "temp=35.5\u00b0C", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "neopixel_write", "ok": true, "detail": "wrote RGB pixels", "value": null}
+{"test": "peripherals_selfcheck", "board": "feather_stm32f405", "name": "_duration", "ok": true, "value": 1.9}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "present", "ok": true, "detail": "3-3.3.4.4", "value": null}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "prompt_reachable", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "eval", "ok": true, "detail": "7*6\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "underscore_last_result", "ok": true, "detail": "_\r\n42\r\n>>> ", "value": null}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "interrupt_ctrl_c", "ok": true, "detail": "100 ms after Ctrl-C", "value": null}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "interrupt_ms", "ok": true, "detail": "no baseline yet", "value": 100.33130645751953, "kind": "metric", "unit": "ms", "better": "lower"}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "paste_4k", "ok": true, "detail": "expected b'PASTE_RESULT 2775'; tail b\"(s + 74) & 0xFFFFFF  # padding padding padding\\n    return s\\nprint('PASTE_RESULT', cpr_paste())\\n\\r\\nPASTE_RESULT 2775\\r\\n>>> \"", "value": null}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "large_output_count", "ok": true, "detail": "got 2000/2000 lines", "value": null}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "large_output_order", "ok": true, "detail": "lines in order", "value": null}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "large_output_no_error", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "output_kBps", "ok": true, "detail": "no baseline yet", "value": 120.83894142713291, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "ctrl_d_soft_reboot", "ok": true, "detail": "", "value": null}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "reboot_banner", "ok": true, "detail": "ha.1-86-g55488150be\u001b\\\r\nAdafruit CircuitPython 11.0.0-alpha.1-86-g55488150be on 2026-10-12; Adafruit Feather STM32F405 Express with STM32F405RG\r\n>>> \r\n>>> \r\n>>> ", "value": null}
+{"test": "repl_console", "board": "feather_stm32f405", "name": "_duration", "ok": true, "value": 10.7}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "board_present", "ok": true, "detail": "3-3.3.4.4", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "settings_written", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "getenv_plain", "ok": true, "detail": "'hello'", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "getenv_escape_newline", "ok": true, "detail": "'line1\\nline2'", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "getenv_unicode_escape", "ok": true, "detail": "'emoji\u2764'", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "getenv_unicode_direct", "ok": true, "detail": "'caf\u00e9'", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "getenv_int_value", "ok": true, "detail": "'42'", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "getenv_missing_none", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "getenv_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "getenv_after_bad_value", "ok": true, "detail": "bad lines must not break lookups", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_str", "ok": true, "detail": "'hello' str", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_int", "ok": true, "detail": "42 int", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_negative_int", "ok": true, "detail": "-17 int", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_hex_int", "ok": true, "detail": "31 int", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_bool", "ok": true, "detail": "True bool", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_float", "ok": true, "detail": "1.5 float", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_float_exp", "ok": true, "detail": "2000.0 float", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_inf", "ok": true, "detail": "inf", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_nan", "ok": true, "detail": "nan", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_rejects_Inf", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_rejects_bare_plus", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_rejects_bad_value", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "gs_missing_default", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "spec_leading_zero", "ok": null, "detail": "accepted 15; toml.io says leading zeros are invalid", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "restored_and_rebooted", "ok": true, "detail": "", "value": null}
+{"test": "settings_toml", "board": "feather_stm32f405", "name": "_duration", "ok": true, "value": 8.8}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "usb_present", "ok": true, "detail": "3-3.3.4.4", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "vid_pid_read", "ok": true, "detail": "('239a', '805a')", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "vid_not_empty", "ok": true, "detail": "239a", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "pid_not_empty", "ok": true, "detail": "805a", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "interfaces_exist", "ok": true, "detail": "3 interfaces", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "cdc_present", "ok": true, "detail": "CDC interfaces: ['02']", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "msc_present", "ok": true, "detail": "MSC present: True", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "other_interfaces", "ok": true, "detail": "HID/Audio: ['0a']", "value": 1}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "tty_exists", "ok": true, "detail": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:3.3.4.4:1.0", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY6", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "mount_s", "ok": true, "detail": "no baseline yet", "value": 0.037053585052490234, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "boot_out_exists", "ok": true, "detail": "length 206", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "board_id_in_boot", "ok": true, "detail": "expected feather_stm32f405_express", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "circuitpython_in_boot", "ok": true, "detail": "version line present", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "write_file", "ok": true, "detail": "/media/<user>/CIRCUITPY6/.cpr_test.txt", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "delete_file", "ok": true, "detail": "deleted", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "board_id", "ok": true, "detail": "feather_stm32f405_express", "value": "feather_stm32f405_express"}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "cp_version", "ok": true, "detail": "(11, 0, 0, '')", "value": null}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "enumeration_checks_s", "ok": true, "detail": "no baseline yet", "value": 1.8411691188812256, "kind": "metric", "unit": "s", "better": "lower"}
+{"test": "usb_enumeration", "board": "feather_stm32f405", "name": "_duration", "ok": true, "value": 1.8}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "mounted", "ok": true, "detail": "/media/<user>/CIRCUITPY6", "value": null}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "host_write", "ok": true, "detail": "262144 bytes", "value": null}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "host_write_kBps", "ok": true, "detail": "no baseline yet", "value": 45.92093174333436, "kind": "metric", "unit": "KB/s", "better": "higher"}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "host_burst_created", "ok": true, "detail": "20 files", "value": null}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "host_readback", "ok": true, "detail": "adler32 efe40281", "value": null}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "device_read", "ok": true, "detail": "262144 bytes", "value": 262144}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "device_adler32", "ok": true, "detail": "", "value": 4024697473}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "statvfs_read", "ok": true, "detail": "free 1604608 bytes", "value": 1604608}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "device_burst_count", "ok": true, "detail": "expected 20, got 20", "value": 20}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "device_matches_host", "ok": true, "detail": "device efe40281 host efe40281", "value": null}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "free_space_agree", "ok": true, "detail": "device 1604608 vs host 1604608 bytes, diff 0.0%", "value": null}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "cleanup", "ok": true, "detail": "", "value": null}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "mount_after", "ok": true, "detail": "/media/<user>/CIRCUITPY6", "value": null}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "devnum_unchanged", "ok": true, "detail": "before 14, after 14 (a change means the board re-enumerated)", "value": null}
+{"test": "usb_msc_rw", "board": "feather_stm32f405", "name": "_duration", "ok": true, "value": 23.1}

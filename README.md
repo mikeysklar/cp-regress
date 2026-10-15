@@ -50,6 +50,14 @@ The startup path (USB, drive, console, code.py) is where most past breakage happ
 
 ![Where the smoke tests aim, by past regressions](images/fig-coverage.png)
 
+## Research to results
+
+Each test exists because of past bugs. This traces every one, from the research to its result.
+
+![From the sweep to the tests to the results](images/fig-traceability.png)
+
+Full table: [docs/FINDINGS-TO-TESTS.md](docs/FINDINGS-TO-TESTS.md), rebuilt by `tools/trace.py`.
+
 ## Run it
 
 ```sh
