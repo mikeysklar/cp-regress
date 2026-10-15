@@ -20,9 +20,11 @@ Plug in, copy files, open the console, run code. Like a person would, but automa
 
 ## Watch
 
-A 68-second animation of one run, no sound: eight boards testing at once, one crash caught.
+90 seconds, music, no voice: the research, the tests, the results.
 
-[![Watch the run](images/video-poster.jpg)](media/cp-regress-first-run.mp4)
+[![Watch: the sweep, the fixtures, the results](images/story-poster.jpg)](media/cp-regress-story.mp4)
+
+A shorter 68-second animation of one run is in [media/cp-regress-first-run.mp4](media/cp-regress-first-run.mp4).
 
 ## Tested
 
