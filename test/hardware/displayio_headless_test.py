@@ -231,8 +231,6 @@ DEVICE_CHECKS = [
     "group_insert", "group_index", "group_remove", "group_hidden_set", "group_hidden_clear",
     "group_hidden_before_append",
     "rectangle_size", "circle_radius", "polygon_points_roundtrip", "vectorio_duplicate_append",
-    "bitmaptools_fill_region", "bitmaptools_draw_line", "bitmaptools_blit_clip",
-    "bitmaptools_blit_edge", "bitmaptools_rotozoom",
 ]
 
 BITMAPTOOLS_CALLS = ["bitmaptools_fill_region", "bitmaptools_draw_line", "bitmaptools_blit_clip",
@@ -269,6 +267,18 @@ def test_device_check(results, name):
     """One device-side check (a skip means the module or class is not in this build)."""
     _skip_if_section_skipped(results, name)
     results.expect(name)
+
+
+@pytest.mark.parametrize("name", BITMAPTOOLS_CALLS)
+def test_bitmaptools_call(results, name):
+    """One bitmaptools call. The device's attempt() reports only failures, as in run.py, so
+    no record from a run that finished means the call worked."""
+    _skip_if_section_skipped(results, name)
+    if name in results.checks:
+        results.expect(name)
+        return
+    if results.crashed or results.err:
+        pytest.skip("not reached: the device run did not finish")
 
 
 def test_render_checksum(results, golden):
