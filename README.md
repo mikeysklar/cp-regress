@@ -2,9 +2,9 @@
 
 Automatic checks for CircuitPython on real boards.
 
-[![Watch the 2:36 video: the sweep, the fixtures, the results](images/story-poster.jpg)](https://github.com/mikeysklar/cp-regress/raw/main/media/cp-regress-story.mp4)
+[![Watch the 2:36 video: the sweep, the fixtures, the results](images/story-poster.jpg)](https://mikeysklar.github.io/cp-regress/media/cp-regress-story.mp4)
 
-*Click to play: 2:36, music, no voice. A shorter run-only cut is [here](https://github.com/mikeysklar/cp-regress/raw/main/media/cp-regress-first-run.mp4).*
+*Click to play: 2:36, music, no voice. A shorter run-only cut is [here](https://mikeysklar.github.io/cp-regress/media/cp-regress-first-run.mp4).*
 
 **[See the first-run results page →](https://claude.ai/artifact/HB8Lj4rmAnzNZhMCkiKWX3)**
 
