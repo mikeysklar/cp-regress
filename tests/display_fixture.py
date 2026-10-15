@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Display fixture test: ST7789 240x240 via fourwire.FourWire + busdisplay.BusDisplay.
 
 Measures refresh performance and verifies backlight brightness control with

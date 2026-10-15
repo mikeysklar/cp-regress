@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """cp-regress: run CircuitPython regression fixtures on the HIL farm.
 
 Examples

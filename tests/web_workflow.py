@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Web workflow HTTP API regression fixtures: version, devices, auth, file operations, mDNS."""
 
 import base64

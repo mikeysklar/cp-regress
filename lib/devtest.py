@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 # cp-regress on-device result helper. The host prepends this to every device
 # test body and parses lines that start with "@@R ". Keep it tiny and
 # dependency-free: it must run on a SAMD21 with no json module.

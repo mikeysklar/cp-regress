@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """USB enumeration: host sees correct VID/PID, interfaces, and mountpoint."""
 
 import os

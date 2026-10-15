@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Test bootloader entry and exit via microcontroller.on_next_reset()."""
 
 import os

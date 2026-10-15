@@ -18,6 +18,12 @@ Plug in, copy files, open the console, run code. Like a person would, but automa
 
 ![All eight boards run side by side](images/fig-parallel.png)
 
+## Watch
+
+A 68-second animation of one run, no sound: eight boards testing at once, one crash caught.
+
+[![Watch the run](images/video-poster.jpg)](media/cp-regress-first-run.mp4)
+
 ## Tested
 
 CircuitPython main from 13 Oct 2026 (11.0.0-alpha.1). Eight boards, five chip families, 1,075 checks per run.

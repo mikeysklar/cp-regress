@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Headless audio tests: wave generation, play, multi-play, synthio.
 
 Tests basic audio APIs without hardware validation (no loopback ADC).

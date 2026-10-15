@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Host-side helpers for the cp-regress farm harness.
 
 Rules this file enforces (from the bravo farm reference):

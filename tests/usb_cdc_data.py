@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """USB CDC data loopback and storage recovery fixture.
 
 Tests usb_cdc.data echo functionality and recovery from disable_usb_drive.

@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Template. Files starting with _ are not loaded by run.py. Copy this to tests/<id>.py.
 
 One test module = one fixture. It targets a family of real regressions (issue numbers in

@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Deep sleep and light sleep alarm cycles.
 
 Tests alarm.sleep_memory persistence across deep sleep, TimeAlarm wakeups,

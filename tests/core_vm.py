@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """CircuitPython language regression test: core VM, type coercion, collections, exceptions.
 
 Runs the smallest MicroPython/CircuitPython tests from tests/basics/ (each in fresh globals),

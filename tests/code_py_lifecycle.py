@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """code.py lifecycle: boot.py, run_reason, reset_reason, exceptions, double-start regression."""
 
 META = {

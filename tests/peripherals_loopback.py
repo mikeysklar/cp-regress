@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Peripheral loopback tests with wiring: GPIO, UART, SPI, PWM counter, I2C, DAC/ADC.
 
 Requires jumpers configured in farm.toml wiring keys.

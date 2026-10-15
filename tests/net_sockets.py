@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Network socket regression fixtures: TCP/UDP client, socket limits, timeouts, server mode."""
 
 META = {

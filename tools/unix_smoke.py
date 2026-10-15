@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Run every fixture's device code on the CircuitPython unix port, before the farm.
 
 The unix coverage build has the core VM, json, gc, Bitmap / Palette / vectorio / bitmaptools,

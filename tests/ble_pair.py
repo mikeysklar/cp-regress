@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """BLE advertising and scanning pair test.
 
 Tests BLE advertising and scanning between two boards, including role swap.

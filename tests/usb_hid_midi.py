@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """USB HID and MIDI enumeration and basic functionality tests.
 
 Targets regressions in USB HID/MIDI interface enumeration, report descriptor

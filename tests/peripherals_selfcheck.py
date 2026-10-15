@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Smoke test for basic peripheral APIs without wiring.
 
 Tests: I2C/SPI/PWM construction, pin claimed twice, use-after-deinit, singleton patterns.

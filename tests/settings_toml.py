@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Settings.toml parsing via os.getenv: types, escapes, unicode, defaults, malformed resilience.
 
 Targets:

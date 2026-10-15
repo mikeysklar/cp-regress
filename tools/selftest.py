@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Hardware-free self-test of the harness's REPL protocol.
 
 Runs a fake CircuitPython REPL on a pseudo-terminal that follows shared/runtime/pyexec.c:

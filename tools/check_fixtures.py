@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Static gate for cp-regress fixtures. Run before taking fixtures to the farm.
 
   python3 tools/check_fixtures.py [--cp-tree PATH]

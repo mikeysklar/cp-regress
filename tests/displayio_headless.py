@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT-0
 """Displayio API and logic invariants with no display attached.
 
 Verifies Bitmap, Palette, Group, TileGrid, and vectorio shape construction and
