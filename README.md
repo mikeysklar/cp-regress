@@ -6,6 +6,10 @@ Automatic checks for CircuitPython on real boards.
 
 *Click to play: 2:36, music, no voice. A shorter run-only cut is [here](https://mikeysklar.github.io/cp-regress/media/cp-regress-first-run.mp4).*
 
+[![Watch the 5:20 deep dive: how past bugs became fixtures](images/fixtures-poster.jpg)](https://mikeysklar.github.io/cp-regress/media/cp-regress-fixtures.mp4)
+
+*Deep dive, 5:20: each fixture, and the real PRs and issues from the sweep it is built to catch again.*
+
 **[See the first-run results page →](https://claude.ai/artifact/HB8Lj4rmAnzNZhMCkiKWX3)**
 
 ## Why
