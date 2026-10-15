@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2026 Mikey Sklar
+# SPDX-License-Identifier: MIT-0
+
+# pytest option for cp-regress. run.py is unchanged; this runs the same farm from pytest.
+#   pytest -v test/                                   # smoke tier, every board
+#   pytest -v test/ --tier nightly --boards metro_rp2040,metro_esp32s3
+#   pytest -n 8 --dist loadgroup test/                # all boards in parallel (pytest-xdist)
+#   pytest --cpr-dry-run --tier release -q test/      # what would run, touches no hardware
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+python_files = ["*_test.py"]
+addopts = ["--import-mode=importlib", "-ra"]
+norecursedirs = [".git", "results", "history", "tests", "tools", "media", "images", "docs", "data"]
+markers = [
+  "smoke: runs on every merge, under 2 minutes per board",
+  "nightly: runs overnight; needs a network, more time or a partner board",
+  "release: runs before a release",
+  "needs(*caps): board caps from farm.toml; the module skips on boards without all of them",
+  "wiring(*keys): farm.toml wiring keys; the module skips until they are present",
+  "skip_boards(*names): never run on these boards",
+  "skip_ports(*ports): never run on these ports",
+  "targets(*issues): adafruit/circuitpython issue numbers this module would have caught",
+  "destructive: rewrites code.py, boot.py or settings.toml, or resets the board",
+  "multi_board: borrows a partner board through the partner fixture",
+]

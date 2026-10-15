@@ -67,3 +67,13 @@ python3 run.py --tier smoke
 ```
 
 Details: [docs/USAGE.md](docs/USAGE.md), [docs/FIRST-RUN.md](docs/FIRST-RUN.md), [CONTRACT.md](CONTRACT.md), [docs/fixtures/](docs/fixtures/).
+
+## Or with pytest
+
+Same tests, same boards, pytest style. Every check is its own test.
+
+```sh
+pytest -n 8 --dist loadgroup test/
+```
+
+Details: [docs/PYTEST.md](docs/PYTEST.md).
