@@ -1,0 +1,114 @@
+# cp-regress farm description for bravo.
+# Resolve everything from `usb` (the sysfs hub port path) at the moment of use.
+# Never put ttyACM numbers, /dev/sd? names or CIRCUITPY<n> labels in here.
+#
+# caps: what the board can do with no extra wiring.
+#   native_usb  CDC + MSC over the chip's own USB
+#   uf2         UF2 bootloader with an MSC volume
+#   wifi        native wifi module
+#   ble         _bleio available
+#   esp32spi    AirLift coprocessor (needs adafruit_esp32spi on the board)
+#   usb_host    usb.core host port wired
+#   reset_ok    microcontroller.reset() is safe on this board
+# wiring: jumpers / fixtures physically attached. Tests that need them skip
+#   until you add the key here. Pin names are board.<NAME>.
+# power: uhubctl repeat / wait values that actually cut this port.
+
+[host]
+# Overridden by CPR_HOST_IP. Auto-detected when empty.
+ip = ""
+# uhubctl is unprivileged on bravo via udev. Never sudo it.
+uhubctl = "uhubctl"
+
+[network]
+# Read from the environment so secrets never land in the repo.
+ssid_env = "CPR_WIFI_SSID"
+password_env = "CPR_WIFI_PASSWORD"
+# Optional: public HTTPS hosts for the external TLS check. Failures here are
+# reported as "external", not as regressions.
+public_tls_hosts = ["https://www.adafruit.com/api/quotes.php", "https://httpbin.org/get", "https://api.github.com/"]
+
+[[board]]
+name = "metro_rp2040"
+board_id = "adafruit_metro_rp2040"
+usb = "3-3.2"
+port = "raspberrypi"
+caps = ["native_usb", "uf2", "reset_ok"]
+power = { r = 30, w = 500, settle = 12 }
+notes = "Needs a full VBUS cycle; -a on is a no-op."
+wiring = {}
+
+[[board]]
+name = "metro_m4_airlift"
+board_id = "metro_m4_airlift_lite"
+usb = "3-3.3.1"
+port = "atmel-samd"
+caps = ["native_usb", "uf2", "esp32spi", "reset_ok"]
+power = { r = 30, w = 500, settle = 12 }
+notes = "VBUS cycling does not reset it; tap reset via SWD."
+wiring = {}
+
+[[board]]
+name = "metro_m0"
+board_id = "metro_m0_express"
+usb = "3-3.3.2"
+port = "atmel-samd"
+caps = ["native_usb", "uf2", "small"]
+power = { r = 30, w = 500, settle = 12 }
+notes = "No binascii, no zlib. microcontroller.reset() is hazardous: not reset_ok."
+wiring = {}
+
+[[board]]
+name = "feather_nrf52840"
+board_id = "feather_nrf52840_express"
+usb = "3-3.3.3"
+port = "nordic"
+caps = ["native_usb", "ble", "reset_ok"]
+power = { r = 30, w = 500, settle = 30 }
+notes = "Bootloader is CDC only, no MSC volume. Sets the farm's 30 s floor."
+wiring = {}
+
+[[board]]
+name = "metro_esp32s2"
+board_id = "adafruit_metro_esp32s2"
+usb = "3-3.3.4.1"
+port = "espressif"
+caps = ["native_usb", "uf2", "wifi", "reset_ok"]
+power = { r = 80, w = 300, settle = 15 }
+notes = "Wedges easily, needs a long power-off."
+wiring = {}
+
+[[board]]
+name = "metro_rp2350"
+board_id = "adafruit_metro_rp2350"
+usb = "3-3.3.4.2"
+port = "raspberrypi"
+caps = ["native_usb", "uf2", "reset_ok"]
+power = { r = 30, w = 500, settle = 12 }
+notes = "No SWD reset path; BOOTSEL is the third rung."
+wiring = {}
+
+[[board]]
+name = "metro_esp32s3"
+board_id = "adafruit_metro_esp32s3"
+usb = "3-3.3.4.3"
+port = "espressif"
+caps = ["native_usb", "uf2", "wifi", "ble", "reset_ok"]
+power = { r = 80, w = 300, settle = 15 }
+notes = "Needs -r 80 -w 300 to power off."
+wiring = {}
+
+[[board]]
+name = "feather_stm32f405"
+board_id = "feather_stm32f405_express"
+usb = "3-3.3.4.4"
+port = "stm"
+caps = ["native_usb", "reset_ok"]
+power = { r = 30, w = 500, settle = 12 }
+notes = "No UF2 bootloader. Must be settled before flashing."
+wiring = {}
+
+# Example wiring once jumpers are added (uncomment and adjust per board):
+# wiring = { gpio_pair = ["D5", "D6"], uart_loop = ["TX", "RX"], spi_loop = ["MOSI", "MISO"],
+#            pwm_count = ["D9", "D10"], i2c_sensor = "0x77", dac_adc = ["A0", "A1"],
+#            light_sensor = "A2", display = "st7789_240x240" }
