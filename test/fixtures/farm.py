@@ -140,6 +140,11 @@ def _not_after_crash(request):
         why = getattr(b, "cpr_crashed", None)
         if why and getattr(b, "cpr_crashed_at", 0) < started:
             pytest.skip("not reached: the board stopped answering earlier (%s)" % why[:160])
+        b.cpr_in_test = True  # a device run from here on happens inside this test's body
+        yield
+        b.cpr_in_test = False
+    else:
+        yield
 
 
 @pytest.fixture(scope="session")

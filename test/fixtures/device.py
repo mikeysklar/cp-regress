@@ -101,7 +101,10 @@ class Device:
         except Exception as e:  # pylint: disable=broad-except
             why = "%s: %s" % (type(e).__name__, e)
             self.board.cpr_crashed = why  # later tests in this module skip (see farm.py)
-            self.board.cpr_crashed_at = getattr(self.board, "cpr_started", 0)
+            # In a module fixture's setup, the current test has not been counted yet; inside a
+            # test body it has. Either way the crash belongs to the current test.
+            started = getattr(self.board, "cpr_started", 0)
+            self.board.cpr_crashed_at = started - 1 if getattr(self.board, "cpr_in_test", False) else started
             return DeviceResults(self.board, [], "", "", crashed=why)
         return DeviceResults(self.board, records, out, err)
 
