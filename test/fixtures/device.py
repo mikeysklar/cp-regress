@@ -101,6 +101,7 @@ class Device:
         except Exception as e:  # pylint: disable=broad-except
             why = "%s: %s" % (type(e).__name__, e)
             self.board.cpr_crashed = why  # later tests in this module skip (see farm.py)
+            self.board.cpr_crashed_at = getattr(self.board, "cpr_started", 0)
             return DeviceResults(self.board, [], "", "", crashed=why)
         return DeviceResults(self.board, records, out, err)
 

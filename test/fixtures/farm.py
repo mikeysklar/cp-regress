@@ -105,6 +105,8 @@ def board(request):
         if b.name in config.cpr_down:
             pytest.fail("board down: " + config.cpr_down[b.name], pytrace=False)
         b.cpr_crashed = None
+        b.cpr_started = 0
+        b.cpr_crashed_at = 0
         yield b
         ok, hwhy = cpr_run.board_health(b)
         if not ok:
@@ -130,8 +132,13 @@ def _not_after_crash(request):
     """
     if "board" in request.fixturenames:
         b = request.getfixturevalue("board")
+        # Module-scoped fixtures (where device runs live) are set up before this one, so a crash
+        # during this test's own setup has already happened. Count tests to tell them apart:
+        # the test whose setup crashed runs and fails; only the ones after it skip.
+        started = getattr(b, "cpr_started", 0)
+        b.cpr_started = started + 1
         why = getattr(b, "cpr_crashed", None)
-        if why:
+        if why and getattr(b, "cpr_crashed_at", 0) < started:
             pytest.skip("not reached: the board stopped answering earlier (%s)" % why[:160])
 
 
