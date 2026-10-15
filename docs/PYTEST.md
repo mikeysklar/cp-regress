@@ -17,6 +17,31 @@ pytest --junitxml=results/junit.xml test/      # for CI; metrics land in <proper
 WiFi tests read `CPR_WIFI_SSID` and `CPR_WIFI_PASSWORD` from the environment or from `.env`
 (copy `.env.example`; needs `python-dotenv`). They skip without them.
 
+## Brent's fixture chain (flashing, files, secrets, broker)
+
+Same names and arrows as Brent's WipperSnapper harness, on eight boards instead of one. Plan and
+status: [BE-MORE-LIKE-BRENT.md](BE-MORE-LIKE-BRENT.md).
+
+```sh
+pytest -n 8 --dist loadgroup --tier nightly test/ \
+  --firmware ~/cpr-fw/main-5548815 \
+  --bundle ~/cpr-bundles/adafruit-circuitpython-bundle-10.x-mpy-20261015
+```
+
+| Fixture | Scope | What it does |
+|---|---|---|
+| `flashed_firmware` | once per board | `--firmware DIR`: flash the image whose name carries the board_id, by `farm.toml` `flash.method` (`uf2`, `esp_uf2`, `swd`). Skipped when history/flashed.json's sha256 matches AND boot_out.txt reports the version that flash produced. `--flash-force` flashes anyway |
+| `flashed_fs` | module | idle `code.py`, `settings.toml` from `secrets`, the module's `FS = {...}` and `LIBS = [...]` from `--bundle`. Copies only files whose bytes differ. Originals are backed up to history/fs-backup/ and restored, md5 checked, at the end of the run; `--keep-fs` leaves them (later runs keep the first original) |
+| `base_secrets` | session | settings.toml values from `.env`, plus the broker address. Prod guard: stops the run if the SSID is not in `[network] allowed_ssids`, an Adafruit IO credential is in the environment, or the broker is not private |
+| `secrets` | module | `base_secrets` plus the module's `SECRETS = {...}` (None deletes a key) |
+| `broker_address` | session | `(host_ip, 1884)` |
+| `broker` | session | starts adafruit/protomq (`[broker]` in farm.toml) if nothing answers on :5173; stops it at the end only if this run started it (`--broker-keep` leaves it) |
+| `protomq` | test | ProtoMQ's HTTP API for client id `cpr-<board>`: `track()`, `deliveries()`, `outbox()`, `echo()`, `wait_subscribed()`. No global `/reset`: boards share the broker in parallel |
+| `serial` | test | `reset()` (soft reboot), `expect(regex)`, `send(line)` on the console |
+
+Use plain topics with ProtoMQ (`cpr/<board>/d2b`): it decodes anything on a `ws-d2b` topic as a
+protobuf, and a plain payload that happens to parse comes back as `{}`.
+
 ## How it maps
 
 | run.py | pytest |

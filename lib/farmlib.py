@@ -10,6 +10,7 @@ Rules this file enforces (from the bravo farm reference):
   * uhubctl runs unprivileged, never through sudo.
 """
 
+import fcntl
 import glob
 import hashlib
 import json
@@ -28,6 +29,7 @@ except ImportError:  # pragma: no cover - reported by run.py
 SYS_USB = "/sys/bus/usb/devices"
 DEVTEST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "devtest.py")
 RESULT_TAG = "@@R "
+UHUBCTL_LOCK = "/tmp/uhubctl.lock"  # the lock farm-helpers.sh cycle() takes
 
 
 class FarmError(Exception):
@@ -51,6 +53,7 @@ class Board:
         self.caps = set(cfg.get("caps", []))
         self.wiring = dict(cfg.get("wiring", {}))
         self.power = dict(cfg.get("power", {}))
+        self.flash = dict(cfg.get("flash", {}))
         self.notes = cfg.get("notes", "")
         self.uhubctl = host_cfg.get("uhubctl", "uhubctl")
 
@@ -131,6 +134,45 @@ class Board:
             time.sleep(0.5)
         return None
 
+    def boot_volume(self, timeout=30):
+        """Mount point of this board's UF2 bootloader drive (INFO_UF2.TXT, no boot_out.txt).
+
+        A bootloader drive with a size of 0 is stale MSC media (left sitting in UF2 mode); it
+        is skipped, and the caller re-enters the bootloader.
+        """
+        end = time.time() + timeout
+        while time.time() < end:
+            for dev in self.block_devs():
+                size = _read("/sys/class/block/%s/size" % os.path.basename(dev), "0")
+                if size == "0":
+                    continue
+                mp = subprocess.run(["findmnt", "-n", "-o", "TARGET", dev],
+                                    capture_output=True, text=True).stdout.strip().splitlines()
+                mp = mp[0] if mp else ""
+                if not mp:
+                    r = subprocess.run(["udisksctl", "mount", "-b", dev, "--no-user-interaction"],
+                                       capture_output=True, text=True)
+                    m = re.search(r" at (.+?)\.?$", r.stdout.strip())
+                    mp = m.group(1) if m else ""
+                if mp and os.path.isfile(os.path.join(mp, "INFO_UF2.TXT")) \
+                        and not os.path.isfile(os.path.join(mp, "boot_out.txt")):
+                    return mp
+            time.sleep(0.3)
+        return None
+
+    def touch1200(self):
+        """1200-baud touch on the console tty. False when there is no tty to touch."""
+        tty = self.tty()
+        if not tty or serial is None:
+            return False
+        try:
+            s = serial.Serial(tty, 1200, write_timeout=5)
+            time.sleep(0.25)
+            s.close()
+        except (OSError, serial.SerialException):
+            pass  # the port vanishing under us is the point
+        return True
+
     def boot_out(self):
         mp = self.mount()
         return _read(os.path.join(mp, "boot_out.txt"), "") if mp else ""
@@ -170,15 +212,23 @@ class Board:
             os.sync()
 
     # ---------- power / readiness ----------
-    def power_cycle(self, off_s=3):
+    def power_cycle(self, off_s=3, wait=True):
+        """Cut and restore this port. With wait, return wait_ready()'s result; else 0."""
         hub, port = self.usb.rsplit(".", 1)
         r = str(self.power.get("r", 30))
         w = str(self.power.get("w", 500))
-        res = subprocess.run([self.uhubctl, "-l", hub, "-p", port, "-a", "cycle", "-d", str(off_s),
-                              "-r", r, "-w", w], capture_output=True, text=True)
+        # Serialised with the farm's shell helpers: hub_activate() re-asserts power across the
+        # whole hub, so two cycles on one hub at once can undo each other.
+        with open(UHUBCTL_LOCK, "w") as lockf:
+            fcntl.flock(lockf, fcntl.LOCK_EX)
+            try:
+                res = subprocess.run([self.uhubctl, "-l", hub, "-p", port, "-a", "cycle", "-d",
+                                      str(off_s), "-r", r, "-w", w], capture_output=True, text=True)
+            finally:
+                fcntl.flock(lockf, fcntl.LOCK_UN)
         if res.returncode != 0:
             raise FarmError("uhubctl failed: %s" % res.stderr.strip())
-        return self.wait_ready()
+        return self.wait_ready() if wait else 0
 
     def wait_ready(self, timeout=None, need_mount=True):
         """Wait for tty (+ mount), then the settle time. Returns seconds taken or None."""

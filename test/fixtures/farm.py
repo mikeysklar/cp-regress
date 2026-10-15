@@ -69,7 +69,7 @@ def not_applicable(node, b):
 
 def _preflight(config, b):
     """First health check of the run for this board; recover once if it starts unhealthy."""
-    if b.name in config.cpr_preflight:
+    if b.name in config.cpr_preflight or b.name in config.cpr_down:
         return
     ok, why = cpr_run.board_health(b)
     if not ok:
@@ -101,6 +101,10 @@ def board(request):
     # can never each hold one board of a pair and wait for the other.
     outer = _flock("/tmp/cp-regress-multi.lock", "multi-board slot") if multi else _null()
     with outer, board_lock(b):
+        # flashed_firmware's work, before the first health check. Imported here: importing a
+        # sibling plugin at module load stops pytest from rewriting its asserts.
+        from fixtures.flashing import ensure_firmware  # pylint: disable=import-outside-toplevel
+        ensure_firmware(config, b)
         _preflight(config, b)
         if b.name in config.cpr_down:
             pytest.fail("board down: " + config.cpr_down[b.name], pytrace=False)

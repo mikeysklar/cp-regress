@@ -23,4 +23,5 @@ markers = [
   "targets(*issues): adafruit/circuitpython issue numbers this module would have caught",
   "destructive: rewrites code.py, boot.py or settings.toml, or resets the board",
   "multi_board: borrows a partner board through the partner fixture",
+  "external: depends on the public internet; failures are not regressions",
 ]

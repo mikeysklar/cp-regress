@@ -13,6 +13,7 @@
 # wiring: jumpers / fixtures physically attached. Tests that need them skip
 #   until you add the key here. Pin names are board.<NAME>.
 # power: uhubctl repeat / wait values that actually cut this port.
+# flash: how flashed_firmware writes an image (uf2 copy, esptool + tinyuf2, or openocd over SWD).
 
 [host]
 # Overridden by CPR_HOST_IP. Auto-detected when empty.
@@ -27,6 +28,16 @@ password_env = "CPR_WIFI_PASSWORD"
 # Optional: public HTTPS hosts for the external TLS check. Failures here are
 # reported as "external", not as regressions.
 public_tls_hosts = ["https://www.adafruit.com/api/quotes.php", "https://httpbin.org/get", "https://api.github.com/"]
+# base_secrets refuses the run unless the SSID is one of these (the prod guard).
+allowed_ssids = ["foreverrun"]
+
+[broker]
+# Local ProtoMQ on bravo, Brent's WipperSnapper test broker. Ports are his.
+# Pinned: adafruit/protomq 9e2e1bf, adafruit/Wippersnapper_Protobuf api-v2 b3688d6.
+dir = "~/protomq"
+node = "~/node22/bin/node"
+mqtt_port = 1884
+api_port = 5173
 
 [[board]]
 name = "metro_rp2040"
@@ -36,6 +47,7 @@ port = "raspberrypi"
 caps = ["native_usb", "uf2", "reset_ok"]
 power = { r = 30, w = 500, settle = 12 }
 notes = "Needs a full VBUS cycle; -a on is a no-op."
+flash = { method = "uf2" }
 wiring = {}
 
 [[board]]
@@ -46,6 +58,7 @@ port = "atmel-samd"
 caps = ["native_usb", "uf2", "esp32spi", "reset_ok"]
 power = { r = 30, w = 500, settle = 12 }
 notes = "VBUS cycling does not reset it; tap reset via SWD."
+flash = { method = "swd", probe = "E6647C740349682C", target = "target/atsame5x.cfg", speed = 500, fast_speed = 2000, connect = "halt" }
 wiring = {}
 
 [[board]]
@@ -56,6 +69,7 @@ port = "atmel-samd"
 caps = ["native_usb", "uf2", "small"]
 power = { r = 30, w = 500, settle = 12 }
 notes = "No binascii, no zlib. microcontroller.reset() is hazardous: not reset_ok."
+flash = { method = "swd", probe = "E6647C74039F6B2D", target = "target/at91samdXX.cfg", speed = 2000, connect = "reset halt", rescue_speed = 400 }
 wiring = {}
 
 [[board]]
@@ -66,6 +80,7 @@ port = "nordic"
 caps = ["native_usb", "ble", "reset_ok"]
 power = { r = 30, w = 500, settle = 30 }
 notes = "Bootloader is CDC only, no MSC volume. Sets the farm's 30 s floor."
+flash = { method = "swd", probe = "E6647C74034E732F", target = "target/nrf52.cfg", speed = 4000, connect = "halt" }
 wiring = {}
 
 [[board]]
@@ -76,6 +91,7 @@ port = "espressif"
 caps = ["native_usb", "uf2", "wifi", "reset_ok"]
 power = { r = 80, w = 300, settle = 15 }
 notes = "Wedges easily, needs a long power-off."
+flash = { method = "esp_uf2", chip = "esp32s2", flash_size = "4MB", bootloader_offset = "0x1000", tinyuf2_offset = "0x2d0000", tinyuf2_dir = "~/wippersnapper/tinyuf2-esp32s2" }
 wiring = {}
 
 [[board]]
@@ -86,6 +102,7 @@ port = "raspberrypi"
 caps = ["native_usb", "uf2", "reset_ok"]
 power = { r = 30, w = 500, settle = 12 }
 notes = "No SWD reset path; BOOTSEL is the third rung."
+flash = { method = "uf2" }
 wiring = {}
 
 [[board]]
@@ -96,6 +113,7 @@ port = "espressif"
 caps = ["native_usb", "uf2", "wifi", "ble", "reset_ok"]
 power = { r = 80, w = 300, settle = 15 }
 notes = "Needs -r 80 -w 300 to power off."
+flash = { method = "esp_uf2", chip = "esp32s3", flash_size = "16MB", bootloader_offset = "0x0", tinyuf2_offset = "0x410000", tinyuf2_dir = "~/wippersnapper/tinyuf2-esp32s3" }
 wiring = {}
 
 [[board]]
@@ -106,6 +124,7 @@ port = "stm"
 caps = ["native_usb", "reset_ok"]
 power = { r = 30, w = 500, settle = 12 }
 notes = "No UF2 bootloader. Must be settled before flashing."
+flash = { method = "swd", probe = "E6647C740327322C", target = "target/stm32f4x.cfg", speed = 1000, connect = "reset halt", bin_base = "0x08000000" }
 wiring = {}
 
 # Example wiring once jumpers are added (uncomment and adjust per board):

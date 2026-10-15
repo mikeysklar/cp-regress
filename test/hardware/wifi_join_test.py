@@ -113,10 +113,10 @@ CYCLE_CHECKS = [(c, name) for c in range(CYCLES)
 
 
 @pytest.fixture(scope="module")
-def creds(secret):
-    """(ssid, password), or None when CPR_WIFI_SSID / CPR_WIFI_PASSWORD are not set."""
-    ssid = secret("ssid_env")
-    password = secret("password_env")
+def creds(base_secrets):
+    """(ssid, password) from base_secrets (the prod-guarded .env values), or None."""
+    ssid = base_secrets.get("CIRCUITPY_WIFI_SSID")
+    password = base_secrets.get("CIRCUITPY_WIFI_PASSWORD")
     if not ssid or not password:
         return None
     return ssid, password

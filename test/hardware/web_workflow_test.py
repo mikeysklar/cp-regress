@@ -317,10 +317,10 @@ def _run_flow(board, ctx, device, ssid, password):
 
 
 @pytest.fixture(scope="module")
-def creds(secret):
-    """(ssid, password) from the environment farm.toml names, or None. Never print them."""
-    ssid = secret("ssid_env")
-    password = secret("password_env")
+def creds(base_secrets):
+    """(ssid, password) from base_secrets (the prod-guarded .env values), or None."""
+    ssid = base_secrets.get("CIRCUITPY_WIFI_SSID")
+    password = base_secrets.get("CIRCUITPY_WIFI_PASSWORD")
     if not ssid or not password:
         return None
     return ssid, password

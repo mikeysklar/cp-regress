@@ -46,6 +46,16 @@ def pytest_addoption(parser):
                 help="do not add this run's metrics to history/metrics.jsonl")
     g.addoption("--cpr-dry-run", action="store_true",
                 help="collect and apply board skips, but touch no hardware")
+    g.addoption("--firmware", default="",
+                help="flash each board from this folder first (files named by board_id); "
+                     "skipped per board when that image is already running")
+    g.addoption("--flash-force", action="store_true", help="flash even when unchanged")
+    g.addoption("--bundle", default="",
+                help="pinned library bundle folder (with lib/) for modules that list LIBS")
+    g.addoption("--keep-fs", action="store_true",
+                help="leave flashed_fs files on the boards instead of restoring the originals")
+    g.addoption("--broker-keep", action="store_true",
+                help="leave ProtoMQ running after the run if this run started it")
 
 
 def pytest_configure(config):
@@ -71,6 +81,7 @@ def pytest_configure(config):
     config.cpr_selected = selected
     config.cpr_down = {}        # board -> why it is unusable for the rest of this run
     config.cpr_preflight = {}   # board -> (ok, why) from its first health check
+    config.cpr_flashed = {}     # board -> what flashed_firmware did this run
 
 
 def pytest_generate_tests(metafunc):
