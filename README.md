@@ -2,6 +2,10 @@
 
 Automatic checks for CircuitPython on real boards.
 
+[![Watch the 2:36 video: the sweep, the fixtures, the results](images/story-poster.jpg)](https://github.com/mikeysklar/cp-regress/raw/main/media/cp-regress-story.mp4)
+
+*Click to play: 2:36, music, no voice. A shorter run-only cut is [here](https://github.com/mikeysklar/cp-regress/raw/main/media/cp-regress-first-run.mp4).*
+
 **[See the first-run results page →](https://claude.ai/artifact/HB8Lj4rmAnzNZhMCkiKWX3)**
 
 ## Why
@@ -17,14 +21,6 @@ Eight real boards on a pegboard. After each code change, a script tries the basi
 Plug in, copy files, open the console, run code. Like a person would, but automatically, in minutes, every time.
 
 ![All eight boards run side by side](images/fig-parallel.png)
-
-## Watch
-
-90 seconds, music, no voice: the research, the tests, the results.
-
-[![Watch: the sweep, the fixtures, the results](images/story-poster.jpg)](media/cp-regress-story.mp4)
-
-A shorter 68-second animation of one run is in [media/cp-regress-first-run.mp4](media/cp-regress-first-run.mp4).
 
 ## Tested
 
