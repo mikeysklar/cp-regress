@@ -1,0 +1,6 @@
+# cp-regress settings scenario wrong_types: see scenarios.toml; the @@ placeholders are filled
+# from .env at test time.
+CPR_PORT_QUOTED = "1884"
+CPR_PORT_FLOAT = 1884.0
+CPR_BOOL_OK = true
+CPR_BOOL_CAPS = True

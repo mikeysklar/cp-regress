@@ -1,0 +1,4 @@
+# cp-regress settings scenario reserved_escape: see scenarios.toml; the @@ placeholders are filled
+# from .env at test time.
+CPR_ESC_Q = "a\qb"
+CPR_ESC_V = "a\vb"

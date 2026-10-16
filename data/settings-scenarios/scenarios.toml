@@ -1,0 +1,459 @@
+# SPDX-FileCopyrightText: 2026 Mikey Sklar
+# SPDX-License-Identifier: MIT-0
+#
+# settings.toml scenarios for test/hardware/settings_scenarios_test.py, after Brent's secrets
+# scenarios (hil/firmware/conftest.py:252-366, hil/firmware/provisioning/test_secrets.py and
+# EDGE_CASES.md from 818884e3, all in adafruit/Adafruit_Wippersnapper_Arduino add-hil-ci-cd).
+#
+# One [scenario.<name>] per scenario. Its bytes come from:
+#   source = "generated"   build_generated() in test/fixtures/secrets.py
+#   source = "file"        <name>.settings.toml in this dir, a template: @@SSID@@, @@PASSWORD@@,
+#                          @@BROKER_HOST@@, @@BROKER_PORT@@, @@WEB_API_PASSWORD@@ are filled
+#                          from base_secrets (.env) into tmp_path. No secret is ever in here.
+#   source = "none"        no settings.toml on CIRCUITPY
+#   source = "not_ported"  Brent's case has no safe CircuitPython equivalent; `cp` says why
+#
+# What it should do:
+#   spec          "valid" / "invalid" as TOML 1.0.0, from spec_ref (toml.io/en/v1.0.0 anchors).
+#                 settings_scenarios_test.py checks every verdict against Python's tomllib.
+#   cp            what CircuitPython should do, read from adafruit/circuitpython 2d299b0:
+#                 supervisor/shared/settings.c (key_matches, read_value, read_string_value,
+#                 read_bare_value, print_error), supervisor/shared/web_workflow/web_workflow.c
+#                 (supervisor_start_web_workflow), shared-module/os/__init__.c
+#                 (common_hal_os_getenv) and shared-bindings/supervisor/__init__.c
+#                 (supervisor_get_setting). Not yet confirmed on hardware.
+#   errors        [key, message] pairs the supervisor prints after a reset on wifi boards, as
+#                 "An error occurred while retrieving '<key>':" then the message. Only wifi
+#                 boards read CIRCUITPY_WIFI_* at boot; every other board must print none.
+#   connected     wifi.radio.connected after the reset (wifi boards only)
+#   getenv        os.getenv(key) == value; getenv_none: returns None; getenv_present: not None
+#   setting       supervisor.get_setting(key) == value, same type; setting_error: ValueError
+#   needs_wifi    only says something on a board with a radio (marked needs("wifi"))
+#   needs_creds   the file carries the farm SSID / password; skipped when .env lacks them
+
+# ----------------------------------------------------------- from Brent's test_secrets.py
+
+[scenario.good]
+source = "generated"
+brent = "good_secrets, conftest.py:275; test_good_secrets_report_io_user, test_secrets.py:39"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#keyvalue-pair"
+cp = "joins the farm WiFi before code.py runs (docs/environment.rst CIRCUITPY_WIFI_SSID)"
+connected = true
+getenv = { CPR_BROKER_HOST = "@@BROKER_HOST@@", CPR_BROKER_PORT = "@@BROKER_PORT@@", CIRCUITPY_WEB_API_PASSWORD = "@@WEB_API_PASSWORD@@" }
+
+[scenario.default]
+source = "generated"
+brent = "default_secrets, conftest.py:284; test_default_secrets, test_secrets.py:114"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#string"
+cp = "no placeholder check: tries YOUR_WIFI_SSID_HERE, finds no such network, prints no settings error, code.py still runs (his firmware halts here)"
+connected = false
+getenv = { CIRCUITPY_WIFI_SSID = "YOUR_WIFI_SSID_HERE" }
+
+[scenario.no_secrets_file]
+source = "none"
+brent = "NO_SECRETS_FILE, conftest.py:69; test_no_secrets_file, test_secrets.py:153"
+spec = "n/a"
+spec_ref = ""
+cp = "open fails (SETTINGS_ERR_OPEN), which print_error never prints; getenv returns None; code.py still runs (his firmware halts)"
+connected = false
+getenv_none = ["CIRCUITPY_WIFI_SSID", "CPR_BROKER_HOST"]
+
+[scenario.no_fs_image]
+source = "not_ported"
+brent = "NO_FS_IMAGE, conftest.py:70; test_no_fs_image, test_secrets.py:133"
+spec = "n/a"
+spec_ref = ""
+cp = "his erased LittleFS partition. CircuitPython reformats a missing CIRCUITPY at boot (supervisor/shared/filesystem.c), so the only way in is storage.erase_filesystem(), which wipes every file on the drive. Off the table for a mounted farm."
+
+[scenario.no_wifi_ssid]
+source = "generated"
+brent = "no_network_type_wifi, conftest.py:310; test_secrets_structure_no_network_type_wifi, test_secrets.py:179"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#keyvalue-pair"
+cp = "no SSID (SETTINGS_ERR_NOT_FOUND, silent): web workflow never starts, password never read"
+connected = false
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+getenv = { CPR_BROKER_HOST = "@@BROKER_HOST@@" }
+
+[scenario.ssid_empty_array]
+source = "generated"
+brent = "empty_alternative_networks, conftest.py:314; test_secrets.py:205"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#array"
+cp = "arrays are outside the CircuitPython subset (docs/environment.rst): read as the bare word [], which settings_get_str rejects as unquoted"
+connected = false
+errors = [["CIRCUITPY_WIFI_SSID", "Invalid format"]]
+getenv = { CIRCUITPY_WIFI_SSID = "[]", CPR_BROKER_HOST = "@@BROKER_HOST@@" }
+setting_error = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.ssid_integer]
+source = "generated"
+brent = "string_alternative_networks (right key, wrong type), conftest.py:316; test_secrets.py:233"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#integer"
+cp = "an integer where a string is needed: settings_get_str rejects it as unquoted; get_setting returns int"
+connected = false
+errors = [["CIRCUITPY_WIFI_SSID", "Invalid format"]]
+getenv = { CIRCUITPY_WIFI_SSID = "12345" }
+setting = { CIRCUITPY_WIFI_SSID = 12345 }
+
+[scenario.ssid_inline_table]
+source = "generated"
+brent = "object_alternative_networks, conftest.py:318; test_secrets.py:261"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#inline-table"
+cp = "inline tables are ignored by CircuitPython (docs/environment.rst): the bare text is not a string, so the SSID is rejected"
+connected = false
+errors = [["CIRCUITPY_WIFI_SSID", "Invalid format"]]
+getenv = { CIRCUITPY_WIFI_SSID = '{ name = "cpr-fake-net" }' }
+setting_error = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.ssid_in_table]
+source = "file"
+brent = "network_type_wifi as a nested object, test_secrets.py:179-286"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#table (keys under [wifi] belong to wifi, not the root table)"
+cp = "key_matches stops at the first [ line: everything below is unseen, silently; this agrees with the spec, which puts the SSID in table wifi"
+needs_creds = true
+connected = false
+getenv = { CPR_BROKER_HOST = "@@BROKER_HOST@@" }
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+
+# ------------------------------------------------- from Brent's EDGE_CASES.md (818884e3)
+
+[scenario.empty]
+source = "generated"
+brent = "0-byte file, EDGE_CASES.md (818884e3)"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#spec (an empty document is an empty root table)"
+cp = "nothing found, nothing printed (his firmware: EmptyInput and halt)"
+connected = false
+getenv_none = ["CIRCUITPY_WIFI_SSID", "CPR_BROKER_HOST"]
+
+[scenario.truncated_string]
+source = "generated"
+brent = "truncated JSON, EDGE_CASES.md (818884e3)"
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#string (basic strings are surrounded by quotation marks)"
+cp = "read_string_value hits EOF before the closing quote: SETTINGS_ERR_BAD_VALUE; keys above it still read"
+connected = false
+errors = [["CIRCUITPY_WIFI_SSID", "Invalid format"]]
+getenv = { CPR_BROKER_HOST = "@@BROKER_HOST@@" }
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+setting_error = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.garbage_lines]
+source = "file"
+brent = "garbage and // comment, EDGE_CASES.md (818884e3)"
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#keyvalue-pair (a line is a key, =, and a value; # starts a comment)"
+cp = "lenient: lines that are not the key being looked up are skipped, so the board still joins (docs/environment.rst: accepts some files that are not valid TOML)"
+needs_creds = true
+connected = true
+getenv = { CIRCUITPY_WIFI_SSID = "@@SSID@@", CPR_BROKER_HOST = "@@BROKER_HOST@@" }
+
+[scenario.trailing_comma]
+source = "file"
+brent = "trailing comma, EDGE_CASES.md (818884e3)"
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#keyvalue-pair (there must be a newline or EOF after a key/value pair)"
+cp = "read_string_value: anything but whitespace, # or newline after the closing quote is SETTINGS_ERR_BAD_VALUE"
+needs_creds = true
+connected = false
+errors = [["CIRCUITPY_WIFI_SSID", "Invalid format"]]
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+setting_error = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.trailing_garbage]
+source = "file"
+brent = "{...valid...}garbage, EDGE_CASES.md (818884e3; his parser accepts it)"
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#keyvalue-pair (there must be a newline or EOF after a key/value pair)"
+cp = "rejected like trailing_comma: SETTINGS_ERR_BAD_VALUE"
+needs_creds = true
+connected = false
+errors = [["CIRCUITPY_WIFI_SSID", "Invalid format"]]
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+setting_error = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.missing_equals]
+source = "file"
+brent = "garbage, EDGE_CASES.md (818884e3)"
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#keyvalue-pair (key, equals sign, and value on the same line)"
+cp = "key_matches needs = after the key, so the line is skipped: SSID not found, silently"
+needs_creds = true
+connected = false
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.empty_value]
+source = "file"
+brent = "missing value, EDGE_CASES.md (818884e3)"
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#keyvalue-pair (unspecified values are invalid)"
+cp = "read_value: newline right after = is SETTINGS_ERR_BAD_VALUE"
+connected = false
+errors = [["CIRCUITPY_WIFI_SSID", "Invalid format"]]
+getenv = { CPR_BROKER_HOST = "@@BROKER_HOST@@" }
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+setting_error = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.empty_table_header]
+source = "file"
+brent = "top-level array [], EDGE_CASES.md (818884e3)"
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#table (table names follow the key rules; a bare key must be non-empty)"
+cp = "a line starting with [ ends the scan (key_matches): keys above it read, keys below it do not, nothing printed"
+getenv = { CPR_BEFORE = "before" }
+getenv_none = ["CPR_AFTER"]
+
+[scenario.bom]
+source = "generated"
+brent = "UTF-8 BOM from Windows Notepad, EDGE_CASES.md (818884e3, marked verify)"
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#spec (a TOML file must be a valid UTF-8 document; the spec does not mention a BOM, Python's tomllib rejects one)"
+cp = "the BOM bytes sit in front of the first key, so key_matches never matches it: the SSID on line 1 is not found, silently; later keys read"
+needs_creds = true
+connected = false
+getenv = { CPR_BROKER_HOST = "@@BROKER_HOST@@" }
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.no_wifi_password]
+source = "generated"
+brent = "io_key missing, EDGE_CASES.md (818884e3)"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#keyvalue-pair"
+cp = "password not found: supervisor_start_web_workflow assumes an open network, the farm AP refuses it; nothing printed"
+needs_wifi = true
+needs_creds = true
+connected = false
+getenv = { CIRCUITPY_WIFI_SSID = "@@SSID@@" }
+getenv_none = ["CIRCUITPY_WIFI_PASSWORD"]
+
+[scenario.wrong_password]
+source = "generated"
+brent = "real IO creds with placeholder password, EDGE_CASES.md (818884e3)"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#string"
+cp = "parses fine, the AP rejects the password; no settings error"
+needs_wifi = true
+needs_creds = true
+connected = false
+getenv = { CIRCUITPY_WIFI_SSID = "@@SSID@@" }
+
+[scenario.unknown_ssid]
+source = "generated"
+brent = "placeholder SSID, EDGE_CASES.md (818884e3); network_ssid unset-ssid path"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#string"
+cp = "parses fine, no network by that name; no settings error"
+needs_wifi = true
+connected = false
+getenv = { CIRCUITPY_WIFI_SSID = "cpr-fake-no-such-network" }
+
+[scenario.ssid_32]
+source = "generated"
+brent = "over-long strings, EDGE_CASES.md (818884e3): the longest SSID that fits"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#string"
+cp = "32 bytes fits ssid[33] in supervisor_start_web_workflow: no error, no such network"
+connected = false
+getenv = { CIRCUITPY_WIFI_SSID = "cpr-fake-xxxxxxxxxxxxxxxxxxxxxxx" }
+
+[scenario.ssid_33]
+source = "generated"
+brent = "over-long strings, EDGE_CASES.md (818884e3; his strlcpy truncates silently)"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#string (no length limit)"
+cp = "33 bytes overflows ssid[33]: SETTINGS_ERR_LENGTH, which print_error reports as Internal error; os.getenv has no limit and returns all 33"
+connected = false
+errors = [["CIRCUITPY_WIFI_SSID", "Internal error"]]
+getenv = { CIRCUITPY_WIFI_SSID = "cpr-fake-xxxxxxxxxxxxxxxxxxxxxxxx" }
+
+[scenario.password_63]
+source = "generated"
+brent = "over-long strings, EDGE_CASES.md (818884e3): the longest password that fits"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#string"
+cp = "63 bytes fits password[64]: no settings error; the AP rejects it"
+needs_wifi = true
+needs_creds = true
+connected = false
+
+[scenario.password_64]
+source = "generated"
+brent = "over-long strings, EDGE_CASES.md (818884e3)"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#string (no length limit)"
+cp = "64 bytes overflows password[64]: SETTINGS_ERR_LENGTH (Internal error), no connect attempt"
+needs_wifi = true
+needs_creds = true
+connected = false
+errors = [["CIRCUITPY_WIFI_PASSWORD", "Internal error"]]
+
+[scenario.password_integer]
+source = "generated"
+brent = "io_key not a string, EDGE_CASES.md (818884e3)"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#integer"
+cp = "SSID reads, the bare-integer password is rejected as unquoted: Invalid format, no connect attempt"
+needs_wifi = true
+needs_creds = true
+connected = false
+errors = [["CIRCUITPY_WIFI_PASSWORD", "Invalid format"]]
+getenv = { CIRCUITPY_WIFI_PASSWORD = "12345678" }
+setting = { CIRCUITPY_WIFI_PASSWORD = 12345678 }
+
+[scenario.ssid_empty_string]
+source = "generated"
+brent = "network_ssid missing or empty, EDGE_CASES.md (818884e3)"
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#string"
+cp = "reads as an empty string; supervisor_start_web_workflow returns at strlen(ssid) < 1, nothing printed"
+needs_creds = true
+connected = false
+getenv = { CIRCUITPY_WIFI_SSID = "" }
+
+# ---------------------------------------------------------------- TOML beyond his cases
+
+[scenario.ssid_literal_string]
+source = "file"
+brent = ""
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#string (literal strings are surrounded by single quotes)"
+cp = "valid TOML that CircuitPython rejects: only basic strings are supported (docs/environment.rst), so 'x' is a bare word"
+needs_creds = true
+connected = false
+errors = [["CIRCUITPY_WIFI_SSID", "Invalid format"]]
+getenv = { CIRCUITPY_WIFI_SSID = "'@@SSID@@'" }
+setting_error = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.ssid_multiline_string]
+source = "file"
+brent = ""
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#string (multi-line basic strings use three quotation marks)"
+cp = "valid TOML that CircuitPython rejects: \"\" closes an empty string and the third quote is BAD_VALUE"
+needs_creds = true
+connected = false
+errors = [["CIRCUITPY_WIFI_SSID", "Invalid format"]]
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+setting_error = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.quoted_key]
+source = "file"
+brent = ""
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#keys (quoted keys)"
+cp = "valid TOML that CircuitPython does not see: only bare keys are supported (docs/environment.rst); SSID not found, silently"
+needs_creds = true
+connected = false
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.lowercase_key]
+source = "file"
+brent = ""
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#spec (TOML is case-sensitive)"
+cp = "a different key, as the spec says: CIRCUITPY_WIFI_SSID not found, silently; the lowercase key reads back under its own name"
+needs_creds = true
+connected = false
+getenv = { circuitpy_wifi_ssid = "@@SSID@@" }
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.duplicate_key]
+source = "file"
+brent = ""
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#keys (defining a key multiple times is invalid)"
+cp = "not diagnosed (docs/environment.rst); settings_get_vstr stops at the first match"
+getenv = { CPR_DUP = "first" }
+setting = { CPR_DUP = "first" }
+
+[scenario.crlf]
+source = "generated"
+brent = ""
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#spec (newline means LF or CRLF)"
+cp = "joins; no stray \\r in values (consume_whitespace eats it after a string, read_bare_value trims it)"
+needs_creds = true
+connected = true
+getenv = { CPR_BROKER_HOST = "@@BROKER_HOST@@", CPR_BROKER_PORT = "@@BROKER_PORT@@" }
+
+[scenario.comments_and_indent]
+source = "file"
+brent = ""
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#comment and #keyvalue-pair (indentation and whitespace around = are ignored; # inside a string is not a comment)"
+cp = "joins; comments, tabs, blank lines and spacing are all skipped"
+needs_creds = true
+connected = true
+getenv = { CPR_BROKER_HOST = "@@BROKER_HOST@@", CPR_HASH = "not # a comment" }
+
+[scenario.wrong_types]
+source = "file"
+brent = "status_pixel_brightness / io_port as a string, EDGE_CASES.md (818884e3)"
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#boolean (always lowercase) and #string (\"1884\" is a string)"
+cp = "a quoted number is a string; True is not a boolean, int or float, so get_setting raises ValueError while getenv returns the raw text"
+getenv = { CPR_PORT_QUOTED = "1884", CPR_BOOL_CAPS = "True" }
+setting = { CPR_PORT_QUOTED = "1884", CPR_PORT_FLOAT = 1884.0, CPR_BOOL_OK = true }
+setting_error = ["CPR_BOOL_CAPS"]
+
+[scenario.unicode]
+source = "file"
+brent = ""
+spec = "valid"
+spec_ref = "https://toml.io/en/v1.0.0#string (UTF-8 and the \\uXXXX / \\UXXXXXXXX escapes)"
+cp = "UTF-8 passes through and both escape forms decode (read_unicode_escape); a non-ASCII fake SSID finds no network"
+connected = false
+getenv = { CPR_UNICODE_DIRECT = "œuvre ❤ \U0001F40D", CPR_UNICODE_U4 = "œuvre ❤", CPR_UNICODE_U8 = "\U0001F40D", CIRCUITPY_WIFI_SSID = "cpr-fake-café" }
+
+[scenario.bad_unicode_escape]
+source = "file"
+brent = ""
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#string (\\uXXXX takes four hex digits)"
+cp = "read_unicode_escape: not hex, SETTINGS_ERR_BAD_VALUE; keys after it still read"
+connected = false
+errors = [["CIRCUITPY_WIFI_SSID", "Invalid format"]]
+getenv = { CPR_AFTER = "after" }
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+setting_error = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.unicode_escape_out_of_range]
+source = "file"
+brent = ""
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#string (escape codes must be valid Unicode scalar values)"
+cp = "read_unicode_escape: >= 0x110000 is SETTINGS_ERR_UNICODE"
+connected = false
+errors = [["CIRCUITPY_WIFI_SSID", "Invalid unicode escape"]]
+getenv_none = ["CIRCUITPY_WIFI_SSID"]
+setting_error = ["CIRCUITPY_WIFI_SSID"]
+
+[scenario.reserved_escape]
+source = "file"
+brent = ""
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#string (escape sequences not listed are reserved and should produce an error)"
+cp = "accepted against the spec: read_string_value turns \\v into a vertical tab and any other unknown escape into the character itself"
+getenv = { CPR_ESC_Q = "aqb", CPR_ESC_V = "a\u000Bb" }
+
+[scenario.invalid_utf8]
+source = "generated"
+brent = ""
+spec = "invalid"
+spec_ref = "https://toml.io/en/v1.0.0#spec (a TOML file must be a valid UTF-8 encoded Unicode document)"
+cp = "bytes are copied through unchecked; os.getenv must hand back something without crashing the VM (from reading the source; the board health check after the module catches a crash)"
+getenv = { CPR_BROKER_HOST = "@@BROKER_HOST@@" }
+getenv_present = ["CPR_BAD_UTF8"]
+
+[scenario.settings_toml_is_directory]
+source = "not_ported"
+brent = "secrets.json is a directory, EDGE_CASES.md (818884e3)"
+spec = "n/a"
+spec_ref = ""
+cp = "needs settings.toml replaced by a directory, and FsBackup.restore (test/fixtures/flashing.py) can only write files back, so the original could not be restored"

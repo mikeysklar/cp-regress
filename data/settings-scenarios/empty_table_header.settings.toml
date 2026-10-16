@@ -1,0 +1,5 @@
+# cp-regress settings scenario empty_table_header: see scenarios.toml; the @@ placeholders are filled
+# from .env at test time.
+CPR_BEFORE = "before"
+[]
+CPR_AFTER = "after"

@@ -1,0 +1,8 @@
+# cp-regress settings scenario garbage_lines: see scenarios.toml; the @@ placeholders are filled
+# from .env at test time.
+this line is not toml
+// a C++ comment
+{"json": true}
+CIRCUITPY_WIFI_SSID = "@@SSID@@"
+CIRCUITPY_WIFI_PASSWORD = "@@PASSWORD@@"
+CPR_BROKER_HOST = "@@BROKER_HOST@@"

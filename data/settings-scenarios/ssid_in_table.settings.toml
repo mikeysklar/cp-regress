@@ -1,0 +1,8 @@
+# cp-regress settings scenario ssid_in_table: see scenarios.toml; the @@ placeholders are filled
+# from .env at test time.
+CPR_BROKER_HOST = "@@BROKER_HOST@@"
+CPR_BROKER_PORT = @@BROKER_PORT@@
+
+[wifi]
+CIRCUITPY_WIFI_SSID = "@@SSID@@"
+CIRCUITPY_WIFI_PASSWORD = "@@PASSWORD@@"

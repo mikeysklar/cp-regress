@@ -1,0 +1,6 @@
+# cp-regress settings scenario unicode: see scenarios.toml; the @@ placeholders are filled
+# from .env at test time.
+CIRCUITPY_WIFI_SSID = "cpr-fake-café"
+CPR_UNICODE_DIRECT = "œuvre ❤ 🐍"
+CPR_UNICODE_U4 = "\u0153uvre \u2764"
+CPR_UNICODE_U8 = "\U0001F40D"

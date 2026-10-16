@@ -1,0 +1,5 @@
+# cp-regress settings scenario lowercase_key: see scenarios.toml; the @@ placeholders are filled
+# from .env at test time.
+circuitpy_wifi_ssid = "@@SSID@@"
+circuitpy_wifi_password = "@@PASSWORD@@"
+CPR_BROKER_HOST = "@@BROKER_HOST@@"

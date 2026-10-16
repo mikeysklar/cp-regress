@@ -1,0 +1,8 @@
+# cp-regress settings scenario comments_and_indent: see scenarios.toml; the @@ placeholders are filled
+# from .env at test time.
+
+   CIRCUITPY_WIFI_SSID="@@SSID@@"    # indented, no spaces around =
+
+	CIRCUITPY_WIFI_PASSWORD   =   "@@PASSWORD@@"   # a tab and extra spaces
+CPR_BROKER_HOST = "@@BROKER_HOST@@" # trailing comment
+CPR_HASH = "not # a comment"
