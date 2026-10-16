@@ -91,6 +91,70 @@ def test_wait_for_port_times_out():
     assert 1 <= time.monotonic() - start < 3
 
 
+# --- offline checks of the recovery rules (no board; they run with the module's marker) ---
+
+FARM_TOML = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__)))), "farm.toml")
+
+
+def _farm():
+    return {b.name: b for b in pcm.load_boards(FARM_TOML, "all")}
+
+
+def test_swd_rescue_only_on_samd_swd_boards():
+    """The SWD rescue applies to the SAMD boards that stay off the bus after a VBUS cut: the M4
+    at its speed 500, the M0 at its rescue_speed 400. No other board gets one."""
+    farm = _farm()
+    assert pcm.swd_rescue_speed(farm["metro_m4_airlift"]) == 500
+    assert pcm.swd_rescue_speed(farm["metro_m0"]) == 400
+    for name in ("metro_rp2040", "feather_nrf52840", "metro_esp32s2", "metro_esp32s3",
+                 "metro_rp2350", "feather_stm32f405"):
+        assert pcm.swd_rescue_speed(farm[name]) is None, name
+
+
+def test_s3_power_keys_are_the_long_repeats():
+    """The ESP32-S3 needs -r 80 -w 300 to power off (farm.toml), not the default 30/500."""
+    p = _farm()["metro_esp32s3"].power
+    assert p["r"] >= 80 and p["w"] >= 300, p
+    assert pcm.WRITE_SETTLE_S >= 10
+
+
+def test_nrf_reboot_is_not_judged_by_monotonic():
+    """nRF52840: a monotonic clock longer than the time since the cut is no evidence that the
+    MCU was not reset, so the verdict comes from devnum and reset_reason."""
+    nrf = _farm()["feather_nrf52840"]
+    rebooted, why = pcm.reboot_verdict(nrf, 900.0, "ResetReason.POWER_ON", 5.0, "7", "8")
+    assert rebooted, why
+    assert not pcm.reboot_verdict(nrf, 900.0, "ResetReason.SOFTWARE", 5.0, "7", "8")[0]
+    assert not pcm.reboot_verdict(nrf, 900.0, "ResetReason.POWER_ON", 5.0, "7", "7")[0]
+
+
+def test_samd_and_rp_reboot_is_judged_by_uptime():
+    rp = _farm()["metro_rp2040"]
+    assert pcm.reboot_verdict(rp, 2.0, "ResetReason.POWER_ON", 5.0, "7", "8")[0]
+    assert not pcm.reboot_verdict(rp, 500.0, "ResetReason.POWER_ON", 5.0, "7", "8")[0]
+
+
+def test_brownout_is_its_own_outcome():
+    """The power-dip safe-mode line and the BROWNOUT reset_reason name one outcome that is not
+    a harness failure."""
+    line = "Power dipped. Make sure you are providing enough power."
+    assert re.search(pcm.BROWNOUT_RE, line)
+    assert not re.search(pcm.BROWNOUT_RE, "You are in safe mode because:")
+    assert pcm.reset_name("ResetReason.BROWNOUT") == "BROWNOUT"
+    assert pcm.reset_name(None) is None
+    rep = pcm.BootReport(_farm()["feather_nrf52840"])
+    rep.ok, rep.brownout = False, True
+    assert rep.outcome == "brownout"
+    rep.brownout = False
+    assert rep.outcome == "fail"
+
+
+def test_write_settle_counts_from_the_tty_reappearing():
+    assert pcm.settle_remaining(100.0, 103.0) == pytest.approx(pcm.WRITE_SETTLE_S - 3.0)
+    assert pcm.settle_remaining(100.0, 500.0) == 0.0
+
+
 # --- soft boots (Ctrl-D), the farm's board_reset() ---
 
 
@@ -100,12 +164,15 @@ def test_reset_captures_whole_boot(open_monitor):
     mon = open_monitor()
     boot = mon.soft_reset()
     assert boot == mon.boot
-    mon.expect(r"^Auto-reload is", timeout=10)
+    # CircuitPython 11 with a code.py that runs long prints "soft reboot" then "<file>.py
+    # output:" (main.c). The "Auto-reload is" status is reprinted only once code.py has
+    # finished and a host is connected, so it is not required here.
     mon.expect(r"^\S+\.py output:$", timeout=10)
     mon.assert_none(pcm.CRASH_RE, duration=pcm.CRASH_WINDOW)
     # Nothing from before the reset leaked into this boot.
-    first = mon.lines(boot)[:3]
-    assert first and first[0].text == "soft reboot", first
+    first = mon.lines(boot)[:2]
+    assert len(first) == 2 and first[0].text == "soft reboot", first
+    assert re.search(r"^\S+\.py output:$", first[1].text), first
     pcm.expect_banner(mon)
 
 
@@ -177,10 +244,13 @@ def test_power_cycle_drops_the_port(board, open_monitor):
         with pytest.raises(pcm.SerialError, match="closed"):
             mon.soft_reset()
 
-        port = pcm.wait_for_port(board, timeout=_port_timeout(board))
+        # The port clock starts now, after the cut has returned (uhubctl's flock wait is before).
+        port, _ = pcm.wait_for_port_or_rescue(board, timeout=_port_timeout(board))
+        ready = time.time()
     finally:
         cyc["watch"].stop.set()
     assert board.devnum() != devnum, "devnum unchanged: the board never left the bus"
+    pcm.settle_before_write(ready)  # the first write comes 12 s after the tty reappears
     mon = open_monitor(port)
     pcm.expect_banner(mon)
 
@@ -191,6 +261,13 @@ def test_power_cycle_boot(board, tmp_path):
     rep, _ = pcm.capture_power_boot(board, delay=OFF_S, port_timeout=_port_timeout(board),
                                     log_path=tmp_path / ("%s.serial.log" % board.name))
     print("timings: %s" % {k: v for k, v in rep.as_dict().items() if k.endswith("_s")})
+    if rep.swd_rescue:
+        print("note: no tty after the cut; SWD rescue needed (%s)" % rep.warnings)
+    if rep.brownout:
+        # Safe mode after a power dip (BROWNOUT) is a board behaviour on a VBUS cut, not a harness
+        # failure: the outcome is recorded, and the board was reset out of safe mode.
+        pytest.xfail("BROWNOUT after the VBUS cut (reset_reason %s, recovered %s): %s"
+                     % (rep.reset_reason, rep.recovered, "; ".join(rep.warnings)))
     assert rep.back_s is not None or rep.open_s is not None, rep.problems
     assert rep.version, "no banner: %s" % rep.problems
     assert rep.ok, "; ".join(rep.problems)
