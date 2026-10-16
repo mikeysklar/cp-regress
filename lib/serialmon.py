@@ -31,6 +31,7 @@ on failure (or live with --log-cli-level=INFO).
 import logging
 import os
 import re
+import termios
 import threading
 import time
 from dataclasses import dataclass
@@ -385,7 +386,9 @@ class SerialMonitor:
         try:
             self._serial.write(data)
             self._serial.flush()
-        except (OSError, AttributeError) as e:  # write_timeout raises SerialTimeoutException
+        # write_timeout raises SerialTimeoutException; flush() is a bare tcdrain(), which raises
+        # termios.error (not an OSError) when the board resets under it
+        except (OSError, AttributeError, termios.error) as e:
             raise SerialError("%s: write failed: %s" % (self._name(), e)) from e
 
     def _raw_mark(self):

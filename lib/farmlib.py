@@ -18,6 +18,7 @@ import os
 import re
 import shutil
 import subprocess
+import termios
 import time
 from contextlib import contextmanager
 
@@ -458,8 +459,14 @@ class Repl:
     def write(self, b):
         if isinstance(b, str):
             b = b.encode()
-        self.s.write(b)
-        self.s.flush()
+        try:
+            self.s.write(b)
+            self.s.flush()
+        except termios.error as e:
+            # pyserial's flush() is a bare tcdrain(): a board resetting under us gives
+            # termios.error (EIO), which is not an OSError, so callers that catch
+            # (FarmError, OSError) would miss it.
+            raise FarmError("%s: write failed: %s" % (self.board.name, e)) from e
 
     def _pull(self):
         chunk = self.s.read(4096)

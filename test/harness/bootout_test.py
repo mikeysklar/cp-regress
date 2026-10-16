@@ -8,6 +8,7 @@ import hashlib
 
 import pytest
 
+import farmlib
 from farmlib import Board, FarmError, _read_fresh
 
 pytestmark = pytest.mark.smoke
@@ -218,4 +219,44 @@ def test_board_boot_out_none_when_no_repl(drive, monkeypatch):
         raise FarmError("no tty at interface 0")
 
     monkeypatch.setattr(board, "repl", no_tty)
+    assert board.board_boot_out() is None
+
+
+def test_repl_write_turns_tcdrain_eio_into_farm_error(drive):
+    """pyserial's flush() is a bare tcdrain(). On an S2 resetting mid-write it raised
+    termios.error (EIO), which is not an OSError, so board_boot_out() let it escape and
+    wait_after_reset() failed phase (d) of code_py_lifecycle_test instead of polling on."""
+    import termios
+    board, _ = drive
+
+    class Dying:
+        def write(self, b):
+            return len(b)
+
+        def flush(self):
+            raise termios.error(5, "Input/output error")
+
+    r = farmlib.Repl.__new__(farmlib.Repl)
+    r.board, r.s = board, Dying()
+    with pytest.raises(FarmError, match="write failed"):
+        r.write(b"\r\x03")
+
+
+def test_board_boot_out_none_when_the_write_hits_eio(drive, monkeypatch):
+    """The same EIO inside board_boot_out() means "cannot answer yet", not a crash."""
+    import termios
+    board, _ = drive
+
+    class Dying:
+        def write(self, b):
+            return len(b)
+
+        def flush(self):
+            raise termios.error(5, "Input/output error")
+
+    class EioRepl(farmlib.Repl):
+        def __init__(self):  # pylint: disable=super-init-not-called
+            self.board, self.s = board, Dying()
+
+    monkeypatch.setattr(board, "repl", lambda iface=0: EioRepl())
     assert board.board_boot_out() is None

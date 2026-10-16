@@ -527,3 +527,28 @@ def test_power_cycle_monitor_retries_serialmons_own_open_error(pty_board, monkey
     finally:
         if mon is not None:
             mon.close()
+
+
+def test_write_turns_tcdrain_eio_into_serial_error():
+    """flush() is a bare tcdrain(); a board resetting under it raises termios.error (EIO),
+    which is not an OSError. write() reports it as a SerialError like any other lost port."""
+    import termios
+
+    class Dying:
+        def write(self, b):
+            return len(b)
+
+        def flush(self):
+            raise termios.error(5, "Input/output error")
+
+    class Bare(SerialMonitor):
+        def _open(self, path=None):
+            pass
+
+        def _check_open(self):
+            pass
+
+    mon = Bare(type("B", (), {"name": "bare", "power": {}})())
+    mon._serial = Dying()  # pylint: disable=protected-access
+    with pytest.raises(SerialError, match="write failed"):
+        mon.write(b"\r")
