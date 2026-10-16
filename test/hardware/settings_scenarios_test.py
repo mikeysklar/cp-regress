@@ -79,6 +79,12 @@ def _cpr_main():
     for k in EXP["getenv_present"]:
         v = os.getenv(k)
         check("getenv_present:" + k, v is not None, "None" if v is None else "len %d" % len(v))
+    for k, want in EXP["getenv_raises"]:
+        try:
+            v = os.getenv(k)
+            check("getenv_raises:" + k, False, "returned " + _cpr_show(k, v))
+        except Exception as e:
+            check("getenv_raises:" + k, type(e).__name__ == want, type(e).__name__)
     if EXP["setting"] or EXP["setting_error"]:
         try:
             import supervisor
@@ -147,6 +153,7 @@ def expectations(entry, good, wifi_board):
         "getenv": [(k, v) for k, v in getenv if v is not None],
         "getenv_none": list(entry["getenv_none"]),
         "getenv_present": list(entry["getenv_present"]),
+        "getenv_raises": sorted(entry["getenv_raises"].items()),
         "setting": [(k, filled(v)) for k, v in sorted(entry["setting"].items())],
         "setting_error": list(entry["setting_error"]),
         "connected": connected,
@@ -184,7 +191,8 @@ def device_problems(results, exp):
         return [], results.checks["getenv"][0].get("detail") or "no os.getenv"
     want = (["getenv:" + k for k, _ in exp["getenv"]]
             + ["getenv_none:" + k for k in exp["getenv_none"]]
-            + ["getenv_present:" + k for k in exp["getenv_present"]])
+            + ["getenv_present:" + k for k in exp["getenv_present"]]
+            + ["getenv_raises:" + k for k, _ in exp["getenv_raises"]])
     if "get_setting" not in results.checks:
         want += (["setting:" + k for k, _ in exp["setting"]]
                  + ["setting_error:" + k for k in exp["setting_error"]])

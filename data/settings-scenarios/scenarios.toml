@@ -26,7 +26,8 @@
 #                 "An error occurred while retrieving '<key>':" then the message. Only wifi
 #                 boards read CIRCUITPY_WIFI_* at boot; every other board must print none.
 #   connected     wifi.radio.connected after the reset (wifi boards only)
-#   getenv        os.getenv(key) == value; getenv_none: returns None; getenv_present: not None
+#   getenv        os.getenv(key) == value; getenv_none: returns None; getenv_present: not None;
+#                 getenv_raises: {key = exception name} os.getenv(key) must raise
 #   setting       supervisor.get_setting(key) == value, same type; setting_error: ValueError
 #   needs_wifi    only says something on a board with a radio (marked needs("wifi"))
 #   needs_creds   the file carries the farm SSID / password; skipped when .env lacks them
@@ -447,9 +448,9 @@ source = "generated"
 brent = ""
 spec = "invalid"
 spec_ref = "https://toml.io/en/v1.0.0#spec (a TOML file must be a valid UTF-8 encoded Unicode document)"
-cp = "bytes are copied through unchecked; os.getenv must hand back something without crashing the VM (from reading the source; the board health check after the module catches a crash)"
+cp = "the supervisor copies the bytes through unchecked, then os.getenv raises UnicodeError: common_hal_os_getenv returns mp_obj_new_str_from_vstr (shared-module/os/__init__.c:302), which checks UTF-8 because MICROPY_PY_BUILTINS_STR_UNICODE_CHECK follows STR_UNICODE (py/mpconfig.h:1428, py/objstr.c:2474-2476). Keys around it still read (from reading the source; not yet confirmed on hardware)"
 getenv = { CPR_BROKER_HOST = "@@BROKER_HOST@@" }
-getenv_present = ["CPR_BAD_UTF8"]
+getenv_raises = { CPR_BAD_UTF8 = "UnicodeError" }
 
 [scenario.settings_toml_is_directory]
 source = "not_ported"

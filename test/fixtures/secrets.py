@@ -195,7 +195,7 @@ def load_scenarios(directory):
     for entry in data.values():
         for key in ("getenv_none", "getenv_present", "setting_error", "errors"):
             entry.setdefault(key, [])
-        for key in ("getenv", "setting"):
+        for key in ("getenv", "getenv_raises", "setting"):
             entry.setdefault(key, {})
         entry.setdefault("needs_wifi", False)
         entry.setdefault("needs_creds", False)
