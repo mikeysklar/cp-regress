@@ -792,8 +792,11 @@ def main(argv=None):
         print("%s: %d unmapped" % ("changes upstream" if changed else "in sync", unmapped))
 
     if args.record and results:
-        if err or args.since or args.head:
-            print("not recording: %s" % ("an error above" if err else "--since/--head given"),
+        # --since only moves where the diff starts (after a force-push, the rewritten commit
+        # whose tree matches what we synced); the head is still the branch head, so it records.
+        # --head names some other commit, so it never does.
+        if err or args.head:
+            print("not recording: %s" % ("an error above" if err else "--head given"),
                   file=sys.stderr)
         else:
             today = datetime.date.today().isoformat()
