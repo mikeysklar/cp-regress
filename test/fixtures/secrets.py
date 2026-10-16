@@ -188,6 +188,73 @@ class NetworkCreds:
     password: str
 
 
+class SecretsError(Exception):
+    """A settings file that cannot reach a board: unreadable, not TOML, or a field missing or
+    out of range. His SecretsError (hil_board_utils.py:97 @ cf64e03)."""
+
+
+def require_string(obj, key, name=None, allow_empty=False):
+    """Raise SecretsError unless obj[key] is a string. His require_string
+    (hil_board_utils.py:272 @ cf64e03). name is how the message spells the key."""
+    name = name or key
+    if key not in obj:
+        raise SecretsError(f"missing '{name}'")
+    value = obj[key]
+    if not isinstance(value, str) or (not allow_empty and not value.strip()):
+        kind = "a string" if allow_empty else "a non-empty string"
+        raise SecretsError(f"'{name}' must be {kind}")
+
+
+def require_number(obj, key, lo, hi, integer=False):
+    """Raise SecretsError unless obj[key] is a number (an integer when integer) in [lo, hi].
+    His require_number (hil_board_utils.py:282 @ cf64e03). Booleans are refused."""
+    if key not in obj:
+        raise SecretsError(f"missing '{key}'")
+    value = obj[key]
+    types = int if integer else (int, float)
+    if isinstance(value, bool) or not isinstance(value, types):
+        raise SecretsError(f"'{key}' must be {'an integer' if integer else 'a number'}")
+    if not lo <= value <= hi:
+        raise SecretsError(f"'{key}' must be between {lo} and {hi}, got {value}")
+
+
+def validate_settings(settings):
+    """Check a settings.toml dict has what a farm board needs. His validate_secrets
+    (hil_board_utils.py:293 @ cf64e03) checks secrets.json; ours checks settings.toml:
+
+      CIRCUITPY_WIFI_SSID      non-empty string (required)
+      CIRCUITPY_WIFI_PASSWORD  string, may be empty (required)
+      CPR_BROKER_HOST          non-empty string (optional)
+      CPR_BROKER_PORT          integer 1-65535 (optional)
+    """
+    if not isinstance(settings, dict):
+        raise SecretsError("top level must be a table")
+    require_string(settings, SSID)
+    require_string(settings, PASSWORD, allow_empty=True)
+    if "CPR_BROKER_HOST" in settings:
+        require_string(settings, "CPR_BROKER_HOST")
+    if "CPR_BROKER_PORT" in settings:
+        require_number(settings, "CPR_BROKER_PORT", 1, 65535, integer=True)
+
+
+def load_settings(path):
+    """Read, parse and validate a settings.toml file and return the dict. Raises SecretsError
+    naming the file for anything that would stop a board reading it. His load_secrets
+    (hil_board_utils.py:328 @ cf64e03)."""
+    try:
+        with open(path, "rb") as f:
+            data = tomllib.load(f)
+    except OSError as e:
+        raise SecretsError(f"cannot read settings file: {e}") from e
+    except tomllib.TOMLDecodeError as e:
+        raise SecretsError(f"{path} is not valid TOML: {e}") from e
+    try:
+        validate_settings(data)
+    except SecretsError as e:
+        raise SecretsError(f"{path}: {e}") from e
+    return data
+
+
 def load_scenarios(directory):
     """{name: entry} from <directory>/scenarios.toml, with the optional fields filled in."""
     with open(Path(directory) / MANIFEST, "rb") as f:
@@ -384,7 +451,9 @@ def default_secrets():
     """His placeholder secrets (conftest.py:284 @ cf64e03) as settings.toml keys. CircuitPython
     has no placeholder check, so the board just fails to find the network. His io_username /
     io_key placeholders are left out: no Adafruit IO key name ever goes on a farm board."""
-    return {SSID: PLACEHOLDER_SSID, PASSWORD: PLACEHOLDER_PASSWORD}
+    settings = {SSID: PLACEHOLDER_SSID, PASSWORD: PLACEHOLDER_PASSWORD}
+    validate_settings(settings)  # the placeholders must pass the same check as a real file
+    return settings
 
 
 @pytest.fixture(scope="session")

@@ -60,28 +60,33 @@ port branch is in flight, named in Notes), `equivalent` (we already do this our 
 | brent | `hil/hil_board_utils.py::UhubctlError` | 117 | `lib/farmlib.py::FarmError` | equivalent | raised by Board.power_cycle |
 | brent | `hil/hil_board_utils.py::EspFlashError` | 105 | `lib/flash.py` | equivalent | FarmError from flash_esp_uf2 |
 | brent | `hil/hil_board_utils.py::EsptoolError` | 109 | `lib/flash.py` | equivalent | FarmError from flash_esp_uf2 |
-| brent | `hil/hil_board_utils.py::SecretsError` | 97 | `test/fixtures/secrets.py` | pending | port/C-secrets |
-| brent | `hil/hil_board_utils.py::require_string` | 272 | `test/fixtures/secrets.py` | pending | port/C-secrets |
-| brent | `hil/hil_board_utils.py::require_number` | 282 | `test/fixtures/secrets.py` | pending | port/C-secrets |
-| brent | `hil/hil_board_utils.py::validate_secrets` | 293 | `test/fixtures/secrets.py` | pending | port/C-secrets; our shape is settings.toml, not secrets.json |
-| brent | `hil/hil_board_utils.py::load_secrets` | 328 | `test/fixtures/secrets.py` | pending | port/C-secrets |
+| brent | `hil/hil_board_utils.py::SecretsError` | 97 | `test/fixtures/secrets.py::SecretsError` | ported | raised by validate_settings and load_settings |
+| brent | `hil/hil_board_utils.py::require_string` | 272 | `test/fixtures/secrets.py::require_string` | ported | |
+| brent | `hil/hil_board_utils.py::require_number` | 282 | `test/fixtures/secrets.py::require_number` | ported | |
+| brent | `hil/hil_board_utils.py::validate_secrets` | 293 | `test/fixtures/secrets.py::validate_settings` | ported | settings.toml, not secrets.json: SSID and password, optional broker host and port |
+| brent | `hil/hil_board_utils.py::load_secrets` | 328 | `test/fixtures/secrets.py::load_settings` | ported | tomllib; SecretsError names the file |
 | brent | `hil/hil_board_utils.py::SECRETS_FILENAME` | 83 | `test/fixtures/secrets.py::settings_toml` | equivalent | settings.toml on CIRCUITPY |
 | brent | `hil/hil_board_utils.py::ESP_COMBINED_OFFSET` | 69 | `farm.toml [[board]] flash` | equivalent | we write tinyuf2, then copy a .uf2 |
-| brent | `hil/hil_board_utils.py::ESP_IMAGE_MAGIC` | 70 | `lib/flash.py::flash_esp_uf2` | watch | no merged .bin on our ESP path |
-| brent | `hil/hil_board_utils.py::ESP_BOOTLOADER_OFFSETS` | 71 | `farm.toml [[board]] flash` | equivalent | `bootloader_offset` per board |
+| brent | `hil/hil_board_utils.py::ESP_IMAGE_MAGIC` | 70 | `lib/flash.py::ESP_IMAGE_MAGIC` | ported | the combined-image check reads it |
+| brent | `hil/hil_board_utils.py::ESP_BOOTLOADER_OFFSETS` | 71 | `lib/flash.py::ESP_BOOTLOADER_OFFSETS` | ported | chip -> offset; farm.toml [[board]] flash.chip picks it |
 | brent | `hil/hil_board_utils.py::Esptool` | 407 | `lib/flash.py::ESPTOOL` | equivalent | fixed venv path, v5 dash commands |
 | brent | `hil/hil_board_utils.py::esp_esptool_version` | 426 | `lib/flash.py::ESPTOOL` | equivalent | |
 | brent | `hil/hil_board_utils.py::esp_find_esptool` | 439 | `lib/flash.py::ESPTOOL` | equivalent | |
 | brent | `hil/hil_board_utils.py::esp_bootloader_offset` | 458 | `farm.toml [[board]] flash` | equivalent | |
-| brent | `hil/hil_board_utils.py::esp_check_combined_image` | 466 | `lib/flash.py::flash_esp_uf2` | watch | a pre-flight image check worth copying if we ever flash .bin to ESP |
-| brent | `hil/hil_board_utils.py::esp_check_flash_layout` | 488 | `lib/flash.py::flash_esp_uf2` | watch | |
+| brent | `hil/hil_board_utils.py::esp_check_combined_image` | 466 | `lib/flash.py::esp_check_combined_image` | ported | pre-flight check before a .bin write |
+| brent | `hil/hil_board_utils.py::esp_check_flash_layout` | 488 | `lib/flash.py::esp_check_tinyuf2` | equivalent | tinyuf2 fits the app partition; his filesystem-image half is not ported |
 | brent | `hil/hil_board_utils.py::esp_connect_args` | 507 | `lib/flash.py::flash_esp_uf2` | equivalent | `--before no-reset`: native USB, ROM entered by 1200-baud touch |
 | brent | `hil/hil_board_utils.py::esp_write_flash_args` | 516 | `lib/flash.py::flash_esp_uf2` | equivalent | one esptool call per download-mode entry |
 | brent | `hil/hil_board_utils.py::esp_run_esptool` | 528 | `lib/flash.py::_run` | equivalent | |
 | brent | `hil/hil_board_utils.py::esp_flash` | 1132 | `lib/flash.py::flash` | equivalent | per-board method: uf2, esp_uf2, swd |
-| brent | `hil/hil_board_utils.py::FlashResult` | 1108 | `lib/flash.py` | pending | port/E-flash (with FlashState) |
-| brent | `hil/hil_board_utils.py::USB_HUB_RE` | 546 | `farm.toml [[board]] usb` | equivalent | sysfs path like 3-3.2 |
-| brent | `hil/hil_board_utils.py::validate_board_entry` | 552 | `lib/farmlib.py::Board` | equivalent | |
+| brent | `hil/hil_board_utils.py::EspPartition` | 137 | `lib/flash.py::EspPartition` | ported | |
+| brent | `hil/hil_board_utils.py::EspPartitionError` | 93 | `lib/flash.py::esp_parse_partitions` | equivalent | FarmError from esp_parse_partitions |
+| brent | `hil/hil_board_utils.py::esp_parse_partitions` | 192 | `lib/flash.py::esp_parse_partitions` | ported | |
+| brent | `hil/hil_board_utils.py::esp_erase_flash` | 1120 | `lib/flash.py::flash` (erase=True) | ported | opt-in (--flash-erase), off by default; erase_refusal() refuses nRF52 and boards whose bootloader we cannot rewrite |
+| brent | `hil/hil_board_utils.py::EraseResult` | 1115 | `lib/flash.py::EraseResult` | ported | |
+| brent | `hil/hil_board_utils.py::FlashResult` | 1108 | `lib/flash.py::FlashResult` | ported | |
+| brent | `hil/hil_board_utils.py::USB_HUB_RE` | 546 | `test/fixtures/farm.py::USB_PATH_RE` | equivalent | sysfs path like 3-3.2, checked by validate_board_entry (farm.py:36) |
+| brent | `hil/hil_board_utils.py::validate_board_entry` | 552 | `test/fixtures/farm.py::validate_board_entry` | equivalent | |
 | brent | `hil/hil_board_utils.py::usb_device_path` | 577 | `lib/farmlib.py::Board.sysfs` | equivalent | |
 | brent | `hil/hil_board_utils.py::match_serial_ports` | 587 | `lib/farmlib.py::Board.ttys` | equivalent | /dev/serial/by-path at each use |
 | brent | `hil/hil_board_utils.py::list_serial_ports` | 599 | `lib/farmlib.py::Board.ttys` | equivalent | |
@@ -95,41 +100,41 @@ port branch is in flight, named in Notes), `equivalent` (we already do this our 
 | brent | `hil/hil_board_utils.py::_power_cycle` | 703 | `lib/farmlib.py::Board.power_cycle` | equivalent | |
 | brent | `hil/hil_board_utils.py::power_cycle_board` | 708 | `lib/farmlib.py::Board.power_cycle` | equivalent | |
 | brent | `hil/hil_board_utils.py::wait_for_port` | 716 | `lib/farmlib.py::Board.wait_ready` | equivalent | tty + CIRCUITPY + settle |
-| brent | `hil/hil_board_utils.py::SERIAL_*` | | `lib/serialmon.py` | pending | port/A-serial |
-| brent | `hil/hil_board_utils.py::ANSI_ESCAPE_RE` | 745 | `lib/serialmon.py` | pending | port/A-serial |
-| brent | `hil/hil_board_utils.py::SerialError` | 121 | `lib/serialmon.py` | pending | port/A-serial |
-| brent | `hil/hil_board_utils.py::SerialTimeout` | 125 | `lib/serialmon.py` | pending | port/A-serial |
-| brent | `hil/hil_board_utils.py::SerialUnexpectedError` | 129 | `lib/serialmon.py` | pending | port/A-serial |
-| brent | `hil/hil_board_utils.py::SerialLine` | 751 | `lib/serialmon.py` | pending | port/A-serial |
-| brent | `hil/hil_board_utils.py::SerialMonitor` | 757 | `lib/serialmon.py` | pending | port/A-serial; today `test/fixtures/console.py::SerialMonitor` |
-| brent | `hil/hil_board_utils.py::SerialMonitor.port_reset` | 934 | `lib/serialmon.py` | pending | port/A-serial; through Board.power_cycle, tty re-resolved from sysfs |
+| brent | `hil/hil_board_utils.py::SERIAL_*` | | `lib/serialmon.py` | ported | |
+| brent | `hil/hil_board_utils.py::ANSI_ESCAPE_RE` | 745 | `lib/serialmon.py::ANSI_ESCAPE_RE` | ported | |
+| brent | `hil/hil_board_utils.py::SerialError` | 121 | `lib/serialmon.py::SerialError` | ported | |
+| brent | `hil/hil_board_utils.py::SerialTimeout` | 125 | `lib/serialmon.py::SerialTimeout` | ported | |
+| brent | `hil/hil_board_utils.py::SerialUnexpectedError` | 129 | `lib/serialmon.py::SerialUnexpectedError` | ported | |
+| brent | `hil/hil_board_utils.py::SerialLine` | 751 | `lib/serialmon.py::SerialLine` | ported | |
+| brent | `hil/hil_board_utils.py::SerialMonitor` | 757 | `lib/serialmon.py::SerialMonitor` | ported | test/fixtures/console.py imports it |
+| brent | `hil/hil_board_utils.py::SerialMonitor.port_reset` | 934 | `lib/serialmon.py::SerialMonitor.port_reset` | ported | through Board.power_cycle, tty re-resolved from sysfs |
 | brent | `hil/firmware/conftest.py::FIRMWARE_DIR` | 58 | `conftest.py` | equivalent | HERE |
 | brent | `hil/firmware/conftest.py::HIL_DIR` | 59 | `conftest.py` | equivalent | HERE |
 | brent | `hil/firmware/conftest.py::DEFAULT_BOARDS` | 63 | `farm.toml` | equivalent | `--farm` |
-| brent | `hil/firmware/conftest.py::*SECRETS*` | | `test/fixtures/secrets.py` | pending | port/C-secrets; scenario names and secrets dir |
-| brent | `hil/firmware/conftest.py::*secrets*` | | `test/fixtures/secrets.py` | pending | port/C-secrets; secrets_dir, secrets_file, good/default/generated_secrets, secrets_name, secrets_path |
-| brent | `hil/firmware/conftest.py::_with_wifi` | 298 | `test/fixtures/secrets.py` | pending | port/C-secrets |
-| brent | `hil/firmware/conftest.py::DEVICE_UID_RE` | 71 | `test/fixtures/broker.py::protomq` | equivalent | our client id is fixed, `cpr-<board>`, not read from serial |
-| brent | `hil/firmware/conftest.py::device_uid` | 425 | `test/fixtures/broker.py::protomq` | equivalent | |
-| brent | `hil/firmware/conftest.py::pytest_addoption` | 76 | `conftest.py::pytest_addoption` | equivalent | --boards file → --farm, --board → --boards, --firmware-dir → --firmware, --uhubctl → farm.toml; --serial-log-dir pending port/A-serial |
+| brent | `hil/firmware/conftest.py::*SECRETS*` | | `test/fixtures/secrets.py` | ported | scenario names and secrets dir |
+| brent | `hil/firmware/conftest.py::*secrets*` | | `test/fixtures/secrets.py` | ported | secrets_dir, secrets_file, good/default/generated_secrets, secrets_name, secrets_path |
+| brent | `hil/firmware/conftest.py::_with_wifi` | 298 | `test/fixtures/secrets.py::_with_wifi` | ported | |
+| brent | `hil/firmware/conftest.py::DEVICE_UID_RE` | 71 | `test/fixtures/identity.py` | equivalent | no regex: UID comes from boot_out.txt, REPL fallback |
+| brent | `hil/firmware/conftest.py::device_uid` | 425 | `test/fixtures/identity.py::device_uid` | equivalent | history/device_uid.json, fails loudly on a change |
+| brent | `hil/firmware/conftest.py::pytest_addoption` | 76 | `conftest.py::pytest_addoption` | equivalent | --boards file → --farm, --board → --boards, --firmware-dir → --firmware, --uhubctl → farm.toml; --serial-log-dir is test/fixtures/console.py::pytest_addoption |
 | brent | `hil/firmware/conftest.py::Board` | 97 | `lib/farmlib.py::Board` | equivalent | |
 | brent | `hil/firmware/conftest.py::load_board_entry` | 112 | `test/fixtures/farm.py::farm_boards` | equivalent | |
 | brent | `hil/firmware/conftest.py::board` | 183 | `test/fixtures/farm.py::board` | equivalent | module scope, parametrized over every board |
 | brent | `hil/firmware/conftest.py::_require_baud` | 200 | `-` | watch | USB CDC ignores baud |
-| brent | `hil/firmware/conftest.py::_test_selectors` | 130 | `farm.toml [[board]] run_tests` | pending | port/F-select |
-| brent | `hil/firmware/conftest.py::_matches` | 144 | `conftest.py::pytest_collection_modifyitems` | pending | port/F-select |
-| brent | `hil/firmware/conftest.py::pytest_collection_modifyitems` | 151 | `conftest.py::pytest_collection_modifyitems` | pending | port/F-select |
+| brent | `hil/firmware/conftest.py::_test_selectors` | 130 | `conftest.py::_test_selectors` | ported | farm.toml [[board]] run_tests / skip_tests |
+| brent | `hil/firmware/conftest.py::_matches` | 144 | `conftest.py::_matches` | ported | |
+| brent | `hil/firmware/conftest.py::pytest_collection_modifyitems` | 151 | `conftest.py::pytest_collection_modifyitems` | ported | |
 | brent | `hil/firmware/conftest.py::power` | 210 | `farm.toml [[board]] power` | equivalent | uhubctl path from [host] |
 | brent | `hil/firmware/conftest.py::Firmware` | 107 | `lib/flash.py::find_image` | equivalent | image by board_id in the filename |
 | brent | `hil/firmware/conftest.py::_find_one` | 216 | `lib/flash.py::find_image` | equivalent | |
 | brent | `hil/firmware/conftest.py::firmware` | 225 | `test/fixtures/flashing.py::ensure_firmware` | equivalent | |
-| brent | `hil/firmware/conftest.py::BrokerCreds` | 239 | `test/fixtures/broker.py::broker_address` | equivalent | local ProtoMQ only (see not ported) |
-| brent | `hil/firmware/conftest.py::broker_creds` | 327 | `test/fixtures/broker.py::broker_address` | equivalent | |
-| brent | `hil/firmware/conftest.py::NetworkCreds` | 247 | `test/fixtures/secrets.py::base_secrets` | equivalent | |
-| brent | `hil/firmware/conftest.py::network_creds` | 337 | `test/fixtures/secrets.py::base_secrets` | equivalent | |
-| brent | `hil/firmware/conftest.py::FlashState` | 368 | `lib/flash.py` | pending | port/E-flash |
+| brent | `hil/firmware/conftest.py::BrokerCreds` | 239 | `test/fixtures/secrets.py::BrokerCreds` | ported | ProtoMQ takes no login (see not ported) |
+| brent | `hil/firmware/conftest.py::broker_creds` | 327 | `test/fixtures/secrets.py::broker_creds` | ported | |
+| brent | `hil/firmware/conftest.py::NetworkCreds` | 247 | `test/fixtures/secrets.py::NetworkCreds` | ported | |
+| brent | `hil/firmware/conftest.py::network_creds` | 337 | `test/fixtures/secrets.py::network_creds` | ported | |
+| brent | `hil/firmware/conftest.py::FlashState` | 368 | `lib/flash.py::FlashResult` | equivalent | per-phase seconds (PHASES); no LittleFS build time |
 | brent | `hil/firmware/conftest.py::flashed_board` | 380 | `test/fixtures/flashing.py::flashed_firmware` | equivalent | flash-if-changed per module, no erase |
-| brent | `hil/firmware/conftest.py::serial` | 412 | `test/fixtures/console.py::serial` | ported | moves onto lib/serialmon.py with port/A-serial |
+| brent | `hil/firmware/conftest.py::serial` | 412 | `test/fixtures/console.py::serial` | ported | SerialMonitor from lib/serialmon.py, closed and dumped after the test |
 | brent | `hil/firmware/provisioning/test_secrets.py::StepTimer` | 13 | `test/fixtures/history.py::metric` | equivalent | timings go to history/ |
 | brent | `hil/firmware/provisioning/test_secrets.py` | | `-` | watch | WipperSnapper provisioning tests; read for test shape |
 | brent | `hil/hil-boards.json::board` | 2 | `farm.toml [[board]] name` | equivalent | |
@@ -138,14 +143,14 @@ port branch is in flight, named in Notes), `equivalent` (we already do this our 
 | brent | `hil/hil-boards.json::read_baud` | 5 | `-` | watch | USB CDC ignores baud |
 | brent | `hil/hil-boards.json::location` | 6 | `farm.toml [[board]] usb` | equivalent | |
 | brent | `hil/hil-boards.json::firmware_dir` | 7 | `conftest.py::pytest_addoption` | equivalent | `--firmware DIR` |
-| brent | `hil/hil-boards.json::run_tests` | 8 | `farm.toml [[board]] run_tests` | pending | port/F-select |
-| brent | `hil/hil-boards.json::skip_tests` | 9 | `farm.toml [[board]] skip_tests` | pending | port/F-select |
+| brent | `hil/hil-boards.json::run_tests` | 8 | `farm.toml [[board]] run_tests` | ported | |
+| brent | `hil/hil-boards.json::skip_tests` | 9 | `farm.toml [[board]] skip_tests` | ported | |
 | brent | `hil/requirements.txt` | | `-` | watch | |
-| brent | `hil/tests_hil_board_utils/hil_checks.py` | | `lib/hil_checks.py` | pending | port/B-checks |
-| brent | `hil/tests_hil_board_utils/hil_power_cycle_monitor.py` | | `tools/power_cycle_monitor.py` | pending | port/H-powermon |
+| brent | `hil/tests_hil_board_utils/hil_checks.py` | | `lib/hil_checks.py` | ported | |
+| brent | `hil/tests_hil_board_utils/hil_power_cycle_monitor.py` | | `tools/power_cycle_monitor.py` | ported | |
 | brent | `hil/tests_hil_board_utils/test_end_to_end.py` | | `-` | watch | ours: the flashed_firmware → flashed_fs chain |
 | brent | `hil/tests_hil_board_utils/test_power.py` | | `-` | watch | ours: run.py board_health and recover |
-| brent | `hil/tests_hil_board_utils/test_serial_monitor_hw.py` | | `lib/serialmon.py` | pending | port/A-serial |
+| brent | `hil/tests_hil_board_utils/test_serial_monitor_hw.py` | | `test/harness/serialmon_test.py` | equivalent | the same checks on a pty pair; his run on a real board is not ported |
 | brent | `.github/ISSUE_TEMPLATE/*` | | `-` | watch | upstream, not HIL |
 | brent | `.github/membrowse-targets.json` | | `-` | watch | upstream, not HIL |
 | brent | `.github/workflows/build-clang-doxy.yml` | | `-` | watch | upstream CI; a new HIL workflow shows as UNMAPPED |
@@ -156,7 +161,7 @@ port branch is in flight, named in Notes), `equivalent` (we already do this our 
 | protomq | `api/disconnect.js` | | `test/fixtures/broker.py::ProtoMQ.disconnect` | ported | |
 | protomq | `api/echo.js` | | `test/fixtures/broker.py::ProtoMQ.echo` | ported | |
 | protomq | `api/deliveries.js` | | `test/fixtures/broker.py::ProtoMQ.deliveries` | ported | track_deliveries toggles; see ProtoMQ.track |
-| protomq | `api/reset.js` | | `test/fixtures/broker.py` | watch | never called; per-client cleanup instead |
+| protomq | `api/reset.js` | | `test/fixtures/broker.py::_session_hygiene` | ported | POST /reset once per run, only with --broker-reset (see not ported) |
 | protomq | `api/routes.js` | | `test/fixtures/broker.py::api` | ported | middleware reads `client` from the body |
 | protomq | `api/index.js` | | `test/fixtures/broker.py::api` | ported | |
 | protomq | `api/autoresponse.js` | | `-` | watch | protobuf autoresponders, unused on cpr/ topics |
@@ -197,10 +202,8 @@ upstream symbol, kept here so it is not reopened by accident.
 | brent | `hil/hil_board_utils.py::get_port` | `_port_cache`, hil_board_utils.py:549 | A tty number changes on every reset and power cycle. We resolve it from the sysfs USB path at the moment of use. |
 | brent | `hil/hil_board_utils.py::clear_port` | `_port_cache`, hil_board_utils.py:635 | as above |
 | brent | `hil/hil_board_utils.py::SerialMonitor.board_reset` | DTR/RTS board_reset, hil_board_utils.py:900 | Needs a USB-UART auto-reset circuit (his docstring, :910). All eight farm boards are native USB. We reset with microcontroller.reset, uhubctl, or SWD. |
-| brent | `hil/hil_board_utils.py::esp_erase_flash` | per-test full erase, hil_board_utils.py:1120; edebd13 | Slow, and it wipes tinyuf2 and the bootloaders the farm depends on. Only as an explicit opt-in, off by default, refusing the nRF52840 (never nrf5 mass_erase) and any board whose bootloader we cannot rewrite. |
-| brent | `hil/hil_board_utils.py::esp_erase_flash_args` | per-test full erase, hil_board_utils.py:524 | as above |
-| brent | `hil/hil_board_utils.py::Esptool.erase_flash_command` | per-test full erase, hil_board_utils.py:421 | as above |
-| brent | `hil/hil_board_utils.py::EraseResult` | per-test full erase, hil_board_utils.py:1115 | as above |
+| brent | `hil/hil_board_utils.py::esp_erase_flash_args` | per-test full erase, hil_board_utils.py:524 | Leaves the chip with no second-stage bootloader for the whole erase (flash.py:352). The opt-in erase is flash(erase=True), see the mapping table. |
+| brent | `hil/hil_board_utils.py::Esptool.erase_flash_command` | per-test full erase, hil_board_utils.py:421 | As above: no per-test erase. The opt-in erase is flash(erase=True), see the mapping table. |
 | brent | `hil/hil_board_utils.py::ESP_*` | LittleFS image provisioning: partition table geometry | CircuitPython boards present CIRCUITPY over USB MSC. flashed_fs copies a staged tree, with backup and restore. |
 | brent | `hil/hil_board_utils.py::EspPartition*` | LittleFS image provisioning | as above |
 | brent | `hil/hil_board_utils.py::esp_*partition*` | LittleFS image provisioning | as above |
@@ -218,4 +221,4 @@ upstream symbol, kept here so it is not reopened by accident.
 | brent | `hil/tests_hil_board_utils/test_filesystem_flash.py` | LittleFS image and erase tests | as above |
 | brent | `-` | broker_creds default `io.adafruit.com:8883`, conftest.py:329 | CircuitPython results never go to Adafruit IO. The prod guard refuses a broker that is not a private address. |
 | brent | `-` | single-board session scope: `board` (session), `--board`, conftest.py:182 | We parametrize every board at module scope and run them in parallel under xdist. |
-| protomq | `api/reset.js::POST /reset` | POST /reset per test | Resets every client and autoresponder. With eight boards on one broker it would disconnect the others; protomq clears one client id per test instead. |
+| protomq | `api/reset.js::POST /reset` | POST /reset per test | Resets every client and autoresponder. With eight boards on one broker a per-test reset would disconnect the others, so protomq clears one client id per test. Once per run it is ported, behind --broker-reset (see the mapping table). |
