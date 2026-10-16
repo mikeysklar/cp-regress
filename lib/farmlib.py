@@ -68,7 +68,7 @@ _BOARD_SHA256 = """\
 import hashlib
 for p in PATHS:
     try:
-        h = hashlib.sha256()
+        h = hashlib.new('sha256')
         with open(p, 'rb') as f:
             while True:
                 b = f.read(256)

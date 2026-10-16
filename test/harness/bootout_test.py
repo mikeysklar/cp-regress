@@ -135,6 +135,23 @@ def test_board_sha256_parses_each_file(drive, monkeypatch):
     assert board.board_sha256(["code.py"]) == {"code.py": digest}
 
 
+def test_board_sha256_script_uses_hashlib_new(drive, monkeypatch):
+    # CircuitPython's hashlib only exposes new(); hashlib.sha256 raises AttributeError on the board
+    board, _ = drive
+    sent = []
+
+    class Capture(FakeRepl):
+        def exec_raw_pieces(self, pieces, timeout=60):
+            sent.extend(pieces)
+            return [""], "boom"
+
+    monkeypatch.setattr(board, "repl", lambda iface=0: Capture())
+    assert board.board_sha256(["code.py"]) is None
+    code = sent[0]
+    assert "hashlib.new('sha256')" in code
+    assert "hashlib.sha256" not in code
+
+
 def test_board_sha256_none_on_stderr_or_no_repl(drive, monkeypatch):
     board, _ = drive
     monkeypatch.setattr(board, "repl",
