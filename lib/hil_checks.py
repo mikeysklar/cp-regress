@@ -36,6 +36,7 @@ mon.assert_none(pattern, since=None, duration=0). The older fixtures.console.Ser
 (expect only, over a byte stream) is also accepted; see assert_no_crash().
 """
 
+import collections
 import re
 import time
 from dataclasses import dataclass
@@ -390,12 +391,28 @@ def expect_identity(mon_or_board, board, expect_version=None, timeout=20, poke=F
 
 # --- Crash watch ----------------------------------------------------------------------------
 
+class StreamMark(collections.namedtuple("StreamMark", "repl offset")):
+    """A mark on fixtures.console.SerialMonitor: the Repl it was taken on and the byte offset
+    into that Repl's transcript. SerialMonitor.expect() replaces mon.repl when the tty drops,
+    and the new Repl's transcript starts empty, so an offset alone would point past its end."""
+
+
 def mark(mon):
-    """Where the next output starts: mon.mark() (a line index) on a line monitor, else the byte
-    offset into fixtures.console.SerialMonitor's transcript."""
+    """Where the next output starts: mon.mark() (a line index) on a line monitor, else a
+    StreamMark into fixtures.console.SerialMonitor's transcript."""
     if hasattr(mon, "mark"):
         return mon.mark()
-    return len(mon.repl.transcript)
+    return StreamMark(mon.repl, len(mon.repl.transcript))
+
+
+def _stream_start(repl, since):
+    """Transcript offset to search from. A mark taken on an earlier Repl (the tty was reopened
+    after a reset) means everything the current one has read is new, so start at 0."""
+    if since is None:
+        return 0
+    if isinstance(since, StreamMark):
+        return since.offset if since.repl is repl else 0
+    return since if since <= len(repl.transcript) else 0
 
 
 def _port_lost(e):
@@ -456,7 +473,7 @@ def assert_no_crash(mon, since=None, duration=CRASH_WINDOW, port=None, python_er
         return
     # fixtures.console.SerialMonitor: read the byte stream for `duration`, then search it.
     # read_for() returns what was pending plus what arrived; keep it pending for later expects.
-    # Everything read is also in the transcript, which `since` indexes.
+    # Everything read is also in the transcript, which `since` indexes (see StreamMark).
     repl = mon.repl
     try:
         repl.pending = bytearray(repl.read_for(duration))
@@ -464,7 +481,7 @@ def assert_no_crash(mon, since=None, duration=CRASH_WINDOW, port=None, python_er
         if not _port_lost(e):
             raise
         _fail_window(pytest, name, duration, e)
-    lines = _text(bytes(repl.transcript[since or 0:])).splitlines()
+    lines = _text(bytes(repl.transcript[_stream_start(repl, since):])).splitlines()
     bad = [l for l in lines if re.search(pattern, l)]
     if bad:
         pytest.fail("%s: %s" % (name, "; ".join(explain(bad, port, python_errors))),
