@@ -53,10 +53,9 @@ lines, wire the CP2102 RX to the S2's TX (GPIO43 on UART0) and add its by-path t
 The banner and status lines are translated (MP_ERROR_TEXT); the patterns here are for English
 builds.
 
-SerialMonitor below is a minimal local port of Brent's (hil_board_utils.py:757 @ cf64e03).
-lib/serialmon.py has landed but is not used here yet: it opens from a Board, not a port, keeps
-pyserial's input flush on open (the first boot bytes after a power cycle), and has no
-opened/first_byte/last_line/uptime. monitor_class() keeps the local class until it does.
+SerialMonitor below is a minimal local port of Brent's (hil_board_utils.py:757 @ cf64e03). It is
+the fallback: monitor_class() returns lib/serialmon.SerialMonitor when that module is importable,
+opened with keep_input=True so pyserial's input flush does not drop the first boot bytes.
 """
 
 import argparse
@@ -202,11 +201,8 @@ def power_cycle_board(board, delay=3):
 # ---------- serial monitor ----------
 
 def monitor_class():
-    """lib/serialmon.SerialMonitor once it fits this tool, else the local one below.
-
-    SWAP-LATER: serialmon.SerialMonitor(board, iface, baud) does not take (port, baud) and has
-    no uptime/opened/first_byte/last_line, so it is used only once it says it does
-    (PORT_ARGS = True plus those names). Until then the local class is returned.
+    """lib/serialmon.SerialMonitor when it has the names this tool uses (PORT_ARGS = True plus
+    those names), else the local one below.
     """
     try:
         import serialmon  # pylint: disable=import-outside-toplevel
@@ -231,12 +227,12 @@ class SerialMonitor:
         is the "new boot under observation" this farm has; port_reset() power-cycles.
       * first_byte: time.time() of the first byte read, for the boot timings.
       * write()/prompt()/uptime() so a test can type without opening a second handle.
-    SWAP-LATER for lib/serialmon.py.
     """
 
-    def __init__(self, port, baud=SERIAL_BAUD):
+    def __init__(self, port, baud=SERIAL_BAUD, keep_input=True):
         if farmlib.serial is None:
             raise SerialError("pyserial is required (pip install pyserial)")
+        self._keep_input = keep_input
         self.port = str(port)
         self._lines = []
         self._partial = bytearray()
@@ -267,13 +263,15 @@ class SerialMonitor:
         # pyserial 3.5's posix open() ends with _reset_input_buffer() (tcflush), after the
         # kernel has already raised DTR, so the board's first bytes could be flushed. Skip that
         # one call: the tty is new, nothing stale can be in it.
-        ser._reset_input_buffer = lambda: None  # pylint: disable=protected-access
+        if self._keep_input:
+            ser._reset_input_buffer = lambda: None  # pylint: disable=protected-access
         try:
             ser.open()
         except (OSError, ValueError) as e:
             raise SerialError("cannot open %s: %s" % (self.port, e)) from e
         finally:
-            del ser._reset_input_buffer
+            if self._keep_input:
+                del ser._reset_input_buffer
         self._serial = ser
         self.opened = time.time()
         self._stop.clear()
@@ -600,9 +598,10 @@ def capture_power_boot(board, delay=3, port_timeout=None, timeout=20, passive=Fa
             tty = wait_for_port(board, timeout=max(0.1, end - time.monotonic()))
             found = found or time.time()
             try:
-                mon = monitor_class()(tty, SERIAL_BAUD)
+                # keep_input: the first boot bytes are what this tool is for (see SerialMonitor)
+                mon = monitor_class()(tty, SERIAL_BAUD, keep_input=True)
                 break
-            except SerialError:
+            except farmlib.FarmError:  # both the local SerialError and serialmon's are retried
                 if time.monotonic() >= end:
                     raise
                 time.sleep(0.02)
