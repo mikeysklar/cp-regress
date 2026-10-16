@@ -46,7 +46,8 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOC = os.path.join(HERE, "docs", "BRENT-SYNC.md")
 CACHE = os.path.expanduser("~/.cache/cp-regress/brent-sync")
 SEC_SYNC, SEC_MAP, SEC_SKIP = "Last synced", "Mapping", "Deliberately not ported"
-CITE = re.compile(r"([\w./-]+\.(?:py|js|json|proto)):(\d+)\s*@\s*([0-9a-f]{7,40})\b")
+# A citation "<file>:757 @ <sha>", or a range "<file>:738-1083 @ <sha>" (checked at its start)
+CITE = re.compile(r"([\w./-]+\.(?:py|js|json|proto)):(\d+)(?:-\d+)?\s*@\s*([0-9a-f]{7,40})\b")
 JS_ROUTE = re.compile(r"""\.(get|post|put|patch|delete)\(\s*['"`](/[^'"`]*)['"`]""")
 JS_EXPORT = re.compile(r"^export\s+(?:default\s+)?(?:async\s+)?(?:function\*?|const|let|class)"
                        r"\s+(\w+)", re.M)
