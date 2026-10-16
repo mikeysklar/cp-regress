@@ -3,12 +3,15 @@
 """lib/serialmon.py against a pty pair: what Brent's test_serial_monitor_hw.py checks on his
 esp32 (tests_hil_board_utils/test_serial_monitor_hw.py @ cf64e03), with the board replaced by
 the master end of os.openpty(). Nothing here opens a farm tty."""
+import os
 import re
+import select
 import threading
 import time
 
 import pytest
 
+from farmlib import FarmError
 from harness.fakes import wait_for
 from serialmon import (SERIAL_MAX_LINE, SerialError, SerialMonitor, SerialTimeout,
                        SerialUnexpectedError)
@@ -287,3 +290,195 @@ def test_soft_reset_against_a_fake_repl(pty_board, open_monitor):
         stop.set()
         mon.write(b"\r")
         repl.join(timeout=5)
+
+
+def settling_ttys(board, tmp_path, bad_opens=2):
+    """board.ttys() that first names a by-path link which exists and is readable but is not a
+    tty, so open() fails the way a link whose device is still going away does, then the real
+    tty. Returns (the link's path, a list of the calls)."""
+    link = tmp_path / "by-path-link"
+    link.write_text("")
+    calls, real = [], board.ttys
+
+    def ttys():
+        calls.append(1)
+        return [str(link)] if len(calls) <= bad_opens else real()
+
+    board.ttys = ttys
+    return link, calls
+
+
+def test_reopen_retries_an_open_that_fails_while_the_tty_settles(pty_board, open_monitor,
+                                                                 tmp_path):
+    """After a reset the by-path name can still resolve to a link whose open fails. That is not
+    a lost board: the reopen is retried inside the wait, and the capture carries on."""
+    mon = open_monitor()
+    pty_board.write("before\r\n")
+    assert mon.expect("before", timeout=5)
+    pty_board.unplug()
+    pty_board.replug()
+    _, calls = settling_ttys(pty_board, tmp_path)
+
+    def back():
+        wait_for(lambda: mon.port == pty_board.path)
+        time.sleep(0.2)  # pyserial flushes input on open
+        pty_board.write("after\r\n")
+
+    later(0.1, back)
+    assert mon.expect("after", timeout=10)
+    assert len(calls) >= 3 and mon.port == pty_board.path
+
+
+def test_port_reset_retries_an_open_that_fails_while_the_tty_settles(pty_board, open_monitor,
+                                                                     tmp_path, monkeypatch):
+    """port_reset() goes through the same retried reopen as the recovery path."""
+    mon = open_monitor()
+    pty_board.write("before\r\n")
+    assert mon.expect("before", timeout=5)
+
+    def power_cycle(**_kw):  # the board drops off USB and comes back on a new tty
+        pty_board.unplug()
+        pty_board.replug()
+
+    monkeypatch.setattr(pty_board, "power_cycle", power_cycle, raising=False)
+    _, calls = settling_ttys(pty_board, tmp_path)
+    boot = mon.port_reset(delay=0, timeout=10)
+    assert len(calls) >= 3 and mon.port == pty_board.path
+    assert mon.boot == boot
+    time.sleep(0.2)  # pyserial flushes input on open
+    pty_board.write("after\r\n")
+    assert mon.expect("after", timeout=5)
+
+
+def test_hard_reset_reads_devnum_after_the_prompt(pty_board, open_monitor, monkeypatch):
+    """prompt() can recover the port, and a re-enumerated board has a new devnum. hard_reset()
+    must wait for the change its own reset makes, not stop at the change prompt() already made.
+    """
+    mon = open_monitor()
+    state = {"dev": "old"}
+    monkeypatch.setattr(pty_board, "devnum", lambda: state["dev"])
+
+    def prompt(timeout=20):  # the port was recovered while syncing: a new enumeration
+        state["dev"] = "new"
+
+    monkeypatch.setattr(mon, "prompt", prompt)
+
+    def reset_takes_effect():  # the board resets half a second after the write
+        pty_board.unplug()
+        pty_board.replug()
+        state["dev"] = "reset"  # the new enumeration is visible only once its tty is
+
+    later(0.5, reset_takes_effect)
+    t0 = time.monotonic()
+    mon.hard_reset(timeout=10)
+    assert time.monotonic() - t0 >= 0.4
+    assert mon.port == pty_board.path
+
+
+def test_assert_none_out_of_time_with_the_port_gone_is_an_error(pty_board, open_monitor):
+    """With the deadline passed and the port lost, nothing was watched to the end: not a pass."""
+    mon = open_monitor()  # reopen=True
+    pty_board.comes_back = False
+    pty_board.unplug()
+    assert wait_for(lambda: mon._error is not None)  # pylint: disable=protected-access
+    with pytest.raises(SerialError, match="lost") as exc:
+        mon.assert_none("anything", duration=0)
+    assert not isinstance(exc.value, AssertionError)
+
+
+def test_dump_puts_a_late_stored_line_before_the_marker_it_predates(tmp_path):
+    """A line whose bytes arrived before a marker can be stored after it. The dump is in time
+    order, so the line comes first. (Placed by line index, the marker came first.)"""
+
+    class Bare(SerialMonitor):
+        def _open(self, path=None):  # no port: feed the capture by hand
+            pass
+
+    mon = Bare(type("B", (), {"name": "bare", "power": {}})())
+    now, mono = time.time(), time.monotonic()
+    mon._feed(b"first\n", now - 2, mono - 2)
+    mon._event("soft reset (Ctrl-D)")
+    mon._feed(b"late\n", now - 1, mono - 1)
+    mon._feed(b"after\n", time.time(), time.monotonic())
+    dumped = mon.dump(tmp_path / "d.log").read_text().splitlines()
+    assert [d.split("] ", 1)[1] for d in dumped] == [
+        "first", "late", "--- cpr: soft reset (Ctrl-D)", "after"]
+    stamps = [d[1:13] for d in dumped]
+    assert stamps == sorted(stamps)
+
+
+def test_dump_orders_a_soft_reset_marker_before_its_boot(pty_board, open_monitor, tmp_path):
+    selftest = pytest.importorskip("tools.selftest")
+    stop = threading.Event()
+    mon = open_monitor()
+    repl = threading.Thread(target=selftest.fake_repl, args=(pty_board.master, stop),
+                            daemon=True)
+    repl.start()
+    try:
+        mon.soft_reset(timeout=10)
+        dumped = mon.dump(tmp_path / "s.log").read_text().splitlines()
+    finally:
+        stop.set()
+        mon.write(b"\r")
+        repl.join(timeout=5)
+    marker = next(i for i, d in enumerate(dumped) if "--- cpr: soft reset" in d)
+    boot = next(i for i, d in enumerate(dumped) if d.endswith("] soft reboot"))
+    assert marker < boot
+    stamps = [d[1:13] for d in dumped]
+    assert stamps == sorted(stamps)
+
+
+def test_a_tty_path_is_the_console_power_cycle_monitor_builds(pty_board):
+    """power_cycle_monitor.py calls cls(tty, baud) and reads these names; PORT_ARGS says the
+    class takes that form."""
+    mon = SerialMonitor(pty_board.path, 115200)  # the baud is the second positional argument
+    try:
+        assert SerialMonitor.PORT_ARGS is True
+        for name in ("uptime", "opened", "first_byte", "last_line", "expect", "assert_none",
+                     "mark", "dump", "soft_reset", "prompt", "write"):
+            assert hasattr(mon, name), name
+        assert mon.port == pty_board.path and mon.opened is not None
+        assert mon._serial.baudrate == 115200  # pylint: disable=protected-access
+        assert mon.first_byte is None and mon.last_line is None
+        pty_board.write("hello\r\n")
+        assert mon.expect("hello", timeout=5)
+        assert mon.last_line.text == "hello"
+        assert mon.first_byte == mon.last_line.time
+        with pytest.raises(FarmError, match="no USB devnum"):
+            mon.board.devnum()
+    finally:
+        mon.close()
+
+
+def test_uptime_reads_the_boards_clock(pty_board, monkeypatch):
+    """uptime() types the clock query at a synced prompt and reads its one line back."""
+    mon = SerialMonitor(pty_board.path)
+    monkeypatch.setattr(mon, "prompt", lambda timeout=20: None)  # the fake board is not a REPL
+    stop = threading.Event()
+
+    def board():  # answers the query as a board that has run for 12.5 s after a power-on
+        buf = b""
+        while not stop.is_set():
+            ready, _, _ = select.select([pty_board.master], [], [], 0.05)
+            if not ready:
+                continue
+            buf += os.read(pty_board.master, 1024)
+            if b"microcontroller as m" in buf:
+                os.write(pty_board.master, b"@@UP 12.5 POWER_ON\r\n")
+                return
+
+    t = threading.Thread(target=board, daemon=True)
+    t.start()
+    try:
+        assert mon.uptime(timeout=5) == (12.5, "POWER_ON")
+    finally:
+        stop.set()
+        t.join(timeout=2)
+        mon.close()
+
+
+def test_power_cycle_monitor_uses_this_class():
+    """Once PORT_ARGS and the names are there, the power tool picks this class up (not its own
+    local port of it)."""
+    pcm = pytest.importorskip("tools.power_cycle_monitor")
+    assert pcm.monitor_class() is SerialMonitor

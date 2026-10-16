@@ -20,6 +20,9 @@ What this farm adds to his:
     unprivileged uhubctl). His board_reset() (DTR/RTS into EN/IO0) is not here: our native USB
     boards do not wire those lines.
   * OSC sequences (CircuitPython's status bar title) are stripped along with ANSI colours.
+  * SerialMonitor(tty_path, baud) takes a bare tty as well as a board, for tools/
+    power_cycle_monitor.py (PORT_ARGS). A bare tty has no USB devnum and no hub port, so
+    hard_reset() and port_reset() raise FarmError there; soft_reset() and uptime() work.
 
 Each line is logged at INFO on the 'cpr.serial' logger, so pytest shows it under "Captured log"
 on failure (or live with --log-cli-level=INFO).
@@ -70,6 +73,43 @@ class SerialUnexpectedError(SerialError, AssertionError):
     """assert_none() saw a matching line; a test failure."""
 
 
+class _TtyPath:
+    """Stands in for farmlib.Board when SerialMonitor is given a tty path (see __init__).
+
+    The path is the console and nothing else: there is no USB device behind it to re-enumerate
+    (devnum() refuses) and no hub port to cycle (power_cycle() refuses).
+    """
+
+    def __init__(self, path):
+        self.path = path
+        self.name = os.path.basename(path) or path
+        self.power = {}
+
+    def ttys(self):
+        return [self.path] if os.path.exists(self.path) else []
+
+    def present(self):
+        return os.path.exists(self.path)
+
+    def devnum(self):
+        raise FarmError("%s: a bare tty has no USB devnum; use a board for hard_reset()"
+                        % self.name)
+
+    def power_cycle(self, **_kw):
+        raise FarmError("%s: a bare tty has no hub port to power-cycle; use a board for "
+                        "port_reset()" % self.name)
+
+    def wait_ready(self, timeout=None, need_mount=False):  # pylint: disable=unused-argument
+        """Seconds until the path exists, or None if it does not within timeout."""
+        t0 = time.monotonic()
+        end = t0 + (timeout or 10)
+        while not os.path.exists(self.path):
+            if time.monotonic() >= end:
+                return None
+            time.sleep(0.05)
+        return time.monotonic() - t0
+
+
 @dataclass(frozen=True)
 class SerialLine:
     """One console line. Field order matches Brent's (index, time, text); mono is ours."""
@@ -100,16 +140,30 @@ class SerialMonitor:
     start on any reset. assert_none() defaults to the boot start.
     """
 
+    # power_cycle_monitor.py builds its monitor as cls(tty, baud) and checks PORT_ARGS for that.
+    PORT_ARGS = True
+
     def __init__(self, board, iface=0, baud=SERIAL_BAUD, reopen=True):
+        """board is a farmlib.Board (the console is its interface iface), or a tty path, as
+        power_cycle_monitor passes it. With a path the second positional argument is the baud
+        rate, so SerialMonitor(path, 115200) and SerialMonitor(path, baud=115200) both work.
+        A path has no board behind it, so hard_reset() and port_reset() raise FarmError."""
         if serial is None:
             raise SerialError("pyserial is not installed (pip install pyserial)")
+        if isinstance(board, (str, os.PathLike)):
+            if iface:
+                baud = iface
+            board, iface = _TtyPath(os.fspath(board)), 0
         self.board = board
         self.iface = iface
         self.reopen = reopen
         self.port = None  # the by-path name of the current open, for messages only
+        self.opened = None  # time.time() of the last successful open
+        self.first_byte = None  # time.time() of the first byte since the last open
+        self.last_line = None  # the SerialLine the last expect() matched
         self._baud = baud
         self._lines = []
-        self._events = []  # (line index, wall time, text): resets and reopens, for dump()
+        self._events = []  # (wall time, monotonic time, text): resets and reopens, for dump()
         self._partial = bytearray()
         self._partial_time = (0.0, 0.0)
         self._raw = bytearray()
@@ -161,6 +215,8 @@ class SerialMonitor:
             self._serial = ser
             self._error = None
             self._last_rx = time.monotonic()
+            self.opened = time.time()
+            self.first_byte = None
         self._stop.clear()
         self._reader = threading.Thread(target=self._read_loop, daemon=True,
                                         name="SerialMonitor(%s)" % self.board.name)
@@ -184,9 +240,11 @@ class SerialMonitor:
             self._cond.notify_all()
 
     def _event(self, text):
-        """Note a harness action in the capture, between lines in dump(); never matched."""
+        """Note a harness action in the capture, placed in dump() by monotonic time; never
+        matched. Call it when the action happens: lines whose bytes arrived before that moment
+        come before it in the dump, even if the reader thread stored them after."""
         with self._cond:
-            self._events.append((len(self._lines), time.time(), text))
+            self._events.append((time.time(), time.monotonic(), text))
         serial_log.info("%s | --- %s", self.board.name, text)
 
     def _wait_port(self, timeout=None):
@@ -208,6 +266,23 @@ class SerialMonitor:
                 raise SerialError("%s: no permission to open %s" % (self.board.name, path))
             time.sleep(0.25)
 
+    def _reopen(self, deadline):
+        """Wait for the console to come back and open it; return its by-path name.
+
+        The open is retried until deadline. Right after a reset the by-path link can outlive its
+        device (ENOENT or ENODEV), or the tty can exist before it is readable, so one failed open
+        is not the board being gone. Raises SerialError at the deadline.
+        """
+        while True:
+            path = self._wait_port(max(0.1, deadline - time.monotonic()))
+            try:
+                self._open(path)
+                return path
+            except SerialError:
+                if time.monotonic() >= deadline:
+                    raise
+            time.sleep(0.25)
+
     def _recover(self, deadline):
         """The reader lost the port. Reopen it once the board is back (reopen=True), else raise.
 
@@ -220,8 +295,7 @@ class SerialMonitor:
         self._shutdown()
         self._event("port lost (%s), waiting for it" % err)
         try:
-            path = self._wait_port(max(5, deadline - time.monotonic()))
-            self._open(path)
+            path = self._reopen(max(deadline, time.monotonic() + 5))
         except SerialError as e:
             with self._cond:
                 self._error = e
@@ -263,6 +337,8 @@ class SerialMonitor:
     def _feed(self, data, now, mono):
         self._raw += data
         self._last_rx = mono
+        if self.first_byte is None:
+            self.first_byte = now
         if len(self._raw) > RAW_KEEP:
             cut = len(self._raw) - RAW_KEEP
             del self._raw[:cut]
@@ -402,8 +478,8 @@ class SerialMonitor:
         (e.g. code.py's first prints) can be missed, as with Brent's port_reset.
         """
         self._check_open()
+        self.prompt()  # may recover the port, and with it the board's devnum
         devnum = self.board.devnum()
-        self.prompt()
         self._event("hard reset (microcontroller.reset())")
         try:
             self.write(b"import microcontroller; microcontroller.reset()\r\n")
@@ -444,16 +520,18 @@ class SerialMonitor:
 
     def _reopen_after_reset(self, timeout):
         self._shutdown()
+        timeout = timeout or 60 + self.board.power.get("settle", 12)
+        with self._cond:  # no reader runs until the reopen, so no line can arrive before this
+            start = len(self._lines)
         try:
-            path = self._wait_port(timeout)
+            path = self._reopen(time.monotonic() + timeout)
         except SerialError as e:
             with self._cond:
                 self._error = e
                 self._cond.notify_all()
             raise
         with self._cond:
-            self._boot = self._cursor = len(self._lines)
-        self._open(path)
+            self._boot = self._cursor = start
         self._event("reopened %s" % path)
         return self._boot
 
@@ -532,7 +610,18 @@ class SerialMonitor:
         line, m = self._wait_line(self._compile(pattern), start, timeout)
         with self._cond:
             self._cursor = max(self._cursor, line.index + 1)
+            self.last_line = line
         return m
+
+    def uptime(self, timeout=10):
+        """(time.monotonic(), reset_reason) from the board, typed at a synced prompt. The
+        board's uptime since its last reset, so a test can tell a real reset from a reopen."""
+        __tracebackhide__ = True  # pylint: disable=unused-variable
+        self.prompt()
+        self.write(b"import time,microcontroller as m;"
+                   b"print('@@UP',time.monotonic(),getattr(m.cpu,'reset_reason',None))\r")
+        m = self.expect(r"^@@UP ([0-9.]+) (\S+)", timeout=timeout)
+        return float(m.group(1)), m.group(2)
 
     def assert_none(self, pattern, since=None, duration=0):
         """Fail if any line from since (default: the boot start) matches pattern, watching new
@@ -556,10 +645,12 @@ class SerialMonitor:
                 if not self._error and not self._closed and remaining > 0:
                     self._cond.wait(remaining)
                     continue
-            if self._error and not self._closed and remaining > 0:
-                self._recover(deadline)
-                continue
-            if self._error and not self._closed and not self.reopen:
+            if self._error and not self._closed:
+                if remaining > 0:
+                    self._recover(deadline)  # raises if reopen is off or the board is not back
+                    continue
+                # Out of time with the port gone: nothing was watched to the end, so it is not
+                # a pass (as Brent's _port_error() in assert_none, hil_board_utils.py:1052).
                 raise SerialError("%s: serial port lost: %s" % (self._name(), self._error))
             return
 
@@ -587,23 +678,31 @@ class SerialMonitor:
 
     def dump(self, path):
         """Write every line to path as '[HH:MM:SS.mmm] text', the time its first byte arrived,
-        with resets and reopens between them as '--- cpr: ...'. Returns the path."""
+        with resets and reopens as '[HH:MM:SS.mmm] --- cpr: ...' at the moment they were issued.
+
+        Markers are merged in by monotonic time, not by line index: the reader thread can store
+        a line after a marker was made even though its bytes arrived before it, and that line
+        belongs before the marker. So the dump is in time order, and each marker's stamp is the
+        time it was made. Returns the path."""
         with self._cond:
             lines = list(self._lines)
-            events = list(self._events)
+            events = list(self._events)  # appended in time order by _event()
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
 
         def stamp(t):
             return datetime.fromtimestamp(t).strftime("%H:%M:%S.%f")[:-3]
 
+        def marker(ev):
+            f.write("[%s] --- cpr: %s\n" % (stamp(ev[0]), ev[2]))
+
         ev = 0
         with path.open("w") as f:
-            for l in lines:
-                while ev < len(events) and events[ev][0] <= l.index:
-                    f.write("[%s] --- cpr: %s\n" % (stamp(events[ev][1]), events[ev][2]))
+            for l in lines:  # lines' monotonic times rise with their index
+                while ev < len(events) and events[ev][1] <= l.mono:
+                    marker(events[ev])
                     ev += 1
                 f.write("[%s] %s\n" % (stamp(l.time), l.text))
-            for _, t, text in events[ev:]:
-                f.write("[%s] --- cpr: %s\n" % (stamp(t), text))
+            for e in events[ev:]:
+                marker(e)
         return path
