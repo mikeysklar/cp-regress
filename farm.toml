@@ -14,6 +14,14 @@
 #   until you add the key here. Pin names are board.<NAME>.
 # power: uhubctl repeat / wait values that actually cut this port.
 # flash: how flashed_firmware writes an image (uf2 copy, esptool + tinyuf2, or openocd over SWD).
+# run_tests / skip_tests (optional, pytest only): paths under test/ as a folder, a file or a
+#   test, after Brent's hil-boards.json. Only run_tests run on this board (omit for all);
+#   skip_tests are reported as skipped. Both narrow --tier and the markers, never widen them.
+#     run_tests = ["hardware/"]
+#     skip_tests = ["hardware/ble_pair_test.py", "hardware/core_vm_test.py::test_vid_pid"]
+#
+# Every entry is checked at session start (name, board_id, usb path, flash method keys, power
+# values, selectors); `pytest --list-boards` checks and prints the farm without touching it.
 
 [host]
 # Overridden by CPR_HOST_IP. Auto-detected when empty.
