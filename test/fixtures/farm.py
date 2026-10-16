@@ -46,13 +46,15 @@ POWER_KEYS = {"r": 1, "w": 1, "settle": 0}  # key -> smallest legal value (all i
 
 # flash.method -> {key: kind}, required then optional. Kinds: "str", "hex" (a string such as
 # "0x1000", because lib/flash.py hands it to esptool or int(x, 0)), "int" (kHz for openocd).
+# The optional keys include the opt-in --flash-erase ones lib/flash.py's erase_refusal reads
+# (nuke_uf2, app_base), so configuring an erase does not draw an "unknown key" warning.
 FLASH_METHODS = {
-    "uf2": ({}, {}),
+    "uf2": ({}, {"nuke_uf2": "str"}),
     "esp_uf2": ({"chip": "str", "flash_size": "str", "bootloader_offset": "hex",
                  "tinyuf2_offset": "hex", "tinyuf2_dir": "str"}, {}),
     "swd": ({"probe": "str", "target": "str"},
             {"speed": "int", "fast_speed": "int", "rescue_speed": "int", "connect": "str",
-             "bin_base": "hex"}),
+             "bin_base": "hex", "app_base": "hex"}),
 }
 
 
