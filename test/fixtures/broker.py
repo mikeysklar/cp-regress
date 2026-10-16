@@ -10,27 +10,42 @@ broker_address (session)  (host_ip, mqtt_port): where boards connect
 broker (session)          starts ProtoMQ if nothing answers on the API port; stops it at the
                           end of the run only if this run started it
 protomq (function)        ProtoMQ's HTTP API for one board's MQTT client id
+catcher (function)        lib/catcher.Catcher for this board: what it published on cpr/<board>/,
+                          expect() on it, written to results/catcher/<board>.jsonl at teardown
 
 One difference from his: he runs one board, so he calls POST /reset between tests. Here up to
 eight boards share one broker in parallel, and /reset would disconnect the other boards. protomq
-instead tracks and clears one client id per test and disconnects only that client afterwards.
+and catcher instead track and clear one client id per test and disconnect only that client.
+POST /reset is off by default. It clears every client's mailbox and autoresponders and stops
+the active /scripts demo (api/reset.js @ 9e2e1bf), so it is mid-run for any other cp-regress
+run sharing bravo on disjoint boards, and for anyone using ProtoMQ by hand. That run tracks its
+mailbox seconds before its board connects, so an empty GET /clients does not prove it is idle.
+--broker-reset opts in: once per run, when the first worker reaches the broker, and still only
+when this run started ProtoMQ or GET /clients shows nobody connected (protomq a904b5c made
+/reset also close every client). Either way the decision is recorded in the hygiene file.
+
+A failing test that used the broker gets a "protomq /clients" section in its report.
 """
+import contextlib
 import fcntl
 import json
 import os
 import signal
 import subprocess
 import time
-import urllib.error
-import urllib.request
 
 import pytest
 
+import catcher as catcherlib
 import farmlib
+from catcher import api  # one copy of the HTTP call; still importable as fixtures.broker.api
 
 PIDFILE = "/tmp/cpr-protomq.pid"
 LOCK = "/tmp/cpr-protomq.lock"
 LOG = "/tmp/cpr-protomq.log"
+HYGIENE = "/tmp/cpr-protomq.hygiene.json"  # what the session-start reset did, per run id
+HELPER = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+                      "tests", "lib", "cpr_catcher.py")
 
 
 def _cfg(config):
@@ -42,21 +57,18 @@ def _cfg(config):
     return b
 
 
-def api(port, path, body=None, timeout=5):
-    """One call to ProtoMQ's HTTP API. Returns the decoded JSON."""
-    data = None if body is None else json.dumps(body).encode()
-    req = urllib.request.Request("http://127.0.0.1:%d/api%s" % (port, path), data=data,
-                                 method="GET" if body is None else "POST",
-                                 headers={"content-type": "application/json"})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read() or b"{}")
-
-
 def _up(port):
     try:
         return api(port, "/clients", timeout=2).get("status") == "OK"
-    except (OSError, ValueError, urllib.error.URLError):
+    except catcherlib.API_ERRORS:
         return False
+
+
+def pytest_addoption(parser):
+    g = parser.getgroup("cp-regress")
+    g.addoption("--broker-reset", action="store_true",
+                help="POST /reset to ProtoMQ once at session start (off by default: it wipes "
+                     "the mailboxes of any other run sharing the broker)")
 
 
 def pytest_configure(config):
@@ -96,6 +108,9 @@ def broker(request, broker_address):
     """A running ProtoMQ. Returns its API port. Skips if it cannot be started."""
     cfg = _cfg(request.config)
     port = cfg["api_port"]
+    if request.config.getoption("cpr_dry_run"):
+        # session scope sets this up before `board` can skip; a dry run neither starts nor resets
+        pytest.skip("dry run: would use ProtoMQ on :%d" % port)
     with open(LOCK, "w") as lockf:
         fcntl.flock(lockf, fcntl.LOCK_EX)  # xdist workers race to start it
         try:
@@ -118,9 +133,59 @@ def broker(request, broker_address):
                 if not _up(port):
                     pytest.fail("ProtoMQ did not answer on :%d within 30 s; see %s" % (port, LOG),
                                 pytrace=False)
+            request.config.cpr_broker_hygiene = _session_hygiene(request.config, port)
         finally:
             fcntl.flock(lockf, fcntl.LOCK_UN)
     return port
+
+
+def _started_by_this_run():
+    try:
+        with open(PIDFILE) as f:
+            return f.read().split()[1] == os.environ.get("CPR_RUN_ID")
+    except (OSError, ValueError, IndexError):
+        return False
+
+
+def _session_hygiene(config, port):
+    """Record the broker's state once per run and, only with --broker-reset, POST /reset
+    before any test of this run has tracked a client, to clear autoresponders, an active script
+    and mailboxes left behind by earlier runs (protomq#10, #11). Off by default: another run on
+    disjoint boards may have tracked a mailbox whose board has not connected yet, and /reset
+    would drop it. Even when asked, only when this run started ProtoMQ or nobody is connected:
+    since a904b5c /reset also closes every client. Called with the broker lock held; the first
+    worker of the run to get here does it, the rest read its record.
+    """
+    run_id = os.environ.get("CPR_RUN_ID", "")
+    try:
+        with open(HYGIENE) as f:
+            done = json.load(f)
+        if done.get("run_id") == run_id:
+            return done
+    except (OSError, ValueError):
+        pass
+    rec = {"run_id": run_id, "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
+           "started_by_this_run": _started_by_this_run()}
+    try:
+        rec["clients"] = api(port, "/clients").get("clients", [])
+    except catcherlib.API_ERRORS as e:
+        rec["clients"] = "GET /clients failed: %s" % e
+    if not config.getoption("broker_reset"):
+        rec["action"] = "skipped: not requested"
+    elif not isinstance(rec["clients"], list):
+        rec["action"] = "skipped: could not list clients"
+    elif rec["started_by_this_run"] or not rec["clients"]:
+        try:
+            rec["reset"] = api(port, "/reset", {})
+            rec["action"] = "reset"
+        except catcherlib.API_ERRORS as e:
+            rec["action"] = "reset failed: %s" % e
+    else:
+        rec["action"] = "skipped: %d client(s) connected: %s" % (
+            len(rec["clients"]), ",".join(str(c.get("id")) for c in rec["clients"]))
+    with open(HYGIENE, "w") as f:
+        json.dump(rec, f, indent=1, sort_keys=True)
+    return rec
 
 
 class ProtoMQ:
@@ -193,9 +258,92 @@ def _raw(payload):
 def protomq(broker, board):
     """ProtoMQ for this board's MQTT client id, cpr-<board name>. Fresh mailbox per test."""
     pmq = ProtoMQ(broker, "cpr-" + board.name)
+    other = catcherlib.live(pmq.client)
+    if other is not None:  # its track would delete the catcher's mailbox
+        pytest.fail("%s is being caught by %s; use catcher or protomq, not both"
+                    % (pmq.client, other.nodeid), pytrace=False)
     pmq.call("/dump_deliveries", {"client": pmq.client, "clear": True})  # stop any old mailbox
     pmq.track()
     yield pmq
     pmq.call("/dump_deliveries", {"client": pmq.client, "clear": True})
     if pmq.connected():
         pmq.disconnect()
+
+
+# ---------------------------------------------------------------- catcher
+
+def catcher_helper():
+    """The device-side helper's source, for a module's FS = {"lib/cpr_catcher.py": ...}."""
+    with open(HELPER) as f:
+        return f.read()
+
+
+@contextlib.contextmanager
+def catching(request, broker_port, board, script=None):
+    """A started Catcher for board, stopped and appended to results/catcher/<board>.jsonl on the
+    way out. For module fixtures that run the device once; single tests use `catcher`.
+
+    The board's MQTT connection is closed afterwards (that client only, never /reset). When the
+    test failed, the "end" record also carries GET /clients as it was at teardown.
+    """
+    cat = catcherlib.Catcher(broker_port, board.name, nodeid=request.node.nodeid)
+    try:
+        cat.start()
+    except catcherlib.CatcherError as e:
+        pytest.fail(str(e), pytrace=False)
+    if script:
+        cat.play(script)
+    try:
+        yield cat
+    finally:
+        cat.stop()
+        cat.disconnect()
+        extra = {}
+        reps = getattr(request.node, "cpr_reports", {})
+        if any(r.failed for r in reps.values()):
+            extra["failed"] = sorted(w for w, r in reps.items() if r.failed)
+            extra["clients"] = _clients_or_error(broker_port)
+        cat.dump(**extra)
+
+
+@pytest.fixture
+def catcher(request, board, broker):
+    """lib/catcher.Catcher tracking cpr-<board>: expect(suffix, predicate, timeout), records(),
+    play(script), echo(suffix, payload). Appended to results/catcher/<board>.jsonl at teardown.
+
+    Device code gets what it needs from catcher.device_config() (client_id, board, run_id,
+    nodeid) and publishes with tests/lib/cpr_catcher.py. Not together with protomq in one test:
+    both track the same client id.
+    """
+    with catching(request, broker, board) as cat:
+        yield cat
+
+
+def _clients_or_error(port):
+    try:
+        return api(port, "/clients", timeout=2).get("clients", [])
+    except catcherlib.API_ERRORS as e:
+        return "GET /clients failed: %s" % e
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):  # pylint: disable=unused-argument
+    """Keep each phase's report on the item (the catcher's "end" record reads it), and add
+    ProtoMQ's GET /clients, the session-start reset record and the catcher's last records to the
+    report of a failing test that used the broker."""
+    outcome = yield
+    rep = outcome.get_result()
+    if not hasattr(item, "cpr_reports"):
+        item.cpr_reports = {}
+    item.cpr_reports[rep.when] = rep
+    if not rep.failed or "broker" not in getattr(item, "fixturenames", ()):
+        return
+    port = _cfg(item.config)["api_port"]
+    rep.sections.append(("protomq /clients",
+                         json.dumps(_clients_or_error(port), indent=1, sort_keys=True)))
+    hyg = getattr(item.config, "cpr_broker_hygiene", None)
+    if hyg is not None:
+        rep.sections.append(("protomq session-start reset", json.dumps(hyg, sort_keys=True)))
+    cat = getattr(item, "funcargs", {}).get("catcher")
+    if isinstance(cat, catcherlib.Catcher):
+        rep.sections.append(("catcher %s" % cat.client, cat.tail(20)))

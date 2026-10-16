@@ -35,7 +35,7 @@ pytest -n 8 --dist loadgroup --tier nightly test/ \
 | `base_secrets` | session | settings.toml values from `.env`, plus the broker address. Prod guard: stops the run if the SSID is not in `[network] allowed_ssids`, an Adafruit IO credential is in the environment, or the broker is not private |
 | `secrets` | module | `base_secrets` plus the module's `SECRETS = {...}` (None deletes a key) |
 | `broker_address` | session | `(host_ip, 1884)` |
-| `broker` | session | starts adafruit/protomq (`[broker]` in farm.toml) if nothing answers on :5173; stops it at the end only if this run started it (`--broker-keep` leaves it) |
+| `broker` | session | starts adafruit/protomq (`[broker]` in farm.toml) if nothing answers on :5173; stops it at the end only if this run started it (`--broker-keep` leaves it). Never POSTs `/reset` unless `--broker-reset` is given, and then only if this run started ProtoMQ or no client is connected |
 | `protomq` | test | ProtoMQ's HTTP API for client id `cpr-<board>`: `track()`, `deliveries()`, `outbox()`, `echo()`, `wait_subscribed()`. No global `/reset`: boards share the broker in parallel |
 | `serial` | test | `reset()` (soft reboot), `expect(regex)`, `send(line)` on the console |
 
