@@ -11,13 +11,13 @@ GitHub reporting is out of scope for now.
 | His fixture | Scope | Ours today | Gap |
 |---|---|---|---|
 | `board` | session, finds port | `board` (module, per board, from `farm.toml` `usb`) | none, ours is wider |
-| `flashed_firmware` | session, fw + base FS | flash by hand with `fastcp.sh`; `--expect-version` only refuses | **build it** |
-| `flashed_fs` | module, if changed | `board.preserved()` + `write_file()` per test | **build it** |
-| `serial` | function, resets | `device` (module) via `farmlib.Repl` | thin alias |
-| `broker_address` | session, host:port | `farm.toml [host] ip` | **build it** |
-| `broker` / `protomq` | session / function | public hosts (`adafruit.com`, `httpbin`, `api.github.com`) | **build it** |
-| `base_secrets` | session, prod guard | `secret()` reads env names from `farm.toml [network]` | add guard |
-| `secrets` | override per module | none, tests write `settings.toml` themselves | **build it** |
+| `flashed_firmware` | session, fw + base FS | `flashed_firmware` (module; `--firmware DIR`, flashes each board at most once per run, skips if unchanged) | built in f11b710 |
+| `flashed_fs` | module, if changed | `flashed_fs` (module; copies only changed files, restores at session end unless `--keep-fs`) | built in f11b710 |
+| `serial` | function, resets | `serial` (function) via `SerialMonitor`; `device` (module) via `farmlib.Repl` | built in f11b710 |
+| `broker_address` | session, host:port | `broker_address` (session, `farm.toml [host] ip` + `[broker]` port) | built in f11b710 |
+| `broker` / `protomq` | session / function | `broker` (session, ProtoMQ on bravo) / `protomq` (function, per board client) | built in f11b710 |
+| `base_secrets` | session, prod guard | `base_secrets` (session); prod guard also runs at `pytest_sessionstart` | built in f11b710, 6874bbb |
+| `secrets` | override per module | `secrets` (module, `base_secrets` + module `SECRETS` override) | built in f11b710 |
 
 Fixture names below copy his so a test reads the same in both repos.
 
@@ -53,10 +53,11 @@ Smallest piece, no hardware risk. Do it first.
 Done when: a bogus SSID stops the run before any board is touched, and `wifi_join_test.py`
 passes with its settings coming from `secrets`.
 
-## Phase 2: `flashed_firmware` (session, per board)
+## Phase 2: `flashed_firmware` (module, flashes once per board per run)
 
-Brings flashing inside the run. His version flashes once per session; ours does the same per
-board.
+Brings flashing inside the run. His version flashes once per session. Ours is a module fixture:
+`ensure_firmware` flashes each board at most once per run and caches the result in
+`config.cpr_flashed`, which `flashed_firmware` reads (`test/fixtures/flashing.py:109`).
 
 - New option `--firmware DIR` (a build or CI artifact folder). Each board finds its image by
   `board_id` in the filename. No `--firmware` means "do not flash, assert version only", which
