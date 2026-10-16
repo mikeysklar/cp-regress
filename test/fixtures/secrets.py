@@ -3,7 +3,7 @@
 """Secrets fixtures, after Brent's WipperSnapper harness: base_secrets and secrets.
 
 base_secrets (session) is the default settings.toml for the farm, built from the environment
-(.env). It is also the prod guard: the run stops before any board is touched when the WiFi
+(.env). The prod guard runs at session start: the run stops before any board is touched when the WiFi
 network is not one farm.toml allows, when anything that looks like an Adafruit IO credential is
 in the environment, or when the broker is not on a private address.
 
@@ -49,10 +49,7 @@ def prod_guard(cfg, env, values, broker_host):
     return why
 
 
-@pytest.fixture(scope="session")
-def base_secrets(request, broker_address):
-    """The farm's default settings.toml as a dict. Stops the run if the prod guard trips."""
-    cfg = request.config.cpr_cfg
+def _values(cfg, broker_host, broker_port):
     net = cfg.get("network", {})
     values = {}
     for key, env_key in FROM_ENV.items():
@@ -60,8 +57,31 @@ def base_secrets(request, broker_address):
         if env_name and os.environ.get(env_name):
             values[key] = os.environ[env_name]
     values["CIRCUITPY_WEB_API_PASSWORD"] = WEB_API_PASSWORD
-    values["CPR_BROKER_HOST"] = broker_address[0]
-    values["CPR_BROKER_PORT"] = broker_address[1]
+    values["CPR_BROKER_HOST"] = broker_host
+    values["CPR_BROKER_PORT"] = broker_port
+    return values
+
+
+def pytest_sessionstart(session):
+    """The prod guard runs here, before collection and before any board is opened, on the
+    controller (or a run without xdist). base_secrets checks again for its own values."""
+    config = session.config
+    if hasattr(config, "workerinput") or config.getoption("cpr_dry_run"):
+        return
+    import farmlib  # pylint: disable=import-outside-toplevel
+    cfg = config.cpr_cfg
+    host = cfg.get("host", {}).get("ip") or farmlib.host_ip()
+    values = _values(cfg, host, cfg.get("broker", {}).get("mqtt_port", 1884))
+    why = prod_guard(cfg, os.environ, values, host)
+    if why:
+        pytest.exit("prod guard: " + "; ".join(why), returncode=3)
+
+
+@pytest.fixture(scope="session")
+def base_secrets(request, broker_address):
+    """The farm's default settings.toml as a dict. Stops the run if the prod guard trips."""
+    cfg = request.config.cpr_cfg
+    values = _values(cfg, broker_address[0], broker_address[1])
     why = prod_guard(cfg, os.environ, values, broker_address[0])
     if why:
         pytest.exit("prod guard: " + "; ".join(why), returncode=3)
