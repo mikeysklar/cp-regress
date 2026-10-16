@@ -44,6 +44,43 @@ def _read(path, default=None):
         return default
 
 
+def _read_fresh(path, default=""):
+    """Read a file on a mounted drive with this file's cached pages dropped first.
+
+    The host page cache can hold boot_out.txt from before a reset. An ESP32-S2 can reset with
+    only a USB bus reset (same devnum, no disconnect), so nothing re-mounts the drive. The drop
+    is POSIX_FADV_DONTNEED, which needs no root; without os.posix_fadvise (macOS) it does nothing.
+    """
+    try:
+        with open(path, "rb") as f:
+            if hasattr(os, "posix_fadvise"):
+                try:
+                    os.posix_fadvise(f.fileno(), 0, 0, os.POSIX_FADV_DONTNEED)
+                except OSError:
+                    pass
+            return f.read().decode(errors="replace").strip()
+    except OSError:
+        return default
+
+
+# Runs on the board: sha256 of each path in PATHS, one "CPRH <path> <hex>" line each.
+_BOARD_SHA256 = """\
+import hashlib
+for p in PATHS:
+    try:
+        h = hashlib.new('sha256')
+        with open(p, 'rb') as f:
+            while True:
+                b = f.read(256)
+                if not b:
+                    break
+                h.update(b)
+        print('CPRH', p, ''.join('%02x' % c for c in h.digest()))
+    except OSError:
+        print('CPRH', p, 'MISSING')
+"""
+
+
 class Board:
     def __init__(self, cfg, host_cfg):
         self.name = cfg["name"]
@@ -173,9 +210,74 @@ class Board:
             pass  # the port vanishing under us is the point
         return True
 
+    def _drop_block_cache(self):
+        """Drop the host cache of this drive's block device (FAT directory entries live there).
+        Best effort: a device this user cannot open for reading is skipped."""
+        for dev in self.block_devs():
+            try:
+                fd = os.open(dev, os.O_RDONLY)
+            except OSError:
+                continue
+            try:
+                if hasattr(os, "posix_fadvise"):
+                    os.posix_fadvise(fd, 0, 0, os.POSIX_FADV_DONTNEED)
+            except OSError:
+                pass
+            finally:
+                os.close(fd)
+
     def boot_out(self):
+        """boot_out.txt as the host reads it from the mount, cache dropped first. Can be stale
+        right after a reset; board_boot_out() is the board's own view."""
         mp = self.mount()
-        return _read(os.path.join(mp, "boot_out.txt"), "") if mp else ""
+        if not mp:
+            return ""
+        self._drop_block_cache()
+        return _read_fresh(os.path.join(mp, "boot_out.txt"), "")
+
+    def board_boot_out(self, timeout=5):
+        """boot_out.txt as the board reads it over the REPL: it reads its own flash, so no host
+        cache is involved. None when the REPL cannot answer."""
+        if serial is None:
+            return None
+        try:
+            with self.repl() as r:
+                r.prompt(timeout=timeout)
+                outs, err = r.exec_raw_pieces(["print(open('/boot_out.txt').read(), end='')\n"],
+                                              timeout=timeout + 2)
+        except (FarmError, OSError):
+            return None
+        return "" if err.strip() else outs[0]
+
+    def fresh_boot_out(self):
+        """boot_out.txt from the board's REPL when it answers, else the host mount
+        with the cache dropped."""
+        text = self.board_boot_out()
+        return text if text is not None else self.boot_out()
+
+    def wait_after_reset(self, needle, prev_devnum=None, timeout=None):
+        """After microcontroller.reset(), wait until boot_out.txt shows needle.
+
+        Returns (seconds, found). The evidence of a reboot is needle in boot_out.txt as read by
+        fresh_boot_out(), so a stale host cache cannot pass for a new boot. When the device
+        re-enumerates (devnum differs from prev_devnum), the board counts as back once its drive
+        mounts and the settle has run; found is still only True when needle shows up.
+        (None, False) means no sign of a reboot within timeout.
+        """
+        timeout = timeout or 60 + self.power.get("settle", 12)
+        t0 = time.time()
+        end = t0 + timeout
+        back = None
+        while time.time() < end:
+            if needle in self.fresh_boot_out():
+                return (time.time() - t0 if back is None else back), True
+            if back is None and prev_devnum is not None and self.present() \
+                    and self.devnum() not in (None, prev_devnum):
+                if self.wait_ready(timeout=max(1.0, end - time.time())) is None:
+                    break
+                back = time.time() - t0
+            time.sleep(0.5)
+        return back, False
 
     def version(self):
         m = re.search(r"Adafruit CircuitPython (\S+)", self.boot_out())
@@ -249,7 +351,14 @@ class Board:
     # ---------- preserve user files ----------
     @contextmanager
     def preserved(self, files=("code.py", "boot.py", "settings.toml")):
-        """Back up files, yield, restore and verify by md5. Missing files are removed again."""
+        """Back up files, yield, restore, then verify each restored file. Missing files are
+        removed again.
+
+        The check is sha256 on the board, over the REPL, because a host read can come from a
+        stale cache and pass for a restore that did not stick (ESP32-S2 after a USB bus reset).
+        Only when the board cannot answer (no REPL, or no hashlib) is the host md5 used instead.
+        A difference on the board raises FarmError.
+        """
         saved = {}
         for rel in files:
             data = self.read_file(rel, binary=True)
@@ -262,9 +371,62 @@ class Board:
                     self.remove_file(rel)
                 else:
                     self.write_file(rel, data)
-                    back = self.read_file(rel, binary=True)
-                    if hashlib.md5(back).hexdigest() != hashlib.md5(data).hexdigest():
-                        raise FarmError("%s: restore of %s failed md5 check" % (self.name, rel))
+            self._verify_restored(saved)
+
+    def _verify_restored(self, saved):
+        want = {rel: hashlib.sha256(data).hexdigest() for rel, data in saved.items()
+                if data is not None}
+        if not want:
+            return
+        got = self.board_sha256(sorted(want))
+        if got is not None:
+            bad = ["%s (board sha256 %s, want %s)" % (rel, got[rel], want[rel])
+                   for rel in sorted(want) if got[rel] != want[rel]]
+            if bad:
+                raise FarmError("%s: restore did not stick on the board: %s"
+                                % (self.name, "; ".join(bad)))
+            return
+        # The board cannot say: fall back to the host read, with the cache dropped first.
+        mp = self.mount()
+        if not mp:
+            raise FarmError("%s: CIRCUITPY not mounted, cannot verify the restore" % self.name)
+        self._drop_block_cache()
+        for rel, data in saved.items():
+            if data is None:
+                continue
+            try:
+                with open(os.path.join(mp, rel), "rb") as f:
+                    back = f.read()
+            except OSError:
+                back = b""
+            if hashlib.md5(back).hexdigest() != hashlib.md5(data).hexdigest():
+                raise FarmError("%s: restore of %s failed md5 check (board unreachable)"
+                                % (self.name, rel))
+
+    def board_sha256(self, rels, timeout=5):
+        """sha256 hex of each file in rels (names relative to the drive), as the board reads
+        them over the REPL. None when the REPL cannot answer or a file is not reported (e.g. no
+        hashlib on this build)."""
+        if serial is None:
+            return None
+        paths = ["/" + rel for rel in rels]
+        code = "PATHS = %r\n" % (paths,) + _BOARD_SHA256
+        try:
+            with self.repl() as r:
+                r.prompt(timeout=timeout)
+                outs, err = r.exec_raw_pieces([code], timeout=timeout + 5)
+        except (FarmError, OSError):
+            return None
+        if err.strip():
+            return None
+        got = {}
+        for line in outs[0].splitlines():
+            parts = line.strip().split(" ")
+            if len(parts) == 3 and parts[0] == "CPRH":
+                got[parts[1].lstrip("/")] = parts[2]
+        if set(got) != set(rels):
+            return None
+        return got
 
 
 class Repl:
