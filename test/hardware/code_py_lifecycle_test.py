@@ -6,8 +6,8 @@ pytest version of tests/code_py_lifecycle.py. One module-scoped fixture per boar
 original run() does, in the same order, inside board.preserved(): (a) a marker plus a
 ValueError, (b) run_reason / reset_reason, (c) deep recursion and a huge allocation, (d) on
 reset_ok boards, boot.py output after microcontroller.reset(). It records what each phase saw;
-the tests below assert on that record. code.py and boot.py are restored (md5-checked) and the
-board is reloaded once in the fixture's finally block.
+the tests below assert on that record. code.py and boot.py are restored
+(sha256-checked on the board) and the board is reloaded once in the fixture's finally block.
 Targets: #3502 (code.py started twice), #7459, #7578, #7060, #11287, #1537, #4728.
 """
 import contextlib
@@ -69,14 +69,17 @@ def _phases(board, rec):
         board.write_file("boot.py", 'print("%s")\n' % bmark)
         board.write_file("code.py", "pass\n")
         time.sleep(3)
+        devnum = board.devnum()
         with board.repl() as r:
             r.prompt()
             r.write(b"import microcontroller; microcontroller.reset()\r")
         time.sleep(2)
-        ready = board.wait_ready()
+        # S2 can reset with only a USB bus reset (same devnum): wait for bmark in boot_out.txt
+        # as the board reads it, not for the drive to re-mount.
+        ready, found = board.wait_after_reset(bmark, prev_devnum=devnum)
         rec["ready"] = ready
         if ready is not None:
-            rec["d_boot"] = bmark in board.boot_out()
+            rec["d_boot"] = found
     rec["d"] = True
     rec["at"] = None
 
@@ -106,7 +109,7 @@ def lifecycle(board):
     finally:
         if entered:
             try:
-                stack.close()  # restore code.py / boot.py / settings.toml, md5-checked
+                stack.close()  # restore code.py / boot.py / settings.toml (sha256 on the board)
             finally:
                 # restore: files are back; reload once so the board runs its normal code.py
                 try:
