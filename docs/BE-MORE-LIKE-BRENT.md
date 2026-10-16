@@ -125,7 +125,9 @@ publishes the wrong payload.
 
 Thin wrapper so tests that only need console output read like his.
 
-- `serial.reset()` = soft reboot; `serial.expect(pattern, timeout)` = `Repl.read_until`.
+- `serial` is a `SerialMonitor` (`lib/serialmon.py`, ported from Brent's): line-based
+  `expect`/`mark`/`assert_none`, `soft_reset` (`reset`), `hard_reset`, `port_reset`, and a
+  per-test log under `--serial-log-dir`.
 - Syncs on `>>> ` before sending anything (the REPL eats the first keystroke).
 - `device` stays as is for raw-REPL code runs.
 
@@ -182,3 +184,22 @@ Found along the way (not harness bugs):
 
 Still open: Brent's own conftest.py was not available, so signatures follow his diagram;
 net_tls still mixes local and public hosts (the `external` marker exists but is not applied yet).
+
+## Status, 2026-10-16: branch `brent-ports`
+
+Ports from Brent's `add-hil-ci-cd` @ `cf64e03`, merged onto `be-more-like-brent`. Offline checks
+only; none of this has run on the farm yet. Line-by-line tracking is in `docs/BRENT-SYNC.md`
+(`tools/brent_sync.py`).
+
+| Package | What landed |
+|---|---|
+| A serial | `lib/serialmon.py` SerialMonitor behind the `serial` fixture, per-test serial logs |
+| B checks | `lib/hil_checks.py` crash signatures per port, banner/identity checks; `device_uid` fixture |
+| C secrets | named settings.toml scenarios (`data/settings-scenarios/`), `settings_scenarios_test.py` (nightly) |
+| D catcher | `lib/catcher.py`, `catcher` fixture on cpr/ topics, `tools/catcher.py`; ProtoMQ `/reset` only with `--broker-reset` |
+| E flash | phase timings and `FlashResult`, opt-in `--flash-erase` (never nRF, never bootloaders), open-port guard |
+| F select | per-board `run_tests`/`skip_tests`, farm.toml validation, `--list-boards`, `hardware` marker |
+| H powermon | `tools/power_cycle_monitor.py`, opt-in `-m power_boot` tests (still on its own local SerialMonitor) |
+| I sync | `tools/brent_sync.py`, `docs/BRENT-SYNC.md` |
+
+Brent's own conftest.py is now available, so the "Still open" note above is superseded.

@@ -54,7 +54,9 @@ The banner and status lines are translated (MP_ERROR_TEXT); the patterns here ar
 builds.
 
 SerialMonitor below is a minimal local port of Brent's (hil_board_utils.py:757 @ cf64e03).
-SWAP-LATER: when lib/serialmon.py (package A) lands, monitor_class() picks it up instead.
+lib/serialmon.py has landed but is not used here yet: it opens from a Board, not a port, keeps
+pyserial's input flush on open (the first boot bytes after a power cycle), and has no
+opened/first_byte/last_line/uptime. monitor_class() keeps the local class until it does.
 """
 
 import argparse
@@ -200,15 +202,18 @@ def power_cycle_board(board, delay=3):
 # ---------- serial monitor ----------
 
 def monitor_class():
-    """lib/serialmon.SerialMonitor when package A has landed, else the local one below.
+    """lib/serialmon.SerialMonitor once it fits this tool, else the local one below.
 
-    SWAP-LATER: once lib/serialmon.py exists and takes (port, baud) like Brent's, delete the
-    local class and import it directly.
+    SWAP-LATER: serialmon.SerialMonitor(board, iface, baud) does not take (port, baud) and has
+    no uptime/opened/first_byte/last_line, so it is used only once it says it does
+    (PORT_ARGS = True plus those names). Until then the local class is returned.
     """
     try:
         import serialmon  # pylint: disable=import-outside-toplevel
         cls = getattr(serialmon, "SerialMonitor", None)
-        if cls and all(hasattr(cls, a) for a in ("expect", "assert_none", "mark", "dump")):
+        need = ("expect", "assert_none", "mark", "dump", "soft_reset", "prompt", "uptime",
+                "write")
+        if cls and getattr(cls, "PORT_ARGS", False) and all(hasattr(cls, a) for a in need):
             return cls
     except ImportError:
         pass
