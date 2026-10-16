@@ -270,16 +270,19 @@ class SerialMonitor:
         if not self._partial:
             self._partial_time = (now, mono)
         self._partial += data
+        # Split at each newline, and at SERIAL_MAX_LINE bytes when no newline comes first.
+        # Brent's (hil_board_utils.py:870-876 @ cf64e03) checks the limit once, after the
+        # newlines: one read can bring several limits' worth (pyserial reads all of
+        # in_waiting), and a long run that ends in a newline is never split, so a line could
+        # grow well past the limit.
         while True:
-            i = self._partial.find(b"\n")
-            if i < 0:
+            i = self._partial.find(b"\n", 0, SERIAL_MAX_LINE + 1)
+            if i < 0 and len(self._partial) < SERIAL_MAX_LINE:
                 break
-            self._emit(self._partial[:i], *self._partial_time)
-            del self._partial[:i + 1]
+            cut, skip = (i, 1) if i >= 0 else (SERIAL_MAX_LINE, 0)
+            self._emit(self._partial[:cut], *self._partial_time)
+            del self._partial[:cut + skip]
             self._partial_time = (now, mono)
-        if len(self._partial) >= SERIAL_MAX_LINE:
-            self._emit(self._partial, *self._partial_time)
-            self._partial.clear()
 
     def _emit(self, raw, now, mono):
         text = ANSI_ESCAPE_RE.sub("", raw.decode(errors="replace")).rstrip("\r")
