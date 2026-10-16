@@ -16,9 +16,13 @@ catcher (function)        lib/catcher.Catcher for this board: what it published 
 One difference from his: he runs one board, so he calls POST /reset between tests. Here up to
 eight boards share one broker in parallel, and /reset would disconnect the other boards. protomq
 and catcher instead track and clear one client id per test and disconnect only that client.
-POST /reset runs once, when the first worker of a run reaches the broker, and only when this run
-started ProtoMQ or GET /clients shows nobody connected (protomq a904b5c made /reset also close
-every client). Never mid-run; --broker-no-reset turns it off.
+POST /reset is off by default. It clears every client's mailbox and autoresponders and stops
+the active /scripts demo (api/reset.js @ 9e2e1bf), so it is mid-run for any other cp-regress
+run sharing bravo on disjoint boards, and for anyone using ProtoMQ by hand. That run tracks its
+mailbox seconds before its board connects, so an empty GET /clients does not prove it is idle.
+--broker-reset opts in: once per run, when the first worker reaches the broker, and still only
+when this run started ProtoMQ or GET /clients shows nobody connected (protomq a904b5c made
+/reset also close every client). Either way the decision is recorded in the hygiene file.
 
 A failing test that used the broker gets a "protomq /clients" section in its report.
 """
@@ -62,8 +66,9 @@ def _up(port):
 
 def pytest_addoption(parser):
     g = parser.getgroup("cp-regress")
-    g.addoption("--broker-no-reset", action="store_true",
-                help="never POST /reset to ProtoMQ, not even once at session start")
+    g.addoption("--broker-reset", action="store_true",
+                help="POST /reset to ProtoMQ once at session start (off by default: it wipes "
+                     "the mailboxes of any other run sharing the broker)")
 
 
 def pytest_configure(config):
@@ -143,11 +148,13 @@ def _started_by_this_run():
 
 
 def _session_hygiene(config, port):
-    """POST /reset once per run, before any test of this run has tracked a client, to clear
-    autoresponders, an active script and mailboxes left behind by earlier runs (protomq#10,
-    #11). Only when this run started ProtoMQ or nobody is connected: since a904b5c /reset also
-    closes every client, and a connected client may be another run's board. Called with the
-    broker lock held; the first worker of the run to get here does it, the rest read its record.
+    """Record the broker's state once per run and, only with --broker-reset, POST /reset
+    before any test of this run has tracked a client, to clear autoresponders, an active script
+    and mailboxes left behind by earlier runs (protomq#10, #11). Off by default: another run on
+    disjoint boards may have tracked a mailbox whose board has not connected yet, and /reset
+    would drop it. Even when asked, only when this run started ProtoMQ or nobody is connected:
+    since a904b5c /reset also closes every client. Called with the broker lock held; the first
+    worker of the run to get here does it, the rest read its record.
     """
     run_id = os.environ.get("CPR_RUN_ID", "")
     try:
@@ -163,8 +170,8 @@ def _session_hygiene(config, port):
         rec["clients"] = api(port, "/clients").get("clients", [])
     except catcherlib.API_ERRORS as e:
         rec["clients"] = "GET /clients failed: %s" % e
-    if config.getoption("broker_no_reset"):
-        rec["action"] = "skipped: --broker-no-reset"
+    if not config.getoption("broker_reset"):
+        rec["action"] = "skipped: not requested"
     elif not isinstance(rec["clients"], list):
         rec["action"] = "skipped: could not list clients"
     elif rec["started_by_this_run"] or not rec["clients"]:
