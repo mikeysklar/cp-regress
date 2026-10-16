@@ -1,0 +1,4 @@
+# cp-regress settings scenario duplicate_key: see scenarios.toml; the @@ placeholders are filled
+# from .env at test time.
+CPR_DUP = "first"
+CPR_DUP = "second"

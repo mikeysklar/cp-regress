@@ -1,0 +1,4 @@
+# cp-regress settings scenario empty_value: see scenarios.toml; the @@ placeholders are filled
+# from .env at test time.
+CIRCUITPY_WIFI_SSID =
+CPR_BROKER_HOST = "@@BROKER_HOST@@"
