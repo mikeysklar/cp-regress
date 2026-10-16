@@ -310,7 +310,7 @@ class Catcher:
         rec["index"] = len(self._records)
         self._records.append(rec)
         if self.player is not None and box == "outbox":
-            self.player.on_record(rec)
+            self.player.on_record(rec, t)
         return rec
 
     def poll_once(self):
@@ -610,11 +610,13 @@ class ScriptPlayer:
             return False
         return match(step["match"], msg) if step.get("match") is not None else True
 
-    def on_record(self, rec):
-        """A new record the board published. Called with the catcher's lock held."""
+    def on_record(self, rec, now=None):
+        """A new record the board published, seen by the poll at host time now. Called with the
+        catcher's lock held. A step it makes due counts from now, the same clock the poll's
+        tick(now) uses, so a step with no delay is sent by that same poll, not the next one."""
         if rec["suffix"] is None:
             return
-        now = time.time()
+        now = time.time() if now is None else now
         for s in self.steps:
             n = s["name"]
             if n in self.completed or n in self.due:
