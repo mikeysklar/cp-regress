@@ -201,6 +201,6 @@ only; none of this has run on the farm yet. Line-by-line tracking is in `docs/BR
 | F select | per-board `run_tests`/`skip_tests`, farm.toml validation, `--list-boards`, `hardware` marker |
 | H powermon | `tools/power_cycle_monitor.py`, opt-in `-m power_boot` tests (still on its own local SerialMonitor) |
 | I sync | `tools/brent_sync.py`, `docs/BRENT-SYNC.md` |
-| J network | `test/hardware/net_wifi_test.py` after his `network/test_wifi.py` @ 473c120: SSID in scan, supervisor joins from settings.toml, missing SSID raises and the radio recovers (nightly, not yet on the farm) |
+| J network | `test/hardware/net_wifi_test.py` after his `network/test_wifi.py` @ 90cd5af: SSID in scan, supervisor joins from settings.toml, wrong password and missing SSID raise and the radio recovers (nightly, not yet on the farm) |
 
 Brent's own conftest.py is now available, so the "Still open" note above is superseded.

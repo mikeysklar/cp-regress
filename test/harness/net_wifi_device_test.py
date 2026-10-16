@@ -39,12 +39,16 @@ class Net:
 
 
 class Radio:
-    def __init__(self, nets, connected=False, not_found_exc=None):
+    def __init__(self, nets, connected=False, not_found_exc=None, auth_exc=None):
         self.nets = nets
         self.connected = connected
         self.enabled = True
         self.not_found_exc = not_found_exc
+        self.auth_exc = auth_exc
         self.ssid = FARM_SSID if connected else None
+
+    def stop_station(self):
+        self.connected, self.ssid = False, None
 
     def start_scanning_networks(self):
         return iter(self.nets)
@@ -58,6 +62,11 @@ class Radio:
             if self.not_found_exc is None:
                 return  # a firmware that forgets to raise
             raise self.not_found_exc
+        if password != FARM_PASSWORD:
+            self.connected = False
+            if self.auth_exc is None:
+                return
+            raise self.auth_exc
         self.connected, self.ssid = True, ssid
 
     @property
@@ -154,6 +163,31 @@ def test_not_found_fails_when_slow(monkeypatch, capsys):
     radio = Radio([Net(FARM_SSID)], not_found_exc=ConnectionError("No network with that ssid"))
     r = run(not_found(timeout=20), radio, monkeypatch, capsys)
     assert r["not_found_in_time"] is False
+
+
+def bad_password(timeout=20):
+    return NW.DEVICE_BAD_PASSWORD.format(ssid=FARM_SSID, password=FARM_PASSWORD,
+                                         wrong=NW.WRONG_WIFI_PASSWORD, timeout=timeout)
+
+
+def test_bad_password_passes_on_the_documented_error(monkeypatch, capsys):
+    radio = Radio([Net(FARM_SSID)], connected=True,
+                  auth_exc=ConnectionError("Authentication failure"))
+    r = run(bad_password(), radio, monkeypatch, capsys)
+    assert all(r.values()), r
+    assert r["rejoined"] is True
+
+
+def test_bad_password_fails_on_unknown_failure(monkeypatch, capsys):
+    radio = Radio([Net(FARM_SSID)], connected=True,
+                  auth_exc=ConnectionError("Unknown failure 204"))
+    r = run(bad_password(), radio, monkeypatch, capsys)
+    assert r["bad_password_connection_error"] is True and r["bad_password_message"] is False
+
+
+def test_bad_password_fails_when_connect_returns(monkeypatch, capsys):
+    r = run(bad_password(), Radio([Net(FARM_SSID)], connected=True), monkeypatch, capsys)
+    assert r["bad_password_raises"] is False
 
 
 def test_device_code_never_carries_the_password_into_detail(monkeypatch, capsys):

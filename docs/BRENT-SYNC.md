@@ -41,7 +41,7 @@ watch list are only counted (his branch also carries firmware changes under `src
 
 | Key | Repo | Branch | SHA | Synced | Watch |
 |---|---|---|---|---|---|
-| brent | brentru/Adafruit_Wippersnapper_Arduino | add-hil-ci-cd | 473c120 | 2026-10-16 | `hil/* .github/* !*/__pycache__/* !*.pyc` |
+| brent | brentru/Adafruit_Wippersnapper_Arduino | add-hil-ci-cd | 90cd5af | 2026-10-16 | `hil/* .github/* !*/__pycache__/* !*.pyc` |
 | protomq | adafruit/protomq | main | 9e2e1bf | 2026-10-16 | `* !node_modules/*` |
 | protobuf | adafruit/Wippersnapper_Protobuf | api-v2 | b3688d6 | 2026-10-16 | `*` |
 
@@ -109,42 +109,45 @@ port branch is in flight, named in Notes), `equivalent` (we already do this our 
 | brent | `hil/hil_board_utils.py::SerialLine` | 751 | `lib/serialmon.py::SerialLine` | ported | |
 | brent | `hil/hil_board_utils.py::SerialMonitor` | 757 | `lib/serialmon.py::SerialMonitor` | ported | test/fixtures/console.py imports it |
 | brent | `hil/hil_board_utils.py::SerialMonitor.port_reset` | 934 | `lib/serialmon.py::SerialMonitor.port_reset` | ported | through Board.power_cycle, tty re-resolved from sysfs |
-| brent | `hil/firmware/conftest.py::FIRMWARE_DIR` | 67 | `conftest.py` | equivalent | HERE |
-| brent | `hil/firmware/conftest.py::HIL_DIR` | 68 | `conftest.py` | equivalent | HERE |
-| brent | `hil/firmware/conftest.py::DEFAULT_BOARDS` | 72 | `farm.toml` | equivalent | `--farm` |
+| brent | `hil/firmware/conftest.py::FIRMWARE_DIR` | 68 | `conftest.py` | equivalent | HERE |
+| brent | `hil/firmware/conftest.py::HIL_DIR` | 69 | `conftest.py` | equivalent | HERE |
+| brent | `hil/firmware/conftest.py::DEFAULT_BOARDS` | 73 | `farm.toml` | equivalent | `--farm` |
 | brent | `hil/firmware/conftest.py::*SECRETS*` | | `test/fixtures/secrets.py` | ported | scenario names and secrets dir |
 | brent | `hil/firmware/conftest.py::*secrets*` | | `test/fixtures/secrets.py` | ported | secrets_dir, secrets_file, good/default/generated_secrets, secrets_name, secrets_path |
-| brent | `hil/firmware/conftest.py::_with_wifi` | 322 | `test/fixtures/secrets.py::_with_wifi` | ported | |
-| brent | `hil/firmware/conftest.py::DEVICE_UID_RE` | 81 | `test/fixtures/identity.py` | equivalent | no regex: UID comes from boot_out.txt, REPL fallback |
-| brent | `hil/firmware/conftest.py::device_uid` | 482 | `test/fixtures/identity.py::device_uid` | equivalent | history/device_uid.json, fails loudly on a change |
-| brent | `hil/firmware/conftest.py::pytest_addoption` | 86 | `conftest.py::pytest_addoption` | equivalent | --boards file → --farm, --board → --boards, --firmware-dir → --firmware, --uhubctl → farm.toml; --serial-log-dir is test/fixtures/console.py::pytest_addoption |
-| brent | `hil/firmware/conftest.py::Board` | 104| `lib/farmlib.py::Board` | equivalent | |
-| brent | `hil/firmware/conftest.py::load_board_entry` | 119 | `test/fixtures/farm.py::farm_boards` | equivalent | |
-| brent | `hil/firmware/conftest.py::board` | 190 | `test/fixtures/farm.py::board` | equivalent | module scope, parametrized over every board |
-| brent | `hil/firmware/conftest.py::_require_baud` | 207 | `-` | watch | USB CDC ignores baud |
-| brent | `hil/firmware/conftest.py::_test_selectors` | 137 | `conftest.py::_test_selectors` | ported | farm.toml [[board]] run_tests / skip_tests |
-| brent | `hil/firmware/conftest.py::_matches` | 151 | `conftest.py::_matches` | ported | |
-| brent | `hil/firmware/conftest.py::pytest_collection_modifyitems` | 158 | `conftest.py::pytest_collection_modifyitems` | ported | |
-| brent | `hil/firmware/conftest.py::power` | 217 | `farm.toml [[board]] power` | equivalent | uhubctl path from [host] |
-| brent | `hil/firmware/conftest.py::Firmware` | 114 | `lib/flash.py::find_image` | equivalent | image by board_id in the filename |
-| brent | `hil/firmware/conftest.py::_find_one` | 223 | `lib/flash.py::find_image` | equivalent | |
-| brent | `hil/firmware/conftest.py::firmware` | 232 | `test/fixtures/flashing.py::ensure_firmware` | equivalent | |
-| brent | `hil/firmware/conftest.py::BrokerCreds` | 246 | `test/fixtures/secrets.py::BrokerCreds` | ported | ProtoMQ takes no login (see not ported) |
-| brent | `hil/firmware/conftest.py::broker_creds` | 272 | `test/fixtures/secrets.py::broker_creds` | ported | |
-| brent | `hil/firmware/conftest.py::NetworkCreds` | 254 | `test/fixtures/secrets.py::NetworkCreds` | ported | |
-| brent | `hil/firmware/conftest.py::network_creds` | 287 | `test/fixtures/secrets.py::network_creds` | ported | |
-| brent | `hil/firmware/conftest.py::FlashState` | 425 | `lib/flash.py::FlashResult` | equivalent | per-phase seconds (PHASES); no LittleFS build time |
-| brent | `hil/firmware/conftest.py::flashed_board` | 437 | `test/fixtures/flashing.py::flashed_firmware` | equivalent | flash-if-changed per module, no erase |
-| brent | `hil/firmware/conftest.py::serial` | 469 | `test/fixtures/console.py::serial` | ported | SerialMonitor from lib/serialmon.py, closed and dumped after the test |
+| brent | `hil/firmware/conftest.py::_with_wifi` | 325 | `test/fixtures/secrets.py::_with_wifi` | ported | |
+| brent | `hil/firmware/conftest.py::DEVICE_UID_RE` | 83 | `test/fixtures/identity.py` | equivalent | no regex: UID comes from boot_out.txt, REPL fallback |
+| brent | `hil/firmware/conftest.py::device_uid` | 495 | `test/fixtures/identity.py::device_uid` | equivalent | history/device_uid.json, fails loudly on a change |
+| brent | `hil/firmware/conftest.py::pytest_addoption` | 88 | `conftest.py::pytest_addoption` | equivalent | --boards file → --farm, --board → --boards, --firmware-dir → --firmware, --uhubctl → farm.toml; --serial-log-dir is test/fixtures/console.py::pytest_addoption |
+| brent | `hil/firmware/conftest.py::Board` | 106| `lib/farmlib.py::Board` | equivalent | |
+| brent | `hil/firmware/conftest.py::load_board_entry` | 121 | `test/fixtures/farm.py::farm_boards` | equivalent | |
+| brent | `hil/firmware/conftest.py::board` | 192 | `test/fixtures/farm.py::board` | equivalent | module scope, parametrized over every board |
+| brent | `hil/firmware/conftest.py::_require_baud` | 209 | `-` | watch | USB CDC ignores baud |
+| brent | `hil/firmware/conftest.py::_test_selectors` | 139 | `conftest.py::_test_selectors` | ported | farm.toml [[board]] run_tests / skip_tests |
+| brent | `hil/firmware/conftest.py::_matches` | 153 | `conftest.py::_matches` | ported | |
+| brent | `hil/firmware/conftest.py::pytest_collection_modifyitems` | 160 | `conftest.py::pytest_collection_modifyitems` | ported | |
+| brent | `hil/firmware/conftest.py::power` | 219 | `farm.toml [[board]] power` | equivalent | uhubctl path from [host] |
+| brent | `hil/firmware/conftest.py::Firmware` | 116 | `lib/flash.py::find_image` | equivalent | image by board_id in the filename |
+| brent | `hil/firmware/conftest.py::_find_one` | 225 | `lib/flash.py::find_image` | equivalent | |
+| brent | `hil/firmware/conftest.py::firmware` | 234 | `test/fixtures/flashing.py::ensure_firmware` | equivalent | |
+| brent | `hil/firmware/conftest.py::BrokerCreds` | 248 | `test/fixtures/secrets.py::BrokerCreds` | ported | ProtoMQ takes no login (see not ported) |
+| brent | `hil/firmware/conftest.py::broker_creds` | 274 | `test/fixtures/secrets.py::broker_creds` | ported | |
+| brent | `hil/firmware/conftest.py::NetworkCreds` | 256 | `test/fixtures/secrets.py::NetworkCreds` | ported | |
+| brent | `hil/firmware/conftest.py::network_creds` | 289 | `test/fixtures/secrets.py::network_creds` | ported | |
+| brent | `hil/firmware/conftest.py::FlashState` | 438 | `lib/flash.py::FlashResult` | equivalent | per-phase seconds (PHASES); no LittleFS build time |
+| brent | `hil/firmware/conftest.py::flashed_board` | 450 | `test/fixtures/flashing.py::flashed_firmware` | equivalent | flash-if-changed per module, no erase |
+| brent | `hil/firmware/conftest.py::serial` | 482 | `test/fixtures/console.py::serial` | ported | SerialMonitor from lib/serialmon.py, closed and dumped after the test |
 | brent | `hil/firmware/provisioning/test_secrets.py::StepTimer` | 13 | `test/fixtures/history.py::metric` | equivalent | timings go to history/ |
 | brent | `hil/firmware/provisioning/test_secrets.py` | | `-` | watch | WipperSnapper provisioning tests; read for test shape |
 | brent | `hil/firmware/network/test_wifi.py` | | `test/hardware/net_wifi_test.py` | ported | same three test names; radio state over the REPL instead of runNetFSM console lines |
 | brent | `hil/firmware/network/test_wifi.py::WIFI_CONNECT_TIMEOUT` | 19 | `test/hardware/net_wifi_test.py::WIFI_CONNECT_TIMEOUT` | ported | 30 s: the supervisor makes one 8 s connect call, not five 20 s attempts |
 | brent | `hil/firmware/network/test_wifi.py::ssid_found_pattern` | 22 | `test/hardware/net_wifi_test.py::DEVICE_SCAN` | equivalent | SSID in the scan with an RSSI, read from wifi.Network |
-| brent | `hil/firmware/conftest.py::valid_secrets` | 356 | `test/fixtures/secrets.py::base_secrets` | equivalent | the `good` scenario: farm WiFi from .env, no IO keys |
-| brent | `hil/firmware/conftest.py::MISSING_SSID` | 319 | `test/hardware/net_wifi_test.py::MISSING_SSID` | ported | cpr-fake-no-such-network, allowed by the prod guard |
-| brent | `hil/firmware/conftest.py::_env` | 259 | `test/fixtures/secrets.py::_values` | equivalent | farm.toml [network] names the environment variables; values never logged |
-| brent | `hil/firmware/conftest.py::VALID_SCENARIOS` | 388 | `data/settings-scenarios/scenarios.toml` | equivalent | needs_creds: scenarios with the farm SSID skip when .env lacks it |
+| brent | `hil/firmware/conftest.py::valid_secrets` | 359 | `test/fixtures/secrets.py::base_secrets` | equivalent | the `good` scenario: farm WiFi from .env, no IO keys |
+| brent | `hil/firmware/conftest.py::WRONG_WIFI_PASSWORD` | 322 | `test/hardware/net_wifi_test.py::WRONG_WIFI_PASSWORD` | ported | same value |
+| brent | `hil/firmware/conftest.py::INVALID_PASSWORD` | 79 | `test/hardware/net_wifi_test.py::test_wifi_invalid_password` | equivalent | no settings.toml scenario: the wrong password goes to connect() over the REPL |
+| brent | `hil/firmware/conftest.py::invalid_password_secrets` | 389 | `test/hardware/net_wifi_test.py::DEVICE_BAD_PASSWORD` | equivalent | as above |
+| brent | `hil/firmware/conftest.py::MISSING_SSID` | 321 | `test/hardware/net_wifi_test.py::MISSING_SSID` | ported | cpr-fake-no-such-network, allowed by the prod guard |
+| brent | `hil/firmware/conftest.py::_env` | 261 | `test/fixtures/secrets.py::_values` | equivalent | farm.toml [network] names the environment variables; values never logged |
+| brent | `hil/firmware/conftest.py::VALID_SCENARIOS` | 400 | `data/settings-scenarios/scenarios.toml` | equivalent | needs_creds: scenarios with the farm SSID skip when .env lacks it |
 | brent | `hil/README.md` | | `-` | watch | how he runs it: HIL_IO_* / HIL_WIFI_* exported on the HIL host |
 | brent | `hil/hil-boards.json::board` | 2 | `farm.toml [[board]] name` | equivalent | |
 | brent | `hil/hil-boards.json::chip` | 3 | `farm.toml [[board]] flash` | equivalent | `flash.chip` on ESP boards |
@@ -230,11 +233,11 @@ upstream symbol, kept here so it is not reopened by accident.
 | brent | `hil/tests_hil_board_utils/test_filesystem_flash.py` | LittleFS image and erase tests | as above |
 | brent | `hil/firmware/conftest.py::VALID_IO_ONLY` | scenario with valid Adafruit IO credentials | CircuitPython results never go to Adafruit IO, and the prod guard refuses AIO credentials on farm boards. |
 | brent | `hil/firmware/conftest.py::VALID_WIFI_ONLY` | WiFi valid, IO placeholders | Our `good` scenario already has the farm WiFi and no IO keys. |
-| brent | `hil/firmware/conftest.py::SSID_FOUND` | WiFi valid, FAKE_IO_CREDS | as above: there are no IO credentials to fake |
+| brent | `hil/firmware/conftest.py::SSID_VALID` | WiFi valid, FAKE_IO_CREDS (was SSID_FOUND) | as above: there are no IO credentials to fake |
 | brent | `hil/firmware/conftest.py::FAKE_IO_CREDS` | placeholder-passing IO login | as above |
 | brent | `hil/firmware/conftest.py::valid_io_secrets` | VALID_IO_ONLY's secrets | as above |
 | brent | `hil/firmware/conftest.py::valid_wifi_secrets` | VALID_WIFI_ONLY's secrets | as above |
-| brent | `hil/firmware/conftest.py::ssid_found_secrets` | SSID_FOUND's secrets | as above |
+| brent | `hil/firmware/conftest.py::ssid_valid_secrets` | SSID_VALID's secrets | as above |
 | brent | `hil/firmware/conftest.py::_with_io` | merges IO credentials into secrets | as above |
 | brent | `-` | broker_creds default `io.adafruit.com:8883`, conftest.py:329 | CircuitPython results never go to Adafruit IO. The prod guard refuses a broker that is not a private address. |
 | brent | `-` | single-board session scope: `board` (session), `--board`, conftest.py:182 | We parametrize every board at module scope and run them in parallel under xdist. |

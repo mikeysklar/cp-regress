@@ -14,6 +14,8 @@ where his tests read serial lines, these read the radio over the REPL.
                         (his ssid_found_pattern: "SSID (<ssid>) found! RSSI: -NN")
   test_wifi_connected   after a hard reset the supervisor has joined the farm SSID by itself,
                         within WIFI_CONNECT_TIMEOUT, with an address and gateway
+  test_wifi_invalid_password  the farm SSID with a wrong password raises ConnectionError
+                        "Authentication failure" in time, and the radio rejoins (his @ 90cd5af)
   test_ssid_not_found   connect() to an SSID that does not exist raises ConnectionError
                         "No network with that ssid" (shared-bindings/wifi/Radio.c:551) without
                         hanging, and the radio can join the farm network again afterwards
@@ -42,6 +44,10 @@ WIFI_CONNECT_TIMEOUT = 30
 NOT_FOUND_TIMEOUT = 20
 MISSING_SSID = FAKE_SSID_PREFIX + "no-such-network"  # his MISSING_SSID, conftest.py:319
 MISSING_PASSWORD = "cpr-fake-password"
+# His WRONG_WIFI_PASSWORD, conftest.py:322 @ 90cd5af. The connect for it is bounded like the
+# missing SSID's: no timeout, so one failure ends it.
+WRONG_WIFI_PASSWORD = "invalidpassword"
+BAD_PASSWORD_TIMEOUT = 20
 
 # str.format templates: literal braces are doubled. check/metric/guard come from lib/devtest.py.
 DEVICE_SCAN = r"""
@@ -129,6 +135,43 @@ guard("rejoin", rejoin)
 check("rejoined", wifi.radio.connected, str(wifi.radio.connected))
 """
 
+DEVICE_BAD_PASSWORD = r"""
+import time
+import wifi
+
+ssid = {ssid!r}
+password = {password!r}
+wrong = {wrong!r}
+timeout = {timeout}
+
+if wifi.radio.connected:
+    wifi.radio.stop_station()
+t0 = time.monotonic()
+raised = None
+try:
+    wifi.radio.connect(ssid, wrong)
+except Exception as e:
+    raised = e
+took = time.monotonic() - t0
+metric("bad_password_s", took, "s", "lower")
+check("bad_password_raises", raised is not None, "connect() returned after %.1f s" % took)
+if raised is not None:
+    check("bad_password_connection_error", isinstance(raised, ConnectionError),
+          type(raised).__name__ + ": " + str(raised))
+    check("bad_password_message", str(raised) == "Authentication failure", str(raised))
+check("bad_password_in_time", took < timeout, "%.1f s, limit %d" % (took, timeout))
+check("not_connected_after", not wifi.radio.connected, str(wifi.radio.connected))
+
+def rejoin():
+    if not wifi.radio.enabled:
+        wifi.radio.enabled = True
+    wifi.radio.connect(ssid, password)
+    return wifi.radio.connected
+
+guard("rejoin", rejoin)
+check("rejoined", wifi.radio.connected, str(wifi.radio.connected))
+"""
+
 
 @pytest.fixture(scope="module")
 def creds(base_secrets):
@@ -180,6 +223,29 @@ def test_wifi_connected(board, creds, flashed_fs, device):  # pylint: disable=un
     results = _run(device, code, timeout=WIFI_CONNECT_TIMEOUT + 30)
     for name in ("connected", "joined_farm_ssid", "ipv4_address_set", "ipv4_gateway_set"):
         results.expect(name)
+
+
+def test_wifi_invalid_password(creds, flashed_fs, device):  # pylint: disable=unused-argument
+    # --- Arrange ------------------------------------------------------
+    # 1. The farm SSID with a wrong password: the SSID is there, so only the join can fail.
+    ssid, password = creds
+
+    # --- Act ----------------------------------------------------------
+    # 2. Leave the farm network, join with the wrong password, then rejoin properly.
+    code = DEVICE_BAD_PASSWORD.format(ssid=ssid, password=password, wrong=WRONG_WIFI_PASSWORD,
+                                      timeout=BAD_PASSWORD_TIMEOUT)
+    results = _run(device, code, timeout=BAD_PASSWORD_TIMEOUT + 60)
+
+    # --- Assert -------------------------------------------------------
+    # 3. ConnectionError "Authentication failure" (shared-bindings/wifi/Radio.c:550), in time,
+    #    not connected; then the radio joins again (his firmware halts for the WDT here).
+    #    Radio.c:435 maps reasons 202, 15 and the two NO_AP_FOUND_* variants to AUTH_FAIL;
+    #    a 204 handshake timeout would read "Unknown failure 204" and fail the message check.
+    for name in ("bad_password_raises", "bad_password_connection_error", "bad_password_message",
+                 "bad_password_in_time", "not_connected_after", "rejoined"):
+        results.expect(name)
+    if "rejoin" in results.checks:
+        results.expect("rejoin")
 
 
 def test_ssid_not_found(creds, flashed_fs, device):  # pylint: disable=unused-argument
