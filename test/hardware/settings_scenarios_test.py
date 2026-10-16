@@ -33,7 +33,6 @@ import time
 import pytest
 
 import farmlib
-from fixtures.device import DeviceResults
 from fixtures.farm import not_applicable
 from fixtures.flashing import FsBackup, apply_tree, hard_reset
 from fixtures.secrets import (DEFAULT_SECRETS_DIR, NO_SECRETS_FILE, PASSWORD, PLACEHOLDER_PASSWORD,
@@ -181,6 +180,17 @@ def console_problems(pre, entry, wifi_board):
     return problems
 
 
+def console_before_code(mon, boot):
+    """The lines the supervisor printed from the boot start up to 'code.py output:', joined with
+    newlines, so the multi-line error checks above see them as one text."""
+    pre = []
+    for line in mon.lines(boot):
+        if "code.py output:" in line.text:
+            break
+        pre.append(line.text)
+    return "\n".join(pre)
+
+
 def device_problems(results, exp):
     """Failed or missing device checks. Returns (problems, skip reason or None)."""
     if results.crashed:
@@ -237,7 +247,7 @@ def farm_settings(board, flashed_fs, secrets, _fs_backups):  # pylint: disable=u
 @pytest.mark.destructive
 @pytest.mark.parametrize("secrets_name", PARAMS, indirect=True)
 def test_scenario(request, board, farm_settings, flashed_firmware, _fs_backups, secrets_name,
-                  secrets_path, secrets_scenarios, good_secrets, serial, record_property):
+                  secrets_path, secrets_scenarios, good_secrets, serial, device, record_property):
     """One settings.toml scenario on one board: what CircuitPython printed, read and joined."""
     # pylint: disable=unused-argument,too-many-arguments,too-many-locals
     why = not_applicable(request.node, board)  # needs("wifi") on wifi-only scenarios
@@ -250,7 +260,6 @@ def test_scenario(request, board, farm_settings, flashed_firmware, _fs_backups, 
     # --- Arrange ------------------------------------------------------
     # 1. The scenario is rendered (secrets_path) and written to CIRCUITPY/settings.toml.
     data = None if secrets_path is None else secrets_path.read_bytes()
-    serial.close()  # the reset below takes the port away; reopened from sysfs after it
     try:
         record_property("written", ",".join(write_settings(board, _fs_backups, data))
                         or "unchanged")
@@ -260,31 +269,30 @@ def test_scenario(request, board, farm_settings, flashed_firmware, _fs_backups, 
     # --- Act ----------------------------------------------------------
     # 2. Hard reset on wifi boards (a soft reload keeps the supervisor's WiFi connection),
     #    then a soft reboot everywhere, capturing what the supervisor prints before code.py.
-    if wifi_board:
-        if not hard_reset(board):
-            pytest.fail("%s did not come back after the reset" % board.name, pytrace=False)
-    else:
-        time.sleep(1)  # let the auto-reload from the write start before the REPL is opened
+    #    The monitor stays open across the write: the write only reloads CIRCUITPY.
     try:
-        serial.repl = board.repl()
-        serial.repl.prompt(timeout=60)  # a failing WiFi join can hold the REPL for seconds
-        serial.reset(timeout=30)
+        if wifi_board:
+            serial.hard_reset()
+        else:
+            time.sleep(1)  # let the auto-reload from the write start before the console syncs
+        serial.prompt(timeout=60)  # a failing WiFi join can hold the REPL for seconds
+        boot = serial.soft_reset(timeout=30)
+        serial.expect(r"code\.py output:", timeout=60)
+        serial.expect(r"hello world", timeout=20)  # code.py ran: CircuitPython never halts here
     except farmlib.FarmError as e:
         pytest.fail("%s: %s" % (board.name, e), pytrace=False)
-    pre = serial.expect(rb"(?s)(.*?)code\.py output:", timeout=60).group(1)
-    serial.expect(r"hello world", timeout=20)  # code.py ran: CircuitPython never halts here
 
     # --- Assert -------------------------------------------------------
     # 3. The settings errors the scenario expects on the console, and no others.
-    problems = console_problems(pre.decode("utf-8", "replace"), entry, wifi_board)
+    pre = console_before_code(serial, boot)
+    problems = console_problems(pre, entry, wifi_board)
 
-    # 4. On the device: os.getenv, supervisor.get_setting, wifi.radio.connected.
-    try:
-        serial.repl.prompt(timeout=60)
-        res, out, err = serial.repl.run_device(device_code(exp), timeout=60)
-        results = DeviceResults(board, res, out, err)
-    except Exception as e:  # pylint: disable=broad-except
-        results = DeviceResults(board, [], "", "", crashed="%s: %s" % (type(e).__name__, e))
+    # 4. On the device: os.getenv, supervisor.get_setting, wifi.radio.connected. The device
+    #    fixture opens the board's REPL itself, and the monitor's reader would read that port
+    #    too, so the monitor is closed here. Every console check above has already run, and
+    #    the capture is still written to the serial log by the fixture's teardown.
+    serial.close()
+    results = device.run(device_code(exp), timeout=60)
     more, skipped = device_problems(results, exp)
     problems += more
 
