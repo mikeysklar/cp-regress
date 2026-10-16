@@ -38,9 +38,12 @@ class FarmError(Exception):
 
 
 def _read(path, default=None):
+    """Text of a sysfs or drive file. Bytes that are not UTF-8 are replaced, not raised: after
+    an ESP32-S2 reset with no re-mount the host can keep boot_out.txt's old, longer size, and
+    the read runs past the new end of file into whatever the cluster holds."""
     try:
-        with open(path) as f:
-            return f.read().strip()
+        with open(path, "rb") as f:
+            return f.read().decode(errors="replace").strip()
     except OSError:
         return default
 

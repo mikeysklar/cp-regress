@@ -260,3 +260,14 @@ def test_board_boot_out_none_when_the_write_hits_eio(drive, monkeypatch):
 
     monkeypatch.setattr(board, "repl", lambda iface=0: EioRepl())
     assert board.board_boot_out() is None
+
+
+def test_read_replaces_bytes_that_are_not_utf8(tmp_path):
+    """Seen on the Metro ESP32-S2: the host kept boot_out.txt at its old 239 bytes while the
+    board's file was 203, so the tail was stale flash (0xc7 ...). mount()'s board id check
+    read it with _read() and raised UnicodeDecodeError, failing code_py_lifecycle phase (a)."""
+    p = tmp_path / "boot_out.txt"
+    p.write_bytes(b"Board ID:unexpected_maker_feather_esp32s2\r\n3Gs5\xc7t\xff\x8fs")
+    text = farmlib._read(str(p))  # pylint: disable=protected-access
+    assert "Board ID:unexpected_maker_feather_esp32s2" in text
+    assert "�" in text
