@@ -143,11 +143,13 @@ class SerialMonitor:
     # power_cycle_monitor.py builds its monitor as cls(tty, baud) and checks PORT_ARGS for that.
     PORT_ARGS = True
 
-    def __init__(self, board, iface=0, baud=SERIAL_BAUD, reopen=True):
+    def __init__(self, board, iface=0, baud=SERIAL_BAUD, reopen=True, keep_input=False):
         """board is a farmlib.Board (the console is its interface iface), or a tty path, as
         power_cycle_monitor passes it. With a path the second positional argument is the baud
         rate, so SerialMonitor(path, 115200) and SerialMonitor(path, baud=115200) both work.
-        A path has no board behind it, so hard_reset() and port_reset() raise FarmError."""
+        A path has no board behind it, so hard_reset() and port_reset() raise FarmError.
+        keep_input=True keeps the bytes the board sent before this open: pyserial's open
+        otherwise flushes the tty's input, which can drop a boot's first lines."""
         if serial is None:
             raise SerialError("pyserial is not installed (pip install pyserial)")
         if isinstance(board, (str, os.PathLike)):
@@ -157,6 +159,7 @@ class SerialMonitor:
         self.board = board
         self.iface = iface
         self.reopen = reopen
+        self._keep_input = keep_input
         self.port = None  # the by-path name of the current open, for messages only
         self.opened = None  # time.time() of the last successful open
         self.first_byte = None  # time.time() of the first byte since the last open
@@ -206,10 +209,17 @@ class SerialMonitor:
         ser.timeout = SERIAL_READ_TIMEOUT
         ser.write_timeout = SERIAL_WRITE_TIMEOUT
         ser.exclusive = True  # another exclusive opener fails cleanly instead of sharing reads
+        # pyserial 3.5's posix open() ends with _reset_input_buffer() (tcflush). keep_input
+        # skips that one call, so bytes the board sent before this open are read.
+        if self._keep_input:
+            ser._reset_input_buffer = lambda: None  # pylint: disable=protected-access
         try:
             ser.open()
         except (OSError, ValueError) as e:
             raise SerialError("%s: cannot open %s: %s" % (self.board.name, path, e)) from e
+        finally:
+            if self._keep_input:
+                del ser._reset_input_buffer  # pylint: disable=protected-access
         with self._cond:
             self.port = path
             self._serial = ser

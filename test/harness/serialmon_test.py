@@ -482,3 +482,48 @@ def test_power_cycle_monitor_uses_this_class():
     local port of it)."""
     pcm = pytest.importorskip("tools.power_cycle_monitor")
     assert pcm.monitor_class() is SerialMonitor
+
+
+def test_keep_input_reads_the_bytes_sent_before_the_open(pty_board):
+    """A boot's first lines can arrive before the monitor opens. pyserial's open flushes the
+    tty's input unless keep_input says not to (power_cycle_monitor.py passes keep_input=True)."""
+    pty_board.write("boot line\r\nsecond\r\n")
+    time.sleep(0.2)  # the bytes are in the tty before the open
+    mon = SerialMonitor(pty_board.path, 115200, keep_input=True)
+    try:
+        assert mon.expect("^boot line$", timeout=5)
+        assert mon.expect("^second$", timeout=5)
+    finally:
+        mon.close()
+
+
+def test_power_cycle_monitor_retries_serialmons_own_open_error(pty_board, monkeypatch):
+    """serialmon raises its own SerialError when the tty is not yet openable. capture_power_boot
+    must retry that, as it retries its local SerialError, not fail the board check."""
+    pcm = pytest.importorskip("tools.power_cycle_monitor")
+    calls = []
+
+    def factory(port, baud, **kw):
+        calls.append(kw)
+        if len(calls) == 1:
+            raise SerialError("%s: cannot open: still settling" % port)
+        return SerialMonitor(port, baud, **kw)
+
+    class Watch:  # the stop/gone/back fields capture_power_boot reads
+        stop = threading.Event()
+        gone = time.time()
+        back = time.time()
+
+    cyc = {"t0": time.time(), "uhubctl_s": 0.0, "devnum_before": pty_board.devnum(),
+           "watch": Watch()}
+    monkeypatch.setattr(pcm, "monitor_class", lambda: factory)
+    monkeypatch.setattr(pcm, "power_cycle_board", lambda board, delay=3: cyc)
+    monkeypatch.setattr(pcm, "wait_for_port", lambda board, timeout=15: pty_board.path)
+    rep, mon = pcm.capture_power_boot(pty_board, passive=True, timeout=0.2, port_timeout=5)
+    try:
+        assert len(calls) == 2 and all(kw == {"keep_input": True} for kw in calls)
+        assert mon is not None and mon.port == pty_board.path
+        assert not any("cannot open" in p for p in rep.problems), rep.problems
+    finally:
+        if mon is not None:
+            mon.close()
