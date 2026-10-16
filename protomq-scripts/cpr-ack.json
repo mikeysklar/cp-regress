@@ -1,0 +1,26 @@
+{
+  "name": "CircuitPython catcher ack",
+  "description": "Stimulus for mqtt_catcher_test.py. When the board reports catcher_ready on cpr/<board>/results, send it an ack carrying the run id on cpr/<board>/b2d; once it reports ack_received, send bye. Played by lib/catcher.py through ProtoMQ's /echo, never copied into ~/protomq/scripts.",
+  "protoVersion": "cpr-plain",
+  "steps": [
+    {
+      "name": "ack",
+      "description": "Answer the board's ready result with an ack it must echo back",
+      "trigger": "results.name",
+      "match": { "results": { "name": "catcher_ready" } },
+      "delay": 200,
+      "topic": "b2d",
+      "send": { "json": { "cmd": "ack", "run_id": "{run_id}", "board": "{board}" } }
+    },
+    {
+      "name": "bye",
+      "description": "After the board confirms the ack, tell it to stop listening",
+      "after": "ack",
+      "waitFor": "results.name",
+      "match": { "results": { "name": "ack_received" } },
+      "delay": 200,
+      "topic": "b2d",
+      "send": { "json": { "cmd": "bye" } }
+    }
+  ]
+}
