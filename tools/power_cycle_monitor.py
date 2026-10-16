@@ -17,13 +17,19 @@ Per board:
   2. Board.power_cycle(wait=False): flock-serialized, unprivileged uhubctl with the board's own
      -r/-w from farm.toml. A watcher thread timestamps the tty leaving and coming back.
   3. resolve the tty from the board's sysfs USB path again (never a cached ttyACM number) and
-     open it as soon as it is readable; every line is timestamped from the first byte
+     open it as soon as it is readable; every line is timestamped from the first byte. The
+     port timeout starts after uhubctl returns. A SAMD board whose tty never comes back gets one
+     SWD rescue (openocd init, reset run, exit at its speed) and is recorded as swd_rescue. The
+     first write waits WRITE_SETTLE_S after the tty reappears
   4. unless --passive, interrupt to the REPL at once and press Ctrl-B, which prints the banner
      (shared/runtime/pyexec.c friendly_repl_reset); with --passive, type nothing and only
      watch. Either way the first CRASH_WINDOW s from the open are checked for a crash or the
      safe-mode reason; a code.py traceback before any key is a warning
   5. ask the board for time.monotonic() and reset_reason: an uptime longer than the time since
-     the cut means VBUS cycling re-enumerated USB without resetting the MCU
+     the cut means VBUS cycling re-enumerated USB without resetting the MCU (nRF52840 excepted:
+     its monotonic clock is not an uptime across resets, so devnum and reset_reason decide)
+     A BROWNOUT reset_reason or the "Power dipped" safe-mode line is outcome "brownout", not a
+     failure; the board is reset out of safe mode with microcontroller.reset()
   6. Ctrl-D, so code.py runs again, as after any boot
 It prints per-board timings (port gone, port back, opened, first byte, banner) and writes
 results/powermon/<stamp>/<board>.serial.log ("[HH:MM:SS.mmm] text", Brent's dump format) and
@@ -99,6 +105,14 @@ TRACEBACK_RE = r"^Traceback \(most recent call last\):"
 BOOT_RE = r"^soft reboot$|^\S+\.py output:$"
 # Seconds from the open that a fresh boot is watched for a crash (Brent: CRASH_WINDOW).
 CRASH_WINDOW = 5
+# Seconds after a tty reappears before the first byte is written to it. A CDC port written to
+# sooner can block the write (farm rule: 10 to 12 s; the ESP32-S3 banner write timed out at less).
+WRITE_SETTLE_S = 12
+# How long the tty may take to come back after an SWD rescue (flash.py: wait_ready(timeout=45)).
+RESCUE_PORT_S = 45
+# Safe mode after a power dip (supervisor/shared/safe_mode.c, SAFE_MODE_BROWNOUT): the message
+# printed after "You are in safe mode because:". A BROWNOUT reset_reason means the same.
+BROWNOUT_RE = r"^Power dipped\. Make sure you are providing enough power\.$"
 
 serial_log = logging.getLogger("cpr.serial")
 
@@ -151,6 +165,89 @@ def wait_for_port(board, timeout=15, interval=0.05):
                 raise PortError("%s: no permission to open %s" % (board.name, tty))
             raise PortError("%s: no tty at %s after %.3g s" % (board.name, board.usb, timeout))
         time.sleep(interval)
+
+
+def swd_rescue_speed(board):
+    """kHz for the SWD rescue of a board whose tty did not come back after a VBUS cut, or None.
+
+    Only SWD boards qualify: the SAMD family (Metro M4 at its speed 500, Metro M0 at its
+    rescue_speed 400), where a VBUS cut does not re-enumerate the MCU and the farm's skill says
+    to attach over SWD and reset it. RP2040, nRF52840, STM32 and ESP32 boards get None.
+    """
+    cfg = board.flash
+    if cfg.get("method") != "swd":
+        return None
+    if cfg.get("rescue_speed"):
+        return int(cfg["rescue_speed"])
+    if board.port == "atmel-samd" and cfg.get("speed"):
+        return int(cfg["speed"])
+    return None
+
+
+def swd_rescue(board, speed, log=None):
+    """openocd init, reset run, exit at speed kHz on the board's own probe (flash.py _openocd,
+    the same command line as flash_swd). Returns True when openocd exited 0. Used here, not
+    flash.rescue_swd, which only runs for boards that set rescue_speed (the M4 does not)."""
+    import flash  # pylint: disable=import-outside-toplevel  (lib/flash.py, the farm's flasher)
+    log = log or (lambda m: print(m, file=sys.stderr))
+    log("%s: no tty after the power cycle; SWD rescue at %d kHz" % (board.name, speed))
+    # pylint: disable=protected-access
+    r = flash._openocd(board, speed, ["init", "reset run", "exit"], log, timeout=60)
+    return r.returncode == 0
+
+
+def wait_for_port_or_rescue(board, timeout, rescue=True):
+    """wait_for_port; if the tty never came back and the board is an SWD rescue board, one SWD
+    rescue, then wait again. Returns (tty, rescued). Callers start the timeout only after the
+    uhubctl cut has returned, so uhubctl's flock wait is never charged to the port."""
+    try:
+        return wait_for_port(board, timeout=timeout), False
+    except PortError:
+        speed = swd_rescue_speed(board) if rescue else None
+        if speed is None or board.tty() is not None:  # a permission error is not a lost tty
+            raise
+    swd_rescue(board, speed)
+    return wait_for_port(board, timeout=RESCUE_PORT_S), True
+
+
+def settle_remaining(ready_at, now):
+    """Seconds still to wait before the first write to a tty that appeared at ready_at."""
+    return max(0.0, ready_at + WRITE_SETTLE_S - now)
+
+
+def settle_before_write(ready_at):
+    """Sleep out WRITE_SETTLE_S from the moment the tty appeared (ready_at, time.time())."""
+    time.sleep(settle_remaining(ready_at, time.time()))
+
+
+def reset_name(text):
+    """'ResetReason.BROWNOUT' -> 'BROWNOUT'; None stays None."""
+    return text.rsplit(".", 1)[-1] if text else None
+
+
+def reboot_verdict(board, up, reason, since_cut, devnum_before, devnum_after):
+    """(rebooted, why): did the cut reset the MCU? up is the board's time.monotonic() and reason
+    its microcontroller.cpu.reset_reason text, both from uptime().
+
+    SAMD, RP2 and the rest: monotonic uptime longer than the time since the cut means USB was
+    re-enumerated without an MCU reset (the original check).
+    nRF52840 (port nordic): time.monotonic() is not an uptime across resets, so it is not used.
+    The evidence is the re-enumeration (devnum changed) and a reset_reason that is not SOFTWARE.
+    """
+    name = reset_name(reason)
+    if board.port == "nordic":
+        if devnum_before == devnum_after:
+            return False, "devnum unchanged: USB never re-enumerated"
+        if name is None:
+            return False, "no reset_reason to judge the reset by"
+        if name == "SOFTWARE":
+            return False, "reset_reason SOFTWARE: a software reset, not the power cut"
+        return True, "devnum changed and reset_reason %s" % name
+    if up is None:
+        return False, "no uptime from the board"
+    if up <= since_cut + 1.0:
+        return True, "uptime %.1f s, cut %.1f s ago" % (up, since_cut)
+    return False, "MCU not reset: uptime %.1f s, cut %.1f s ago" % (up, since_cut)
 
 
 class _Watch(threading.Thread):
@@ -411,7 +508,8 @@ class SerialMonitor:
                 self._partial.clear()
         try:
             cyc = power_cycle_board(board, delay)
-            port = wait_for_port(board, timeout)
+            port, _ = wait_for_port_or_rescue(board, timeout)
+            ready = time.time()
             cyc["watch"].stop.set()
             with self._cond:
                 self.port = str(port)
@@ -419,6 +517,7 @@ class SerialMonitor:
                 self._boot = self._cursor = len(self._lines)
                 self.first_byte = None
             self._open()
+            settle_before_write(ready)  # the caller's first write comes after the settle
         except farmlib.FarmError as e:
             with self._cond:
                 self._error = e
@@ -557,7 +656,7 @@ class BootReport:
 
     FIELDS = ("board", "ok", "problems", "warnings", "uhubctl_s", "gone_s", "back_s", "open_s",
               "first_byte_s", "banner_s", "version", "uptime_s", "reset_reason", "rebooted",
-              "devnum", "lines", "log")
+              "devnum", "lines", "log", "swd_rescue", "brownout", "recovered")
 
     def __init__(self, board):
         for f in self.FIELDS:
@@ -565,13 +664,42 @@ class BootReport:
         self.board = board.name
         self.problems = []
         self.warnings = []
+        self.swd_rescue = False  # the tty needed the SWD rescue (SAMD); a note, not a failure
+        self.brownout = False    # came back in safe mode, "Power dipped": its own outcome
+
+    @property
+    def outcome(self):
+        """brownout (safe mode after a power dip, not a harness failure), pass, or fail."""
+        if self.brownout:
+            return "brownout"
+        return "pass" if self.ok else "fail"
 
     def as_dict(self):
-        return {f: getattr(self, f) for f in self.FIELDS}
+        d = {f: getattr(self, f) for f in self.FIELDS}
+        d["outcome"] = self.outcome
+        return d
 
 
 def _rel(t, t0):
     return None if t is None else round(t - t0, 3)
+
+
+def _browned_out(mon):
+    """A line of the power-dip safe-mode message has been captured."""
+    return any(re.search(BROWNOUT_RE, ln.text) for ln in mon.lines())
+
+
+def _reset_out_of_safe_mode(board, mon, timeout):
+    """After a power dip the board sits in safe mode. microcontroller.reset() leaves it (the
+    farm's skill recovery table). Returns True when the tty came back after the reset."""
+    mon.prompt()
+    mon.write("import microcontroller as m;m.reset()\r")
+    mon.close()  # the reset drops the port under the monitor; nothing more is read from it
+    try:
+        wait_for_port(board, timeout=timeout)
+        return True
+    except farmlib.FarmError:
+        return False
 
 
 def capture_power_boot(board, delay=3, port_timeout=None, timeout=20, passive=False,
@@ -580,6 +708,8 @@ def capture_power_boot(board, delay=3, port_timeout=None, timeout=20, passive=Fa
 
     Takes no lock: the CLI holds the board's run lock, and under pytest the board fixture does
     (flock is per open file, so taking it again here would deadlock). The monitor is closed.
+    port_timeout is a duration for the tty to return. It starts when the cut has returned, so
+    uhubctl's own flock wait (in rep.uhubctl_s) is never charged to the port.
     """
     rep = BootReport(board)
     port_timeout = port_timeout or 60 + board.power.get("settle", 12)
@@ -591,14 +721,19 @@ def capture_power_boot(board, delay=3, port_timeout=None, timeout=20, passive=Fa
         rep.ok = False
         return rep, None
     t0 = cyc["t0"]
+    devnum_before = cyc["devnum_before"]
     rep.uhubctl_s = round(cyc["uhubctl_s"], 3)
+    found = None
     try:
+        # The clock for the tty starts here, after uhubctl returned. An SWD rescue (SAMD only)
+        # runs inside this call if the tty never came back.
+        tty, rep.swd_rescue = wait_for_port_or_rescue(board, timeout=port_timeout)
+        found = time.time()
+        if rep.swd_rescue:
+            rep.warnings.append("no tty after the cut: SWD rescue brought it back")
         # Open as soon as it is readable; permission can lag the link by a few ms.
-        end = time.monotonic() + port_timeout
-        found = None
+        end = time.monotonic() + 5
         while True:
-            tty = wait_for_port(board, timeout=max(0.1, end - time.monotonic()))
-            found = found or time.time()
             try:
                 mon = monitor_class()(tty, SERIAL_BAUD)
                 break
@@ -606,6 +741,7 @@ def capture_power_boot(board, delay=3, port_timeout=None, timeout=20, passive=Fa
                 if time.monotonic() >= end:
                     raise
                 time.sleep(0.02)
+                tty = wait_for_port(board, timeout=5)
     except farmlib.FarmError as e:
         rep.problems.append(str(e))
     finally:
@@ -614,8 +750,8 @@ def capture_power_boot(board, delay=3, port_timeout=None, timeout=20, passive=Fa
     rep.gone_s = _rel(watch.gone, t0)
     # the watcher polls faster, but this thread may still see the tty first
     rep.back_s = _rel(watch.back or found, t0)
-    rep.devnum = "%s -> %s" % (cyc["devnum_before"], board.devnum())
-    if watch.gone is None and board.devnum() == cyc["devnum_before"]:
+    rep.devnum = "%s -> %s" % (devnum_before, board.devnum())
+    if watch.gone is None and board.devnum() == devnum_before:
         rep.problems.append("the tty never left: the port was not power-cycled")
     if mon is None:
         rep.ok = False
@@ -629,13 +765,18 @@ def capture_power_boot(board, delay=3, port_timeout=None, timeout=20, passive=Fa
             try:
                 mon.assert_none(CRASH_RE, since=0, duration=timeout)
             except SerialUnexpectedError as e:
-                rep.problems.append("crash: %s" % e)
+                if _browned_out(mon):
+                    rep.brownout = True
+                else:
+                    rep.problems.append("crash: %s" % e)
             if any(re.search(BANNER_RE, ln.text) for ln in mon.lines()):
                 m = mon.expect(BANNER_RE, timeout=0)
             else:
                 m = None
                 rep.warnings.append("no banner without a key (normal while code.py runs)")
         else:
+            # A CDC port written to too soon can block the write: settle first.
+            settle_before_write(found)
             typed = mon.mark()  # everything before this arrived with no key pressed
             m = expect_banner(mon, timeout=timeout)
             if any(re.search(TRACEBACK_RE, ln.text) for ln in mon.lines()[:typed]):
@@ -648,31 +789,40 @@ def capture_power_boot(board, delay=3, port_timeout=None, timeout=20, passive=Fa
             up, why = mon.uptime()
             rep.uptime_s, rep.reset_reason = round(up, 3), why
             since_cut = time.time() - t0
-            rep.rebooted = up <= since_cut + 1.0
-            if not rep.rebooted:
+            rep.rebooted, verdict = reboot_verdict(board, up, why, since_cut, devnum_before,
+                                                   board.devnum())
+            # A brownout is its own outcome: the safe-mode crash lines are not a crash.
+            rep.brownout = reset_name(why) == "BROWNOUT" or _browned_out(mon)
+            if rep.brownout:
+                rep.rebooted = True
+                rep.warnings.append("back in safe mode after the cut: power dipped (BROWNOUT)")
+            elif not rep.rebooted:
                 # farm.toml power.resets = false marks a board that VBUS cycling is known not to
                 # reset (it has another supply); there it is a note, not a failure.
                 (rep.warnings if board.power.get("resets", True) is False else rep.problems) \
-                    .append("MCU not reset: uptime %.1f s, cut %.1f s ago" % (up, since_cut))
-            # The banner is fetched at once so banner_s is a boot time, not our wait; the crash
-            # window (from the open) is watched after it, over everything captured.
-            opened = getattr(mon, "opened", None) or time.time()
-            try:
-                mon.assert_none(CRASH_RE, since=0,
-                                duration=max(0, CRASH_WINDOW - (time.time() - opened)))
-            except SerialUnexpectedError as e:
-                rep.problems.append("crash: %s" % e)
-            if reset:
-                boot = mon.soft_reset()
-                mon.expect(r"^\S+\.py output:$|^Auto-reload is", timeout=timeout)
-                try:
-                    mon.assert_none(CRASH_RE, since=boot, duration=CRASH_WINDOW)
-                except SerialUnexpectedError as e:
-                    rep.problems.append("crash after Ctrl-D: %s" % e)
+                    .append("MCU not reset: %s" % verdict)
+            if rep.brownout:
+                rep.recovered = _reset_out_of_safe_mode(board, mon, port_timeout)
             else:
-                mon.prompt()
-                mon.write(b"\x04")  # run code.py again, as after any boot
-                time.sleep(0.5)
+                # The banner is fetched at once so banner_s is a boot time, not our wait; the
+                # crash window (from the open) is watched after it, over everything captured.
+                opened = getattr(mon, "opened", None) or time.time()
+                try:
+                    mon.assert_none(CRASH_RE, since=0,
+                                    duration=max(0, CRASH_WINDOW - (time.time() - opened)))
+                except SerialUnexpectedError as e:
+                    rep.problems.append("crash: %s" % e)
+                if reset:
+                    boot = mon.soft_reset()
+                    mon.expect(r"^\S+\.py output:$|^Auto-reload is", timeout=timeout)
+                    try:
+                        mon.assert_none(CRASH_RE, since=boot, duration=CRASH_WINDOW)
+                    except SerialUnexpectedError as e:
+                        rep.problems.append("crash after Ctrl-D: %s" % e)
+                else:
+                    mon.prompt()
+                    mon.write(b"\x04")  # run code.py again, as after any boot
+                    time.sleep(0.5)
     except farmlib.FarmError as e:
         rep.problems.append(str(e).splitlines()[0][:300])
     finally:
@@ -758,8 +908,8 @@ def main(argv=None):
                 fcntl.flock(lockf, fcntl.LOCK_UN)
         reports.append(rep)
 
-    cols = ("board", "ok", "uhubctl_s", "gone_s", "back_s", "open_s", "first_byte_s", "banner_s",
-            "uptime_s", "reset_reason", "version")
+    cols = ("board", "outcome", "swd_rescue", "uhubctl_s", "gone_s", "back_s", "open_s",
+            "first_byte_s", "banner_s", "uptime_s", "reset_reason", "version")
     rows = [[_fmt(getattr(r, c)) for c in cols] for r in reports]
     widths = [max(len(c), *(len(row[i]) for row in rows)) for i, c in enumerate(cols)]
     print("  ".join(c.ljust(w) for c, w in zip(cols, widths)))
