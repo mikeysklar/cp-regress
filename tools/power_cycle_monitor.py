@@ -71,6 +71,7 @@ import json
 import logging
 import os
 import re
+import subprocess
 import sys
 import threading
 import time
@@ -186,13 +187,20 @@ def swd_rescue_speed(board):
 
 def swd_rescue(board, speed, log=None):
     """openocd init, reset run, exit at speed kHz on the board's own probe (flash.py _openocd,
-    the same command line as flash_swd). Returns True when openocd exited 0. Used here, not
-    flash.rescue_swd, which only runs for boards that set rescue_speed (the M4 does not)."""
+    the same command line as flash_swd). Returns True when openocd exited 0, False when it
+    exited non-zero, hung past its 60 s timeout, or could not be started (no openocd). Never
+    raises: the caller then waits for the tty, and a missing tty raises PortError (a FarmError).
+    Used here, not flash.rescue_swd, which only runs for boards that set rescue_speed (the M4
+    does not)."""
     import flash  # pylint: disable=import-outside-toplevel  (lib/flash.py, the farm's flasher)
     log = log or (lambda m: print(m, file=sys.stderr))
     log("%s: no tty after the power cycle; SWD rescue at %d kHz" % (board.name, speed))
-    # pylint: disable=protected-access
-    r = flash._openocd(board, speed, ["init", "reset run", "exit"], log, timeout=60)
+    try:
+        # pylint: disable=protected-access
+        r = flash._openocd(board, speed, ["init", "reset run", "exit"], log, timeout=60)
+    except (subprocess.TimeoutExpired, OSError) as e:
+        log("%s: SWD rescue failed: %s" % (board.name, e))
+        return False
     return r.returncode == 0
 
 
