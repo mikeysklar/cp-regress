@@ -68,7 +68,9 @@ try:
 except Exception as e:
     check("scan_networks", False, type(e).__name__ + ": " + str(e))
 
-check("ssid_found", seen is not None, "networks seen: " + str(count))
+# His ws_ssid_scan_t (src/helpers/ws_helper_status.h, PR #1019), so both farms log the same words.
+result = "SSID_FOUND" if seen is not None else "SSID_NOT_FOUND" if count else "NO_NETWORKS"
+check("ssid_found", seen is not None, "WS_SSID_SCAN_" + result + ", networks seen: " + str(count))
 if seen is not None:
     rssi, channel = seen
     check("rssi_plausible", isinstance(rssi, int) and -100 <= rssi < 0, "rssi=" + str(rssi))
