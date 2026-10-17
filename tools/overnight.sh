@@ -11,8 +11,9 @@
 #   DRY=1 tools/overnight.sh               # --cpr-dry-run: what would run where, no hardware
 #
 # Never flashes (no --firmware), never erases, never resets the shared broker, no power_boot,
-# no BLE pairs. Each phase has a wall-clock cap so a wedged board cannot hold the farm past
-# the morning. Board locks are the harness's own (/tmp/cp-regress-*.lock), so another session
+# no BLE pairs. Posts a summary to Mikey's Adafruit IO (tools/aio_upload.py) only when
+# ~/.config/cpr-aio.env exists; the boards never see that key. Each phase has a wall-clock
+# cap so a wedged board cannot hold the farm past the morning. Board locks are the harness's own (/tmp/cp-regress-*.lock), so another session
 # that honours them waits; one that does not (see the hil-farm notes) must be stopped first.
 set -u
 
@@ -73,4 +74,13 @@ run_phase brent "$PHASE1_CAP" --tier nightly "${BRENT_MODULES[@]}"
 run_phase smoke "$PHASE2_CAP" --tier smoke test/hardware
 
 cat "$OUT/brent.md" "$OUT/smoke.md" > "$OUT/comment.md" 2>/dev/null
+
+# Summary to Mikey's Adafruit IO, from this host only, when its key file is set up.
+AIO_CREDS=${AIO_CREDS:-$HOME/.config/cpr-aio.env}
+aio=(--junit "$OUT/brent.xml" "$OUT/smoke.xml" --creds "$AIO_CREDS"
+     --metric wifi_join.reconnect_ms@metro_esp32s3)
+[ -f "$AIO_CREDS" ] && [ -z "${DRY:-}" ] && aio+=(--send)
+env -u CPR_WIFI_SSID -u CPR_WIFI_PASSWORD "$PY" tools/aio_upload.py "${aio[@]}" \
+    >"$OUT/aio.out" 2>&1
+echo "$(date '+%F %T') aio: $(tail -1 "$OUT/aio.out")" | tee -a "$OUT/runs.log"
 echo "$(date '+%F %T') done: $OUT/comment.md" | tee -a "$OUT/runs.log"
