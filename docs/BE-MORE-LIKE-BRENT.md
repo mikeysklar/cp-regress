@@ -202,5 +202,7 @@ only; none of this has run on the farm yet. Line-by-line tracking is in `docs/BR
 | H powermon | `tools/power_cycle_monitor.py`, opt-in `-m power_boot` tests (still on its own local SerialMonitor) |
 | I sync | `tools/brent_sync.py`, `docs/BRENT-SYNC.md` |
 | J network | `test/hardware/net_wifi_test.py` after his `network/test_wifi.py` @ 90cd5af: SSID in scan, supervisor joins from settings.toml, wrong password and missing SSID raise and the radio recovers (nightly, not yet on the farm) |
+| K report | `tools/hil_report.py`: one Markdown report per run in the PR #930 proof format (result table, serial window from boot, catcher records over the same span) |
+| L overnight | `tools/overnight.sh`: Brent-aligned modules, then smoke, then the report; six boards, capped phases, no flash or erase |
 
 Brent's own conftest.py is now available, so the "Still open" note above is superseded.
