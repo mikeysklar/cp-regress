@@ -72,11 +72,31 @@ def test_hostname():
     old_hn = wifi.radio.hostname
     wifi.radio.hostname = "cpr-test"
     new_hn = wifi.radio.hostname
-    wifi.radio.hostname = old_hn
-    return new_hn == "cpr-test"
+    try:
+        wifi.radio.hostname = old_hn
+    except ValueError:
+        pass  # a default with "_" is refused by the setter; hostname_default_valid reports it
+    return new_hn == "cpr-test", old_hn
 
-hostname_ok = guard("hostname_test", test_hostname)
-check("hostname_settable", hostname_ok is True, str(hostname_ok))
+def hostname_problem(hn):
+    # The setter's rules (shared-bindings/wifi/Radio.c hostname_valid): dot-separated parts of
+    # 1-63 letters, digits or dashes, not starting with a dash.
+    for part in hn.split("."):
+        if not 0 < len(part) < 64:
+            return "part %r is %d long" % (part, len(part))
+        if part[0] == "-":
+            return "part %r starts with a dash" % part
+        for c in part:
+            if not (c.isalpha() or c.isdigit() or c == "-"):
+                return "%r is not allowed" % c
+    return None
+
+hostname = guard("hostname_test", test_hostname)
+check("hostname_settable", hostname is not None and hostname[0] is True, str(hostname))
+if hostname is not None and isinstance(hostname[1], str):
+    problem = hostname_problem(hostname[1])
+    check("hostname_default_valid", problem is None,
+          "default %s: %s" % (hostname[1], problem) if problem else hostname[1])
 
 def toggle_and_reconnect():
     # #8032 / #10729: after the radio is turned off and on, a fresh connect must work
@@ -284,6 +304,24 @@ def test_hostname_test(creds, initial):
 def test_hostname_settable(creds, initial):
     """wifi.radio.hostname reads back what was set."""
     _initial(creds, initial).expect("hostname_settable")
+
+
+def test_hostname_default_valid(board, creds, initial):
+    """The hostname the firmware picks at boot is one its own setter accepts.
+
+    Fails on espressif @ 2d299b0: the default is "cpy-" + the end of the board ID + "-" + the
+    MAC (ports/espressif/common-hal/wifi/__init__.c:538), and board IDs have underscores, which
+    hostname_valid() refuses (shared-bindings/wifi/Radio.c:21-54) and DNS does not allow. Seen
+    on bravo 2026-10-17: wifi.radio.hostname = wifi.radio.hostname raises ValueError on the
+    S2 and S3. Expected to fail there until the firmware changes; an espressif pass is news.
+    """
+    results = _initial(creds, initial)
+    rs = results.checks.get("hostname_default_valid") or []
+    detail = str(rs[-1].get("detail", "")) if rs else ""
+    if rs and rs[-1].get("ok") is False and board.port == "espressif" \
+            and "'_' is not allowed" in detail:
+        pytest.xfail("known: espressif default hostname has '_' (%s)" % detail)
+    results.expect("hostname_default_valid")
 
 
 def test_toggle(creds, initial):

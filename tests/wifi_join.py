@@ -71,11 +71,31 @@ def test_hostname():
     old_hn = wifi.radio.hostname
     wifi.radio.hostname = "cpr-test"
     new_hn = wifi.radio.hostname
-    wifi.radio.hostname = old_hn
-    return new_hn == "cpr-test"
+    try:
+        wifi.radio.hostname = old_hn
+    except ValueError:
+        pass  # a default with "_" is refused by the setter; hostname_default_valid reports it
+    return new_hn == "cpr-test", old_hn
 
-hostname_ok = guard("hostname_test", test_hostname)
-check("hostname_settable", hostname_ok is True, str(hostname_ok))
+def hostname_problem(hn):
+    # The setter's rules (shared-bindings/wifi/Radio.c hostname_valid): dot-separated parts of
+    # 1-63 letters, digits or dashes, not starting with a dash.
+    for part in hn.split("."):
+        if not 0 < len(part) < 64:
+            return "part %r is %d long" % (part, len(part))
+        if part[0] == "-":
+            return "part %r starts with a dash" % part
+        for c in part:
+            if not (c.isalpha() or c.isdigit() or c == "-"):
+                return "%r is not allowed" % c
+    return None
+
+hostname = guard("hostname_test", test_hostname)
+check("hostname_settable", hostname is not None and hostname[0] is True, str(hostname))
+if hostname is not None and isinstance(hostname[1], str):
+    problem = hostname_problem(hostname[1])
+    check("hostname_default_valid", problem is None,
+          "default %s: %s" % (hostname[1], problem) if problem else hostname[1])
 
 def toggle_and_reconnect():
     # #8032 / #10729: after the radio is turned off and on, a fresh connect must work
