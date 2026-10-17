@@ -532,6 +532,14 @@ class Repl:
             return
         raise FarmError("timeout waiting for b'>>> '; last %r" % tail)
 
+    def raw_repl_wait(self):
+        """Seconds to wait for the raw REPL banner after Ctrl-A. A REPL mode switch ends one VM
+        and starts the next (main.c run_repl), and both ends call supervisor_workflow_reset()
+        (main.c:166, :453), whose web workflow does a blocking connect() with an 8 s timeout
+        (web_workflow.c:329). When settings.toml names a network the board cannot join, Ctrl-A
+        therefore takes two failed joins: 19.3 s on the S3 on bravo, 2026-10-17."""
+        return 30 if "wifi" in getattr(self.board, "caps", ()) else 5
+
     def exec_raw(self, code, timeout=60):
         """Run code in the raw REPL. Returns (stdout, stderr) as str."""
         outs, err = self.exec_raw_pieces([code], timeout=timeout)
@@ -542,7 +550,7 @@ class Repl:
         raw REPL drops them). Stops at the first piece with stderr. Returns ([stdout...], stderr)."""
         self.prompt()
         self.write(b"\x01")
-        self.read_until(b"raw REPL; CTRL-B to exit\r\n>", timeout=5)
+        self.read_until(b"raw REPL; CTRL-B to exit\r\n>", timeout=self.raw_repl_wait())
         end = time.time() + timeout
         outs, err = [], ""
         for code in pieces:
