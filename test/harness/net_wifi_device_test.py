@@ -46,9 +46,16 @@ class Radio:
         self.not_found_exc = not_found_exc
         self.auth_exc = auth_exc
         self.ssid = FARM_SSID if connected else None
+        self.stale = False  # espressif: event bits still say joined until STA_DISCONNECTED lands
+        self.joined_bits = None
 
     def stop_station(self):
+        if self.stale:
+            self.joined_bits = self.ssid
         self.connected, self.ssid = False, None
+
+    def settle(self):
+        self.joined_bits = None
 
     def start_scanning_networks(self):
         return iter(self.nets)
@@ -57,6 +64,8 @@ class Radio:
         pass
 
     def connect(self, ssid, password):
+        if self.joined_bits == ssid:
+            return  # Radio.c:364-371: "already connected", password never tried
         if not any(n.ssid == ssid for n in self.nets):
             self.connected = False
             if self.not_found_exc is None:
@@ -85,7 +94,7 @@ class Radio:
 def run(code, radio, monkeypatch, capsys):
     """Exec devtest + code with `wifi` faked and time.sleep a no-op. Returns name -> ok."""
     monkeypatch.setitem(sys.modules, "wifi", types.SimpleNamespace(radio=radio))
-    monkeypatch.setattr("time.sleep", lambda s: None)
+    monkeypatch.setattr("time.sleep", lambda s: radio.settle())
     exec(compile(DEVTEST + "\n" + code, "<device>", "exec"), {"__name__": "__device__"})
     out = {}
     for line in capsys.readouterr().out.splitlines():
@@ -188,6 +197,24 @@ def test_bad_password_fails_on_unknown_failure(monkeypatch, capsys):
 def test_bad_password_fails_when_connect_returns(monkeypatch, capsys):
     r = run(bad_password(), Radio([Net(FARM_SSID)], connected=True), monkeypatch, capsys)
     assert r["bad_password_raises"] is False
+
+
+def test_bad_password_waits_for_the_disconnect_event(monkeypatch, capsys):
+    """The S3 on bravo (2026-10-17): connect() straight after stop_station() returned at once."""
+    radio = Radio([Net(FARM_SSID)], connected=True,
+                  auth_exc=ConnectionError("Authentication failure"))
+    radio.stale = True
+    assert all(run(bad_password(), radio, monkeypatch, capsys).values())
+
+
+def test_bad_password_without_the_wait_is_caught(monkeypatch, capsys):
+    """Test the test: the old code (no sleep after stop_station) fails, as on the S3."""
+    radio = Radio([Net(FARM_SSID)], connected=True,
+                  auth_exc=ConnectionError("Authentication failure"))
+    radio.stale = True
+    code = bad_password().replace("    time.sleep(2)\n", "", 1)
+    assert "time.sleep(2)" not in code
+    assert run(code, radio, monkeypatch, capsys)["bad_password_raises"] is False
 
 
 def test_device_code_never_carries_the_password_into_detail(monkeypatch, capsys):

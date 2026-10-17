@@ -148,6 +148,10 @@ timeout = {timeout}
 
 if wifi.radio.connected:
     wifi.radio.stop_station()
+    # connected goes False at once (sta_mode), but connect() reads the event bits, which only
+    # change when the STA_DISCONNECTED event lands; called first it sees "already joined to
+    # this SSID" and returns without trying the password (espressif Radio.c:364-371).
+    time.sleep(2)
 t0 = time.monotonic()
 raised = None
 try:
@@ -156,7 +160,8 @@ except Exception as e:
     raised = e
 took = time.monotonic() - t0
 metric("bad_password_s", took, "s", "lower")
-check("bad_password_raises", raised is not None, "connect() returned after %.1f s" % took)
+check("bad_password_raises", raised is not None, "connect() returned after %.1f s%s" % (
+    took, " (still marked joined: Radio.c:364-371)" if took < 0.5 else ""))
 if raised is not None:
     check("bad_password_connection_error", isinstance(raised, ConnectionError),
           type(raised).__name__ + ": " + str(raised))
