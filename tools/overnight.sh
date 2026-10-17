@@ -29,10 +29,12 @@ PHASE1_CAP=${PHASE1_CAP:-14400}   # 4 h
 PHASE2_CAP=${PHASE2_CAP:-7200}    # 2 h
 
 # Brent-aligned modules, in the order his work goes: provisioning (settings scenarios), device
-# identity, WiFi (his network/test_wifi.py), then the MQTT broker connection, his next step.
+# identity and his SerialMonitor hardware tests, WiFi (his network/test_wifi.py), then the MQTT
+# broker connection, his next step.
 BRENT_MODULES=(
   test/hardware/settings_scenarios_test.py
   test/hardware/identity_crash_test.py
+  test/hardware/serialmon_hw_test.py
   test/hardware/net_wifi_test.py
   test/hardware/wifi_join_test.py
   test/hardware/mqtt_broker_test.py
