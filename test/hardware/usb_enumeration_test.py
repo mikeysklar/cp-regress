@@ -154,7 +154,9 @@ def test_mounted(mounted):
 def test_mount_s(mounted, metric):
     """Seconds to mount, compared with this board's history."""
     _need_mount(mounted)
-    metric("mount_s", mounted[1], "s", better="lower")
+    # Host side and two-valued on every board, ~0.003 s or 0.03-0.07 s (bravo, 2026-10-17):
+    # only a change past a quarter second is the board's.
+    metric("mount_s", mounted[1], "s", better="lower", slack=0.25)
 
 
 @pytest.fixture(scope="module")

@@ -36,12 +36,14 @@ def _test_id(request):
 
 @pytest.fixture
 def metric(request, board):
-    """metric(name, value, unit="", better="lower", tolerance=0.25): record and compare.
+    """metric(name, value, unit="", better="lower", tolerance=0.25, slack=0): record and compare.
 
+    slack is an absolute margin in the metric's unit: a change smaller than it never fails,
+    for values whose resolution or host-side noise is large next to the value (compare()).
     The value is attached to the test report (user_properties, shown in --junitxml) and, unless
     --no-history, appended to history/metrics.jsonl for later runs to compare against.
     """
-    def record(name, value, unit="", better="lower", tolerance=0.25):
+    def record(name, value, unit="", better="lower", tolerance=0.25, slack=0):
         key = _test_id(request) + "." + name
         request.node.user_properties.append((name, value))
         assert isinstance(value, (int, float)), "%s: no numeric value (%r)" % (name, value)
@@ -55,13 +57,25 @@ def metric(request, board):
                                         "runner": "pytest"}) + "\n")
         if base is None or base <= 0:
             return "no baseline yet"
-        ratio = value / base
-        worse = ratio > 1 + tolerance if better == "lower" else ratio < 1 - tolerance
-        detail = "%.3g %s vs baseline %.3g (x%.2f)" % (value, unit, base, ratio)
+        worse, detail = compare(value, base, unit, better, tolerance, slack)
         assert not worse, "%s slower than baseline: %s" % (name, detail)
         return detail
 
     return record
+
+
+def compare(value, base, unit="", better="lower", tolerance=0.25, slack=0):
+    """(worse, detail): worse when the value is past the baseline by more than `tolerance` as a
+    ratio AND by more than `slack` in absolute terms."""
+    ratio = value / base
+    if better == "lower":
+        worse = ratio > 1 + tolerance and value - base > slack
+    else:
+        worse = ratio < 1 - tolerance and base - value > slack
+    detail = "%.3g %s vs baseline %.3g (x%.2f)" % (value, unit, base, ratio)
+    if slack:
+        detail += ", slack %g %s" % (slack, unit)
+    return worse, detail
 
 
 @pytest.fixture

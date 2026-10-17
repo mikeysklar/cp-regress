@@ -208,6 +208,12 @@ def test_benchmark(results, name):
     results.expect(name)
 
 
+# Absolute margins (in the metric's unit) below which a change never fails. sleep_accuracy
+# comes in steps of ~0.012 ms (0.0244, 0.0391, 0.0513 on bravo, 2026-10-17), so one step reads
+# as x1.6; the device's own 20 ms check is the real limit.
+SLACK = {"sleep_accuracy": 1}
+
+
 @pytest.mark.parametrize("name", BENCHMARKS)
 def test_benchmark_time(results, metric, name):
     """The benchmark's time, compared with the median of this board's last five runs."""
@@ -215,7 +221,8 @@ def test_benchmark_time(results, metric, name):
         results.expect(name)  # skips if the device skipped it, fails if it failed
         pytest.fail("%s passed but sent no timing" % name, pytrace=False)
     rec = results.metric_record(name)
-    metric(name, rec["value"], rec.get("unit", ""), rec.get("better", "lower"))
+    metric(name, rec["value"], rec.get("unit", ""), rec.get("better", "lower"),
+           slack=SLACK.get(name, 0))
 
 
 def test_repl_roundtrip_ms(board, metric):
