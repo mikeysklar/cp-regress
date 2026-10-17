@@ -148,6 +148,15 @@ port branch is in flight, named in Notes), `equivalent` (we already do this our 
 | brent | `hil/firmware/conftest.py::MISSING_SSID` | 321 | `test/hardware/net_wifi_test.py::MISSING_SSID` | ported | cpr-fake-no-such-network, allowed by the prod guard |
 | brent | `hil/firmware/conftest.py::_env` | 261 | `test/fixtures/secrets.py::_values` | equivalent | farm.toml [network] names the environment variables; values never logged |
 | brent | `hil/firmware/conftest.py::VALID_SCENARIOS` | 400 | `data/settings-scenarios/scenarios.toml` | equivalent | needs_creds: scenarios with the farm SSID skip when .env lacks it |
+| brent | `.github/scripts/hil_display_test.py` | | `-` | watch | tyeth's display + camera HIL driver (usbip-hil-controller), arrived with the api-v2 rebase |
+| brent | `.github/scripts/hil_display_test.py::_proof_window` | 175 | `tools/hil_report.py::proof_window` | ported | from boot to just after the last evidence line (PR #930 hil-lib.sh) |
+| brent | `.github/scripts/hil_display_test.py::_time_window` | 195 | `tools/hil_report.py::broker_window` | ported | catcher records by epoch, same span as the serial window |
+| brent | `.github/scripts/hil_display_test.py::_proof_section` | 202 | `tools/hil_report.py::section` | ported | |
+| brent | `.github/scripts/hil_display_test.py::append_comment` | 210 | `tools/hil_report.py::report` | ported | board x test table instead of one target |
+| brent | `.github/scripts/hil_display_test.py::HIL_PROOF_*` | | `tools/hil_report.py` | ported | same env vars and defaults |
+| brent | `.github/scripts/specs/*` | | `-` | watch | spec-driven sequences; we have no camera or display rig |
+| brent | `.github/workflows/hil-lilygo-display.yml` | | `-` | watch | GitHub Actions + self-hosted bench; we post nothing upstream |
+| brent | `.github/workflows/build-migrate-api-v2.yml` | | `-` | watch | WipperSnapper firmware builds |
 | brent | `hil/README.md` | | `-` | watch | how he runs it: HIL_IO_* / HIL_WIFI_* exported on the HIL host |
 | brent | `hil/hil-boards.json::board` | 2 | `farm.toml [[board]] name` | equivalent | |
 | brent | `hil/hil-boards.json::chip` | 3 | `farm.toml [[board]] flash` | equivalent | `flash.chip` on ESP boards |
