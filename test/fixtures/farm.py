@@ -42,7 +42,10 @@ KNOWN_KEYS = {"name", "board_id", "usb", "port", "caps", "power", "notes", "flas
 # Keys that would cache what must be resolved from `usb` at the moment of use.
 CACHED_KEYS = {"tty", "serial", "dev", "drive", "mount", "label", "circuitpy", "location"}
 KNOWN_CAPS = {"native_usb", "uf2", "wifi", "ble", "esp32spi", "usb_host", "reset_ok", "small"}
-POWER_KEYS = {"r": 1, "w": 1, "settle": 0}  # key -> smallest legal value (all integers)
+# key -> smallest legal value (all integers). tries: how many power cycles recover() may spend,
+# and how many times a device run that lost the board is run again, for a board that does not
+# always come up (the Feather STM32F405's crystal load caps).
+POWER_KEYS = {"r": 1, "w": 1, "settle": 0, "tries": 1}
 
 # flash.method -> {key: kind}, required then optional. Kinds: "str", "hex" (a string such as
 # "0x1000", because lib/flash.py hands it to esptool or int(x, 0)), "int" (kHz for openocd).

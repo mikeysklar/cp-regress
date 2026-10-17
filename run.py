@@ -226,13 +226,21 @@ def board_health(board):
 
 
 def recover(board):
-    """Power cycle and re-check. Returns (ok, why)."""
-    try:
-        board.power_cycle()
-        time.sleep(board.power.get("settle", 12))
-    except Exception as e:  # noqa: BLE001
-        return False, "power cycle: %s" % e
-    return board_health(board)
+    """Power cycle and re-check, up to power.tries times (default 1). Returns (ok, why)."""
+    tries = board.power.get("tries", 1)
+    whys = []
+    for _ in range(tries):
+        try:
+            board.power_cycle()
+            time.sleep(board.power.get("settle", 12))
+        except Exception as e:  # noqa: BLE001
+            return False, "; ".join(whys + ["power cycle: %s" % e])
+        ok, why = board_health(board)
+        if ok:
+            return True, ("healthy after %d power cycles (%s)" % (len(whys) + 1, "; ".join(whys))
+                          if whys else "")
+        whys.append(why)
+    return False, "; ".join(whys)
 
 
 def run_board(board, tests, cfg, boards, outdir, label, dry):

@@ -130,8 +130,8 @@ board_id = "feather_stm32f405_express"
 usb = "3-3.3.4.4"
 port = "stm"
 caps = ["native_usb", "reset_ok"]
-power = { r = 30, w = 500, settle = 12 }
-notes = "No UF2 bootloader. Must be settled before flashing."
+power = { r = 30, w = 500, settle = 12, tries = 3 }
+notes = "No UF2 bootloader. Must be settled before flashing. Comes up unreliably (crystal load caps, fixed in the next hardware rev), so it gets 3 tries."
 flash = { method = "swd", probe = "E6647C740327322C", target = "target/stm32f4x.cfg", speed = 1000, connect = "reset halt", bin_base = "0x08000000" }
 wiring = {}
 
