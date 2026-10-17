@@ -35,6 +35,7 @@ BRENT_MODULES=(
   test/hardware/settings_scenarios_test.py
   test/hardware/identity_crash_test.py
   test/hardware/serialmon_hw_test.py
+  test/hardware/farm_addressing_test.py
   test/hardware/net_wifi_test.py
   test/hardware/wifi_join_test.py
   test/hardware/mqtt_broker_test.py

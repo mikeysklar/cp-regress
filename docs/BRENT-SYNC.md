@@ -170,8 +170,8 @@ port branch is in flight, named in Notes), `equivalent` (we already do this our 
 | brent | `hil/tests_hil_board_utils/hil_checks.py` | | `lib/hil_checks.py` | ported | |
 | brent | `hil/tests_hil_board_utils/hil_power_cycle_monitor.py` | | `tools/power_cycle_monitor.py` | ported | |
 | brent | `hil/tests_hil_board_utils/test_end_to_end.py` | | `-` | watch | ours: the flashed_firmware → flashed_fs chain |
-| brent | `hil/tests_hil_board_utils/test_power.py` | | `-` | watch | ours: run.py board_health and recover |
-| brent | `hil/tests_hil_board_utils/test_serial_monitor_hw.py` | | `test/hardware/serialmon_hw_test.py` | ported | on every board with soft_reset / microcontroller.reset() for his DTR/RTS reset; the pty versions stay in test/harness/serialmon_test.py |
+| brent | `hil/tests_hil_board_utils/test_power.py` | | `test/hardware/farm_addressing_test.py` | ported | read-only half (tty from the USB path, uhubctl status) in smoke; the power switching is power_boot_test.py (opt-in) |
+| brent | `hil/tests_hil_board_utils/test_serial_monitor_hw.py` | | `test/hardware/serialmon_hw_test.py` | ported | no-power-cut subset in smoke, with soft_reset / microcontroller.reset() for his DTR/RTS reset; the power-cycle variants are power_boot_test.py (opt-in), the pty ones test/harness/serialmon_test.py |
 | brent | `.github/ISSUE_TEMPLATE/*` | | `-` | watch | upstream, not HIL |
 | brent | `.github/membrowse-targets.json` | | `-` | watch | upstream, not HIL |
 | brent | `.github/workflows/build-clang-doxy.yml` | | `-` | watch | upstream CI; a new HIL workflow shows as UNMAPPED |
