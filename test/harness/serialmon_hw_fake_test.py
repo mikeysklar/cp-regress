@@ -17,7 +17,7 @@ import time
 import pytest
 
 from harness.fakes import PtyBoard
-from serialmon import SerialMonitor
+from serialmon import SerialMonitor, SerialTimeout
 
 pytestmark = pytest.mark.smoke
 
@@ -39,6 +39,7 @@ class FakeConsole:
         self.waiting = False  # at "Press any key": the next byte is eaten (main.c:672)
         self.line = b""
         self.reboot_text = "\r\nsoft reboot\r\n\r\n"
+        self.deaf_until = 0  # between "soft reboot" and code.py, keys are lost (bravo)
         self.stop = False
         self.t = threading.Thread(target=self._run, daemon=True)
         self.t.start()
@@ -52,6 +53,8 @@ class FakeConsole:
         self.out(("\r\n" + BANNER + "\r\n" if banner else "\r\n") + ">>> ")
 
     def _key(self, c):
+        if time.monotonic() < self.deaf_until:
+            return
         if self.waiting:
             self._repl(banner=True)
             return
@@ -61,8 +64,9 @@ class FakeConsole:
         elif c == b"\x02":
             self._repl(banner=True)
         elif c == b"\x04":
-            self.out(self.reboot_text + BOOT)
-            self.waiting = True
+            self.out(self.reboot_text)
+            self.deaf_until = time.monotonic() + 1.0
+            threading.Thread(target=self._boot, daemon=True).start()
         elif c in (b"\r", b"\n"):
             if b"microcontroller.reset()" in self.line:
                 self.line = b""
@@ -72,6 +76,11 @@ class FakeConsole:
             self.out("\r\n>>> ")
         else:
             self.line += c
+
+    def _boot(self):
+        time.sleep(1.0)
+        self.out(BOOT)
+        self.waiting = True
 
     def _hard_reset(self):
         time.sleep(0.05)
@@ -136,6 +145,14 @@ def test_hard_reset_skips_without_reset_ok(fake, mon):
     fake.caps = ["native_usb"]
     with pytest.raises(pytest.skip.Exception, match="reset_ok"):
         hw.test_hard_reset_reopens(fake, mon)
+
+
+def test_poke_before_code_py_is_lost(fake, mon):
+    """Test the fake: poking straight after "soft reboot", as the first farm run did, finds
+    no banner."""
+    mon.soft_reset()
+    with pytest.raises(SerialTimeout):
+        hw.hil_checks.expect_banner(mon, timeout=3, poke=True)
 
 
 def test_second_reset_catches_a_double_reboot(fake, mon):

@@ -32,15 +32,25 @@ pytestmark = [
 ]
 
 SOFT_REBOOT_RE = r"soft reboot"
+CODE_RE = r"code\.py output:"
+
+
+def _repl(serial):
+    """Banner after a soft reset. A Ctrl-C sent between "soft reboot" and code.py's start is
+    lost and the idle sketch then loops for good (bravo 2026-10-17, all six boards), so wait
+    for code.py to be running before poking."""
+    serial.expect(CODE_RE, timeout=20)
+    time.sleep(1)
+    return hil_checks.expect_banner(serial, poke=True)
 
 
 def test_second_reset_starts_a_new_boot(serial):
     first = serial.soft_reset()
-    hil_checks.expect_banner(serial, poke=True)
+    _repl(serial)
     second = serial.soft_reset()
     assert second > first
 
-    hil_checks.expect_banner(serial, poke=True)
+    _repl(serial)
     reboots = [l for l in serial.lines(second) if re.search(SOFT_REBOOT_RE, l.text)]
     assert len(reboots) == 1, [l.text for l in reboots]
     # assert_none defaults to the latest boot, so the first boot's line only matches when
@@ -51,7 +61,7 @@ def test_second_reset_starts_a_new_boot(serial):
 
 def test_open_does_not_reset(board, serial):
     serial.soft_reset()
-    hil_checks.expect_banner(serial, poke=True)
+    _repl(serial)
     serial.close()
 
     mon = SerialMonitor(board)
@@ -64,7 +74,7 @@ def test_open_does_not_reset(board, serial):
 
 def test_timestamps_and_dump(serial, tmp_path):
     boot = serial.soft_reset()
-    hil_checks.expect_banner(serial, poke=True)
+    _repl(serial)
     serial.close()
 
     lines = serial.lines(boot)
