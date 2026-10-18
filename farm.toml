@@ -132,6 +132,8 @@ port = "stm"
 caps = ["native_usb", "reset_ok"]
 power = { r = 30, w = 500, settle = 12, tries = 3 }
 notes = "No UF2 bootloader. Must be settled before flashing. Comes up unreliably (crystal load caps, fixed in the next hardware rev), so it gets 3 tries."
+# perf_core lost the board 9 of 9 runs on bravo, 2026-10-17, each after a clean power cycle
+dns_tests = ["hardware/perf_core_test.py"]
 flash = { method = "swd", probe = "E6647C740327322C", target = "target/stm32f4x.cfg", speed = 1000, connect = "reset halt", bin_base = "0x08000000" }
 wiring = {}
 

@@ -82,6 +82,7 @@ def test_the_real_farm_toml_is_clean(root_conftest):
     ({"flash": {"method": "esp_uf2", "chip": "esp32s3"}}, "needs flash_size"),
     ({"run_tests": "hardware/"}, "must be a list of test paths"),
     ({"skip_tests": ["/"]}, "must be a list of test paths"),
+    ({"dns_tests": ["hardware/no_such_test.py"]}, "names no file or folder"),
     ({"run_tests": ["hardware/no_such_test.py"]}, "names no file or folder"),
 ])
 def test_bad_board_entries(changes, problem):
@@ -225,6 +226,18 @@ def test_run_and_skip_tests_per_board(root_conftest):
     for i in items:
         if hasattr(i, "callspec"):
             assert "hardware" in i.marks and i.group == i.callspec.params["board"]
+
+
+def test_dns_tests_skip_as_did_not_start(root_conftest):
+    cfg = {"board": [{"name": "stm", "dns_tests": ["hardware/perf_core_test.py"],
+                      "skip_tests": ["hardware/core_vm_test.py"]}, {"name": "s3"}]}
+    items = [Item("hardware/perf_core_test.py", "t", b) for b in ("stm", "s3")]
+    items += [Item("hardware/core_vm_test.py", "t", "stm"), Item("hardware/other_test.py", "t", "stm")]
+    assert collect(root_conftest, cfg, items) == []
+    reasons = [i.skip_reason for i in items]
+    assert reasons[0] == ("DNS (did not start): in dns_tests for board 'stm', "
+                          "which does not come up reliably")
+    assert reasons[1:] == [None, "in skip_tests for board 'stm'", None]
 
 
 def test_nightly_tier_keeps_smoke(root_conftest):

@@ -41,7 +41,12 @@ TAIL = 25
 MAX_SECTION = 14000  # hil_display_test.py: keeps a GitHub comment under 65536 chars
 DEFAULT_EVIDENCE = r"Traceback|Error|error|--- cpr:|safe mode|Hard fault"
 STAMP = re.compile(r"^\[(\d\d):(\d\d):(\d\d)\.(\d{3})\] ")
-ICON = {"passed": "✅", "failed": "❌", "error": "❌", "skipped": "⏭"}
+ICON = {"passed": "✅", "failed": "❌", "error": "❌", "dnf": "⚠️", "dns": "🚫", "skipped": "⏭"}
+WORST_FIRST = ("failed", "error", "dnf", "dns", "passed", "skipped")
+# test/fixtures/farm.py DNS and DNF: a board's dns_tests, never started because it does not come
+# up reliably; and a test that started, then lost the board, so it never finished
+DNS_RE = re.compile(r"DNS \(did not start\)")
+DNF_RE = re.compile(r"DNF \(did not finish\)")
 
 
 # ------------------------------------------------------------------ junit
@@ -71,6 +76,10 @@ def read_junit(path, boards):
                 outcome = "failed" if kind == "failure" else kind
                 message = (el.get("message") or "") + ("\n" + el.text if el.text else "")
                 break
+        if outcome == "skipped" and DNS_RE.search(message):
+            outcome = "dns"
+        elif outcome != "passed" and DNF_RE.search(message):
+            outcome = "dnf"
         out.append({"nodeid": nodeid, "board": board or "host", "test": test,
                     "name": name, "outcome": outcome, "message": message.strip(),
                     "time": float(tc.get("time") or 0)})
@@ -208,8 +217,10 @@ def report(cases, serial_dir, records, evidence, show_all, title, invocation):
         totals[c["outcome"]] += 1
 
     out = ["## 🔌 %s" % title, "",
-           "%d passed · %d failed · %d errors · %d skipped" % (
-               totals["passed"], totals["failed"], totals["error"], totals["skipped"]), "",
+           " · ".join(["%d passed" % totals["passed"], "%d failed" % totals["failed"],
+                       "%d errors" % totals["error"]]
+                      + ["%d %s" % (totals[k], k.upper()) for k in ("dnf", "dns") if totals[k]]
+                      + ["%d skipped" % totals["skipped"]]), "",
            "| test | " + " | ".join("`%s`" % b for b in boards) + " |",
            "|---|" + "---|" * len(boards)]
     for t in tests:
@@ -219,13 +230,13 @@ def report(cases, serial_dir, records, evidence, show_all, title, invocation):
             if not got:
                 cells.append("")
                 continue
-            worst = next((o for o in ("failed", "error", "passed", "skipped") if o in got), got[0])
+            worst = next((o for o in WORST_FIRST if o in got), got[0])
             n = sum(1 for o in got if o == worst)
             cells.append("%s%s" % (ICON[worst], "" if len(got) == 1 else " %d/%d" % (n, len(got))))
         out.append("| `%s` | %s |" % (t, " | ".join(cells)))
     out.append("")
 
-    shown = [c for c in cases if c["outcome"] in ("failed", "error")
+    shown = [c for c in cases if c["outcome"] in ("failed", "error", "dnf")
              or (show_all and c["outcome"] == "passed")]
     for c in shown:
         out += ["", "### %s `%s` on `%s`" % (ICON[c["outcome"]], c["name"], c["board"]), ""]
@@ -272,7 +283,7 @@ def main(argv=None):
     else:
         with open(args.out, "w") as f:
             f.write(text)
-    return 1 if any(c["outcome"] in ("failed", "error") for c in cases) else 0
+    return 1 if any(c["outcome"] in ("failed", "error", "dnf") for c in cases) else 0
 
 
 if __name__ == "__main__":

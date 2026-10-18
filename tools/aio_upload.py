@@ -87,12 +87,15 @@ def run_start(paths):
 def summary(paths, boards):
     """[(feed key, value)] for the totals and per-board failures."""
     cases = [c for p in paths for c in read_junit(p, boards)]
+    # DNF counts as failed here: the free tier's 10 feeds have no room for its own. DNS is a
+    # board's planned exclusion, like a skip, and is not sent.
     count = {k: sum(c["outcome"] == k for c in cases) for k in ("passed", "failed", "error")}
+    count["failed"] += sum(c["outcome"] == "dnf" for c in cases)
     feeds = [("passed", count["passed"]), ("failed", count["failed"]),
              ("errors", count["error"])]
     seen = sorted({c["board"] for c in cases if c["board"] != "host"})
     for b in seen:
-        bad = sum(c["board"] == b and c["outcome"] in ("failed", "error") for c in cases)
+        bad = sum(c["board"] == b and c["outcome"] in ("failed", "error", "dnf") for c in cases)
         feeds.append((feed_key("fail", b), bad))
     return feeds
 

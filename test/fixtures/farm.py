@@ -23,6 +23,7 @@ from contextlib import contextmanager
 import pytest
 
 import run as cpr_run  # board_health, recover: the same checks run.py uses
+from outcomes import DNF
 
 LOCK_WAIT_S = 900
 
@@ -38,7 +39,7 @@ NAME_RE = re.compile(r"^[A-Za-z0-9_.-]+$")  # used in lock paths, xdist groups a
 HEX_RE = re.compile(r"^0x[0-9a-fA-F]+$")
 
 KNOWN_KEYS = {"name", "board_id", "usb", "port", "caps", "power", "notes", "flash", "wiring",
-              "run_tests", "skip_tests"}
+              "run_tests", "skip_tests", "dns_tests"}
 # Keys that would cache what must be resolved from `usb` at the moment of use.
 CACHED_KEYS = {"tty", "serial", "dev", "drive", "mount", "label", "circuitpy", "location"}
 KNOWN_CAPS = {"native_usb", "uf2", "wifi", "ble", "esp32spi", "usb_host", "reset_ok", "small"}
@@ -181,7 +182,7 @@ def validate_board_entry(entry, test_dir=None):
         for key in sorted(set(flash) - set(required) - set(optional) - {"method"}):
             warnings.append("board '%s': unknown key flash.%s for method %s" % (name, key, method))
 
-    for key in ("run_tests", "skip_tests"):
+    for key in ("run_tests", "skip_tests", "dns_tests"):
         if key in entry:
             _selectors(name, key, entry[key], test_dir)
     for key in sorted(set(entry) - KNOWN_KEYS):
@@ -317,7 +318,7 @@ def board(request):
             rok, rwhy = cpr_run.recover(b)
             if not rok:
                 config.cpr_down[b.name] = "did not recover after %s: %s" % (request.node.name, rwhy)
-            pytest.fail("%s did not survive this module: %s. Power-cycled: %s"
+            pytest.fail(DNF + "%s did not survive this module: %s. Power-cycled: %s"
                         % (b.name, hwhy, "recovered" if rok else "still down (%s)" % rwhy),
                         pytrace=False)
 
@@ -343,7 +344,7 @@ def _not_after_crash(request):
         b.cpr_started = started + 1
         why = getattr(b, "cpr_crashed", None)
         if why and getattr(b, "cpr_crashed_at", 0) < started:
-            pytest.skip("not reached: the board stopped answering earlier (%s)" % why[:160])
+            pytest.skip(DNF + "not reached: the board stopped answering earlier (%s)" % why[:160])
         b.cpr_in_test = True  # a device run from here on happens inside this test's body
         yield
         b.cpr_in_test = False

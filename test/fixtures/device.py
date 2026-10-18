@@ -16,6 +16,7 @@ test function:
 import pytest
 
 import run as cpr_run  # recover(): the same power cycle and health check run.py uses
+from outcomes import DNF
 
 
 class DeviceResults:
@@ -40,7 +41,7 @@ class DeviceResults:
         # A run that died or raised partway is charged once, by test_device_ran /
         # expect_no_exception. Checks it never reached skip instead of failing again.
         if self.crashed:
-            pytest.skip("not reached: the device run failed (%s)" % self.crashed[:200])
+            pytest.skip(DNF + "not reached: the device run failed (%s)" % self.crashed[:200])
         if self.err:
             pytest.skip("not reached: the device code raised (%s)" % self.err[-200:])
         pytest.fail("device never reported %s %r" % (what, name), pytrace=False)
@@ -82,7 +83,7 @@ class DeviceResults:
 
     def expect_no_exception(self):
         """The device code ran to the end without raising, and the board kept talking."""
-        assert not self.crashed, "device run failed: " + self.crashed[-400:]
+        assert not self.crashed, DNF + "device run failed: " + self.crashed[-400:]
         assert not self.err, "device raised: " + self.err[-400:]
 
 

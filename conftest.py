@@ -15,6 +15,11 @@ paths relative to test/: a folder ("hardware/"), a file ("hardware/wifi_join_tes
 
     run_tests = ["hardware/"]                      # only these run on this board; omit for all
     skip_tests = ["hardware/ble_pair_test.py"]     # these are reported as skipped
+    dns_tests = ["hardware/perf_core_test.py"]     # these are reported as DNS (did not start)
+
+dns_tests is for a board that does not come up reliably enough to run them (the Feather
+STM32F405's crystal load caps): they skip with a reason starting "DNS", which tools/hil_report.py
+counts on its own rather than as skipped.
 
 They apply on top of --tier, --boards and the needs/wiring/skip_* markers, never instead of
 them. Selection on the command line (paths, -k, -m) narrows further; it can't widen it.
@@ -39,6 +44,7 @@ except ImportError:
 
 # pylint: disable=wrong-import-position
 from fixtures import ALL_FIXTURES  # noqa: E402
+import outcomes  # noqa: E402  lib/outcomes.py: the DNS label for dns_tests
 
 # Every test/fixtures/*.py, found by glob, so a fixture module another branch adds (identity.py
 # with device_uid, broker.py with catcher) registers once it lands and is simply absent before.
@@ -102,8 +108,9 @@ def load_farm(path):
 
 
 def board_selectors(cfg):
-    """board name -> (run_tests or None, skip_tests or None), normalized."""
-    return {e["name"]: (_test_selectors(e, "run_tests"), _test_selectors(e, "skip_tests"))
+    """board name -> (run_tests or None, skip_tests or None, dns_tests or None), normalized."""
+    return {e["name"]: (_test_selectors(e, "run_tests"), _test_selectors(e, "skip_tests"),
+                        _test_selectors(e, "dns_tests"))
             for e in cfg.get("board", [])}
 
 
@@ -149,11 +156,13 @@ def pytest_cmdline_main(config):
         power = "%s/%s/%s" % (p.get("r", 30), p.get("w", 500), p.get("settle", 12))
         print(fmt % (b.name, b.board_id, b.usb, b.port, b.flash.get("method", "-"), power,
                      "yes" if b.present() else "no"))
-        run, skip = selectors[b.name]
+        run, skip, dns = selectors[b.name]
         if run is not None:
             print("    run_tests:  " + (", ".join(run) or "(empty: every test deselected)"))
         if skip:
             print("    skip_tests: " + ", ".join(skip))
+        if dns:
+            print("    dns_tests:  " + ", ".join(dns))
     for w in warnings:
         print("warning: " + w)
     return 0
@@ -232,13 +241,16 @@ def pytest_collection_modifyitems(config, items):
             continue
         name = callspec.params["board"]
         item.add_marker(pytest.mark.hardware)
-        run, skip = selectors.get(name, (None, None))
+        run, skip, dns = selectors.get(name, (None, None, None))
         test_id = _test_id(item)
         if test_id is not None and run is not None and not _matches(test_id, run):
             drop.append(item)
             continue
         if test_id is not None and skip and _matches(test_id, skip):
             item.add_marker(pytest.mark.skip(reason="in skip_tests for board '%s'" % name))
+        elif test_id is not None and dns and _matches(test_id, dns):
+            item.add_marker(pytest.mark.skip(reason=outcomes.DNS + "in dns_tests for board '%s', "
+                                             "which does not come up reliably" % name))
         # with `-n 8 --dist loadgroup` each board gets its own worker, like run.py --jobs
         item.add_marker(pytest.mark.xdist_group(name))
         keep.append(item)

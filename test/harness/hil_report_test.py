@@ -131,3 +131,35 @@ def test_main_exit_status(run):
     rc = hr.main(["--junit", str(tmp / "junit.xml"), "--serial-dir", str(tmp / "serial"),
                   "--catcher-dir", str(tmp / "catcher"), "-o", str(out)])
     assert rc == 1 and out.read_text().startswith("## 🔌")
+
+
+DNF_DNS = """<?xml version="1.0" encoding="utf-8"?>
+<testsuites><testsuite name="pytest">
+ <testcase classname="test.hardware.perf_core_test" name="test_device_ran[metro_m0]" time="40">
+  <failure message="AssertionError: DNF (did not finish): device run failed: SerialException"/></testcase>
+ <testcase classname="test.hardware.perf_core_test" name="test_bench[metro_m0-gc]" time="0">
+  <skipped message="DNF (did not finish): not reached: the device run failed (x)"/></testcase>
+ <testcase classname="test.hardware.perf_core_test" name="test_device_ran[metro_esp32s3]" time="0">
+  <skipped message="DNS (did not start): in dns_tests for board 'metro_esp32s3', which does not come up reliably"/></testcase>
+ <testcase classname="test.hardware.perf_core_test" name="test_x[metro_esp32s2]" time="0">
+  <skipped message="board lacks wifi"/></testcase>
+ <testcase classname="test.hardware.perf_core_test" name="test_y[metro_esp32s2]" time="1">
+  <failure message="AssertionError: x1.6 vs baseline"/></testcase>
+</testsuite></testsuites>
+"""
+
+
+def test_dnf_and_dns_are_their_own_outcomes(tmp_path):
+    (tmp_path / "j.xml").write_text(DNF_DNS)
+    cases = hr.read_junit(str(tmp_path / "j.xml"), BOARDS)
+    assert [c["outcome"] for c in cases] == ["dnf", "dnf", "dns", "skipped", "failed"]
+    md = hr.report(cases, "", {}, r"Error", False, "t", "")
+    assert "1 passed" not in md and "0 passed · 1 failed · 0 errors · 2 DNF · 1 DNS · 1 skipped" in md
+    assert "### ⚠️ `test_device_ran[metro_m0]`" in md      # DNF gets a proof section
+    assert "### 🚫" not in md                              # DNS does not
+
+
+def test_dnf_alone_fails_the_exit_status(tmp_path):
+    (tmp_path / "j.xml").write_text("\n".join(
+        l for l in DNF_DNS.splitlines() if "test_y" not in l and "baseline" not in l))
+    assert hr.main(["--junit", str(tmp_path / "j.xml"), "-o", str(tmp_path / "c.md")]) == 1

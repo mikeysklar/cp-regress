@@ -84,6 +84,10 @@ def test_device_run_stops_at_tries(health):  # pylint: disable=unused-argument
     res = Device(b).run("x")
     assert res.crashed and b.runs == 3 and b.cycles == 2
     assert "after 2 earlier attempts" in res.crashed
+    with pytest.raises(AssertionError, match=r"^DNF \(did not finish\): device run failed"):
+        res.expect_no_exception()
+    with pytest.raises(pytest.skip.Exception, match=r"^DNF \(did not finish\): not reached"):
+        res.expect("ok")
 
 
 def test_device_run_stops_when_recovery_fails(health):  # pylint: disable=unused-argument
