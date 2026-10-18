@@ -104,6 +104,49 @@ def _values(cfg, broker_host, broker_port):
     return values
 
 
+REDACTED = "<redacted>"
+
+
+def secret_values(cfg, env=None):
+    """The real WiFi SSID and password from the environment, longest first, for redact()."""
+    env = os.environ if env is None else env
+    net = cfg.get("network", {})
+    names = [net.get(k) for k in FROM_ENV.values()]
+    return sorted({env[n] for n in names if n and env.get(n)}, key=len, reverse=True)
+
+
+def redact(text, values):
+    """text with each value replaced by <redacted>, in the forms a traceback shows it: plain or
+    TOML-escaped (settings.toml), each as is or as a str or bytes repr."""
+    for v in values:
+        forms = {f for base in (v, _escape(v))
+                 for f in (base, repr(base)[1:-1], repr(base.encode())[2:-1])}
+        for form in sorted(forms, key=len, reverse=True):
+            text = text.replace(form, REDACTED)
+    return text
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):  # pylint: disable=unused-argument
+    """Keep the WiFi SSID and password out of every report: the terminal, --junitxml and so
+    tools/hil_report.py. A failing frame's arguments are printed, and write_file's are the bytes
+    of settings.toml (results/smoke-20261018-0545 had the password in all three)."""
+    outcome = yield
+    rep = outcome.get_result()
+    config = item.config
+    if not hasattr(config, "cpr_secret_values"):
+        config.cpr_secret_values = secret_values(getattr(config, "cpr_cfg", {}))
+    values = config.cpr_secret_values
+    if not values:
+        return
+    if rep.longrepr is not None and not isinstance(rep.longrepr, tuple):
+        text = str(rep.longrepr)
+        clean = redact(text, values)
+        if clean != text:
+            rep.longrepr = clean
+    rep.sections = [(name, redact(body, values)) for name, body in rep.sections]
+
+
 def pytest_addoption(parser):
     """--secrets-dir, his option name (conftest.py:84 @ cf64e03)."""
     parser.getgroup("cp-regress").addoption(
