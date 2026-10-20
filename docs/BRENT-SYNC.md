@@ -148,6 +148,15 @@ port branch is in flight, named in Notes), `equivalent` (we already do this our 
 | brent | `hil/firmware/conftest.py::MISSING_SSID` | 321 | `test/hardware/net_wifi_test.py::MISSING_SSID` | ported | cpr-fake-no-such-network, allowed by the prod guard |
 | brent | `hil/firmware/conftest.py::_env` | 261 | `test/fixtures/secrets.py::_values` | equivalent | farm.toml [network] names the environment variables; values never logged |
 | brent | `hil/firmware/conftest.py::VALID_SCENARIOS` | 400 | `data/settings-scenarios/scenarios.toml` | equivalent | needs_creds: scenarios with the farm SSID skip when .env lacks it |
+| brent | `hil/firmware/mqtt/test_mqtt.py` | | `test/hardware/mqtt_broker_test.py` | ported | minimqtt connect() over the REPL instead of runNetFSM console lines |
+| brent | `hil/firmware/mqtt/test_mqtt.py::test_mqtt_connected` | 27 | `test/hardware/mqtt_broker_test.py::test_mqtt_connect` | equivalent | plus the publish / subscribe round trip through ProtoMQ |
+| brent | `hil/firmware/mqtt/test_mqtt.py::expect_mqtt_gives_up` | 59 | `test/hardware/mqtt_broker_test.py::DEVICE_GIVES_UP` | ported | 5 attempts, each error recorded; plus a recovery connect his firmware cannot make |
+| brent | `hil/firmware/mqtt/test_mqtt.py::*_TIMEOUT` | | `test/hardware/mqtt_broker_test.py::GIVE_UP_TIMEOUT` | equivalent | 60 s: socket errors get no backoff in minimqtt; no WDT |
+| brent | `hil/firmware/mqtt/test_mqtt.py::test_mqtt_unreachable_wdt_reboot` | 139 | `-` | watch | no watchdog unless code.py arms one; it would test our script, not the firmware |
+| brent | `hil/firmware/conftest.py::INVALID_BROKER_*` | | `test/hardware/mqtt_broker_test.py` | equivalent | no settings.toml scenario: scenario_guard refuses a non-IP broker host, so the bad host / port go to connect() over the REPL |
+| brent | `hil/firmware/conftest.py::invalid_broker_*_secrets` | | `test/hardware/mqtt_broker_test.py` | equivalent | as above |
+| brent | `hil/firmware/conftest.py::MISSING_BROKER_HOST` | 337 | `test/hardware/mqtt_broker_test.py::MISSING_BROKER_HOST` | ported | same value |
+| brent | `hil/firmware/conftest.py::CLOSED_BROKER_PORT` | 338 | `test/hardware/mqtt_broker_test.py::CLOSED_BROKER_PORT` | ported | same value, on the ProtoMQ host |
 | brent | `.github/scripts/hil_display_test.py` | | `-` | watch | tyeth's display + camera HIL driver (usbip-hil-controller), arrived with the api-v2 rebase |
 | brent | `.github/scripts/hil_display_test.py::_proof_window` | 175 | `tools/hil_report.py::proof_window` | ported | from boot to just after the last evidence line (PR #930 hil-lib.sh) |
 | brent | `.github/scripts/hil_display_test.py::_time_window` | 195 | `tools/hil_report.py::broker_window` | ported | catcher records by epoch, same span as the serial window |

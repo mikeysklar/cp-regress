@@ -11,6 +11,24 @@ byte, and pushes one message back with /echo that the board must receive.
 Topics are cpr/<board>/d2b and cpr/<board>/b2d. Not his <user>/ws-d2b/<uid> layout on purpose:
 ProtoMQ decodes everything on a ws-d2b topic as a DeviceToBroker protobuf, and a plain payload
 that happens to parse (2000 x "x" does) comes back as {} instead of its bytes.
+
+The failure half is after Brent's hil/firmware/mqtt/test_mqtt.py @ eec4238. His runNetFSM()
+makes 5 MQTT connect attempts, prints "MQTT Connection Error" for each, then halts; ours is
+minimqtt's connect(connect_retries=5), which retries socket errors without backoff and then
+raises MMQTTException "Repeated connect failures" (adafruit_minimqtt.py:436-483, MiniMQTT
+8.1.0 in bundle 20261015). MicroPython keeps no __cause__, so DEVICE_GIVES_UP wraps _connect
+to record each attempt's error in place of his serial lines.
+
+  test_mqtt_invalid_broker_url   MISSING_BROKER_HOST never resolves: 5 socketpool.gaierror
+  test_mqtt_invalid_broker_port  CLOSED_BROKER_PORT on the ProtoMQ host: 5 OSErrors
+                                 (refused, or a 1 s timeout if bravo drops the SYN)
+
+Both then connect to the real broker with a fresh client, which his firmware cannot (it
+halts), to catch a socket the failed attempts leaked. The bad host and port go straight into
+the device code, not a settings.toml scenario: scenario_guard stops the run on any broker
+host that is not a private IP. His test_mqtt_unreachable_wdt_reboot is not ported:
+CircuitPython has no watchdog unless code.py arms one, so it would test our script, not the
+firmware.
 """
 import threading
 import time
@@ -29,6 +47,16 @@ LIBS = ["adafruit_minimqtt", "adafruit_connection_manager", "adafruit_ticks"]
 
 PAYLOADS = [b"hello from cp-regress", bytes(range(256)), b"x" * 2000]
 B2D_PAYLOAD = b"\x00\x01b2d-from-protomq\xff"
+
+# His MISSING_BROKER_HOST and CLOSED_BROKER_PORT, conftest.py:337-338 @ eec4238. RFC 2606
+# reserves .invalid, so the name can reach no one's broker.
+MISSING_BROKER_HOST = "hil-no-such-broker.invalid"
+CLOSED_BROKER_PORT = 1
+# His runNetFSM() makes 5 attempts; minimqtt's default connect_retries is also 5.
+CONNECT_RETRIES = 5
+# His MQTT_CONNECT_TIMEOUT is 120 for 5 TLS attempts with 3 s waits. Socket errors get no
+# backoff here, so 5 DNS failures or 1 s connect timeouts fit well inside this.
+GIVE_UP_TIMEOUT = 60
 
 # Device-side. str.format template: literal braces are doubled. Never call sys.exit() here.
 DEVICE = r"""
@@ -176,3 +204,101 @@ def test_b2d_received(exchange):
     """A message pushed with ProtoMQ's /echo reached the board's on_message intact."""
     assert exchange[2].get("echo", {}).get("status") == "OK", "host never saw the subscription"
     exchange[0].expect("b2d_received")
+
+
+# Device-side, his expect_mqtt_gives_up (test_mqtt.py:59 @ eec4238) plus the recovery connect.
+# str.format template: literal braces are doubled. Never call sys.exit() here.
+DEVICE_GIVES_UP = r"""
+import os
+import time
+import wifi
+import socketpool
+import adafruit_minimqtt.adafruit_minimqtt as MQTT
+
+client_id = {client_id!r}
+bad_host = {bad_host!r}
+bad_port = {bad_port!r}
+retries = {retries}
+give_up_timeout = {give_up_timeout}
+
+host = os.getenv("CPR_BROKER_HOST")
+port = int(os.getenv("CPR_BROKER_PORT") or 0)
+try:
+    if not wifi.radio.connected:
+        wifi.radio.connect(os.getenv("CIRCUITPY_WIFI_SSID"), os.getenv("CIRCUITPY_WIFI_PASSWORD"))
+    check("wifi", wifi.radio.connected, "ip=%s" % wifi.radio.ipv4_address)
+except Exception as e:
+    check("wifi", False, "%s: %s" % (type(e).__name__, e))
+
+if wifi.radio.connected:
+    pool = socketpool.SocketPool(wifi.radio)
+    mqtt = MQTT.MQTT(broker=bad_host or host, port=bad_port or port, client_id=client_id,
+                     socket_pool=pool, is_ssl=False, keep_alive=30, connect_retries=retries)
+    # His "MQTT Connection Error: -N" per attempt: connect() drops each cause.
+    errors = []
+    _connect = mqtt._connect
+    def counted(*args, **kwargs):
+        try:
+            return _connect(*args, **kwargs)
+        except Exception as e:
+            errors.append((type(e).__name__, getattr(e, "errno", None) or (e.args or [None])[0],
+                           isinstance(e, OSError)))
+            raise
+    mqtt._connect = counted
+
+    t0 = time.monotonic()
+    try:
+        mqtt.connect()
+        check("gives_up", False, "connected to %s:%s" % (bad_host or host, bad_port or port))
+    except MQTT.MMQTTException as e:
+        check("gives_up", "Repeated connect failures" in str(e), str(e))
+    except Exception as e:
+        check("gives_up", False, "%s: %s" % (type(e).__name__, e))
+    took = time.monotonic() - t0
+    metric("give_up_s", took, "s")
+    check("gives_up_in_time", took < give_up_timeout, "%.1f s of %d" % (took, give_up_timeout))
+    check("attempts", len(errors) == retries, "%d of %d: %s" % (len(errors), retries, errors))
+    check("socket_errors", bool(errors) and all(os_err for _, _, os_err in errors), repr(errors))
+    check("dns_failed", bool(errors) and all(n == "gaierror" for n, _, _ in errors), repr(errors))
+    try:
+        mqtt.deinit()
+    except Exception:
+        pass
+
+    # Not in his test: his firmware halts here. A fresh client must still reach the broker.
+    try:
+        ok = MQTT.MQTT(broker=host, port=port, client_id=client_id, socket_pool=pool,
+                       is_ssl=False, keep_alive=30)
+        ok.connect()
+        check("recovers", True, "%s:%s" % (host, port))
+        ok.disconnect()
+    except Exception as e:
+        check("recovers", False, "%s: %s" % (type(e).__name__, e))
+"""
+
+
+def _gives_up(board, device, bad_host=None, bad_port=None):
+    return device.run(DEVICE_GIVES_UP.format(
+        client_id="cpr-%s-fail" % board.name, bad_host=bad_host, bad_port=bad_port,
+        retries=CONNECT_RETRIES, give_up_timeout=GIVE_UP_TIMEOUT), timeout=GIVE_UP_TIMEOUT + 60)
+
+
+def test_mqtt_invalid_broker_url(board, device, flashed_fs, broker):  # pylint: disable=unused-argument
+    """His test_mqtt_invalid_broker_url, test_mqtt.py:73 @ eec4238: the host never resolves,
+    every attempt fails at DNS, connect() gives up, and the board can still reach the broker."""
+    res = _gives_up(board, device, bad_host=MISSING_BROKER_HOST)
+    res.expect_no_exception()
+    for name in ("wifi", "gives_up", "gives_up_in_time", "attempts", "socket_errors",
+                 "dns_failed", "recovers"):
+        res.expect(name)
+
+
+def test_mqtt_invalid_broker_port(board, device, flashed_fs, broker):  # pylint: disable=unused-argument
+    """His test_mqtt_invalid_broker_port, test_mqtt.py:105 @ eec4238: nothing listens on the
+    ProtoMQ host's CLOSED_BROKER_PORT, so every attempt fails at the socket, connect() gives
+    up, and the board can still reach the broker."""
+    res = _gives_up(board, device, bad_port=CLOSED_BROKER_PORT)
+    res.expect_no_exception()
+    for name in ("wifi", "gives_up", "gives_up_in_time", "attempts", "socket_errors",
+                 "recovers"):
+        res.expect(name)
