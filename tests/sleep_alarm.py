@@ -15,7 +15,7 @@ META = {
     "title": "Deep sleep and light sleep with TimeAlarm",
     "category": "Power",
     "tier": "nightly",
-    "needs": ["native_usb"],
+    "needs": [],
     "wiring": [],
     "skip_boards": ["feather_stm32f405"],  # STM32 has no reliable deep sleep with USB
     "automation": "auto",

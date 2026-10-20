@@ -22,7 +22,6 @@ import farmlib
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("native_usb"),
     pytest.mark.targets(10934, 11380),
     pytest.mark.destructive,
 ]

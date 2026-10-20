@@ -21,7 +21,6 @@ from fixtures.identity import REPL_UID, UID_FILE
 
 pytestmark = [
     pytest.mark.smoke,
-    pytest.mark.needs("native_usb"),
     pytest.mark.destructive,
 ]
 

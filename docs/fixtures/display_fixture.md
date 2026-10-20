@@ -1,5 +1,5 @@
 # display_fixture: ST7789 240x240 display via fourwire and busdisplay
-Nightly tier / fixture / boards with native_usb
+Nightly tier / fixture / all boards
 
 ## Regressions it targets
 - #10728: backlight brightness control regression

@@ -13,7 +13,7 @@ META = {
     "title": "Audio module tests (no sound verification)",
     "category": "Audio",
     "tier": "nightly",
-    "needs": ["native_usb"],
+    "needs": [],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",

@@ -7,7 +7,7 @@ META = {
     "title": "Core performance micro-benchmarks",
     "category": "Core",
     "tier": "smoke",
-    "needs": ["native_usb"],
+    "needs": [],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",

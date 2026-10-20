@@ -7,7 +7,7 @@ META = {
     "title": "Network socket client/server, limits, timeouts",
     "category": "Network",
     "tier": "nightly",
-    "needs": ["native_usb", "wifi"],
+    "needs": ["wifi"],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",

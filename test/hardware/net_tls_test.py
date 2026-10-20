@@ -15,7 +15,7 @@ import pytest
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("native_usb", "wifi"),
+    pytest.mark.needs("wifi"),
     pytest.mark.targets(8299, 8925, 8919, 7606, 4151, 10339, 3651, 7429, 9003, 8910),
 ]
 

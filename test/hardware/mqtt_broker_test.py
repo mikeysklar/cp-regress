@@ -39,7 +39,7 @@ from fixtures.broker import ProtoMQ
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("native_usb", "wifi"),
+    pytest.mark.needs("wifi"),
     pytest.mark.destructive,
 ]
 

@@ -1,6 +1,6 @@
 # peripherals_loopback: Peripheral loopback tests (requires wiring)
 
-**Tier / automation / boards:** nightly / fixture / all with native_usb
+**Tier / automation / boards:** nightly / fixture / all
 
 ## Regressions it targets
 

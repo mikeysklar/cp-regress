@@ -1,6 +1,6 @@
 # reset_cycles: Soft reboot, hard reset, and power cycle recovery
 
-Tier: nightly / automation: auto / all boards with native_usb
+Tier: nightly / automation: auto / all boards
 
 ## Regressions it targets
 
@@ -23,7 +23,7 @@ Tier: nightly / automation: auto / all boards with native_usb
 
 ## Setup
 
-None. Board must have native_usb; hard reset checks also need reset_ok.
+None. Hard reset checks also need reset_ok.
 
 ## What is hard to automate
 

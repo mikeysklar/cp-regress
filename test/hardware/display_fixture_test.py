@@ -13,7 +13,6 @@ import pytest
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("native_usb"),
     pytest.mark.wiring("display"),
     pytest.mark.targets(10728, 9443, 6264),
 ]

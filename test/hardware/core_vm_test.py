@@ -25,7 +25,6 @@ from fixtures.device import DeviceResults
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("native_usb"),
     pytest.mark.targets(6214, 3169, 1881, 10259, 8499, 5451, 4101),
 ]
 

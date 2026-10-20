@@ -12,7 +12,6 @@ import pytest
 
 pytestmark = [
     pytest.mark.smoke,
-    pytest.mark.needs("native_usb"),
     pytest.mark.targets(417, 2686, 1630, 3588, 4164, 6480, 10514, 9454),
 ]
 

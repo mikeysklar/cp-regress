@@ -15,7 +15,6 @@ from fixtures.device import DeviceResults
 
 pytestmark = [
     pytest.mark.smoke,
-    pytest.mark.needs("native_usb"),
     pytest.mark.targets(11118, 7677),
     pytest.mark.destructive,
 ]

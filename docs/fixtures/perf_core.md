@@ -1,6 +1,6 @@
 # perf_core: Core performance micro-benchmarks
 
-Tier: smoke / automation: auto / boards: all with native_usb
+Tier: smoke / automation: auto / boards: all
 
 ## Regressions it targets
 

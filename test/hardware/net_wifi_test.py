@@ -33,7 +33,7 @@ from fixtures.secrets import FAKE_SSID_PREFIX
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("wifi", "native_usb"),
+    pytest.mark.needs("wifi"),
 ]
 
 # How long the supervisor's boot join may take. Its one connect call has an 8 s budget for

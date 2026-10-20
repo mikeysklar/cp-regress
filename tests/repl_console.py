@@ -7,7 +7,7 @@ META = {
     "title": "REPL console prompt, evaluation, interrupt, paste mode, large output, soft reboot",
     "category": "USB",
     "tier": "smoke",
-    "needs": ["native_usb"],
+    "needs": [],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",

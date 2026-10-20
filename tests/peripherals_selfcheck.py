@@ -11,7 +11,7 @@ META = {
     "title": "Basic peripheral API checks without wiring",
     "category": "Peripherals",
     "tier": "smoke",
-    "needs": ["native_usb"],
+    "needs": [],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",

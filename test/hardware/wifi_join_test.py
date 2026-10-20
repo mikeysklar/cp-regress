@@ -17,7 +17,7 @@ from fixtures.device import DeviceResults
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("wifi", "native_usb"),
+    pytest.mark.needs("wifi"),
     pytest.mark.targets(3576, 6866, 8115, 8032, 10729),
 ]
 

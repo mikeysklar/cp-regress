@@ -12,7 +12,7 @@ META = {
     "title": "Soft reboot, hard reset, and power cycle recovery",
     "category": "Core",
     "tier": "nightly",
-    "needs": ["native_usb"],
+    "needs": [],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",

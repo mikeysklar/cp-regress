@@ -18,7 +18,7 @@ from fixtures.farm import board_lock
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("native_usb", "ble"),
+    pytest.mark.needs("ble"),
     pytest.mark.targets(6012),
     pytest.mark.multi_board,
 ]

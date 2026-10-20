@@ -13,7 +13,7 @@ META = {
     "title": "BLE advertising and scanning between paired boards",
     "category": "BLE",
     "tier": "nightly",
-    "needs": ["native_usb", "ble"],
+    "needs": ["ble"],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",

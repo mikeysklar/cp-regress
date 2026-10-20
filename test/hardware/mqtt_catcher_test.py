@@ -25,7 +25,7 @@ from fixtures.broker import catcher_helper, catching
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("native_usb", "wifi"),
+    pytest.mark.needs("wifi"),
     pytest.mark.destructive,
 ]
 

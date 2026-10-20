@@ -13,7 +13,7 @@ META = {
     "title": "ST7789 240x240 display via fourwire and busdisplay",
     "category": "Display",
     "tier": "nightly",
-    "needs": ["native_usb"],
+    "needs": [],
     "wiring": ["display"],  # farm.toml must have a 'display' wiring entry
     "skip_boards": [],
     "automation": "fixture",  # requires external display hardware

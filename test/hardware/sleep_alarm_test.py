@@ -20,7 +20,6 @@ import pytest
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("native_usb"),
     pytest.mark.skip_boards("feather_stm32f405"),  # STM32 has no reliable deep sleep with USB
     pytest.mark.targets(5462, 2875, 10573, 9464, 10934, 6484, 2855, 5839),
     pytest.mark.destructive,

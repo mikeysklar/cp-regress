@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("native_usb", "wifi"),
+    pytest.mark.needs("wifi"),
     pytest.mark.targets(10606, 9219, 4057, 8988, 2097, 8443, 4127, 8907, 7086, 7431, 8248, 4085),
 ]
 

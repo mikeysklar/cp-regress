@@ -20,7 +20,7 @@ META = {
     "title": "Core language VM: integers, strings, collections, exceptions, traceback",
     "category": "Core",
     "tier": "nightly",
-    "needs": ["native_usb"],
+    "needs": [],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",

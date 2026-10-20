@@ -13,7 +13,7 @@ META = {
     "title": "WiFi scan, connect, ping, and reconnect cycles",
     "category": "Network",
     "tier": "nightly",
-    "needs": ["wifi", "native_usb"],
+    "needs": ["wifi"],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",

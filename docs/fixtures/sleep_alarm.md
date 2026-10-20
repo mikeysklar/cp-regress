@@ -1,6 +1,6 @@
 # sleep_alarm: Deep sleep and light sleep with TimeAlarm
 
-Tier nightly / automation auto / boards with native_usb (excluding stm)
+Tier nightly / automation auto / all boards (excluding stm)
 
 ## Regressions it targets
 

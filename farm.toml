@@ -3,7 +3,8 @@
 # Never put ttyACM numbers, /dev/sd? names or CIRCUITPY<n> labels in here.
 #
 # caps: what the board can do with no extra wiring.
-#   native_usb  CDC + MSC over the chip's own USB
+#   native_usb  CircuitPython's own USB device stack (CDC + MSC). Only the USB tests
+#               (usb_*, web_workflow's MSC checks) need it; the rest run over any console.
 #   uf2         UF2 bootloader with an MSC volume
 #   wifi        native wifi module
 #   ble         _bleio available

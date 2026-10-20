@@ -1,6 +1,6 @@
 # audio_headless: Audio module tests (no sound verification)
 
-**Tier / automation / boards:** nightly / auto / all with native_usb
+**Tier / automation / boards:** nightly / auto / all
 
 ## Regressions it targets
 

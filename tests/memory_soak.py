@@ -12,7 +12,7 @@ META = {
     "title": "Memory soak: leaks, fragmentation, monotonic time drift",
     "category": "Core",
     "tier": "nightly",
-    "needs": ["native_usb"],
+    "needs": [],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",

@@ -7,7 +7,7 @@ META = {
     "title": "HTTPS TLS handshake, certificate validation, throughput",
     "category": "Network",
     "tier": "nightly",
-    "needs": ["native_usb", "wifi"],
+    "needs": ["wifi"],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",

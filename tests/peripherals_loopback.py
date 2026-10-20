@@ -16,7 +16,7 @@ META = {
     "title": "Peripheral loopback tests (requires wiring)",
     "category": "Peripherals",
     "tier": "nightly",
-    "needs": ["native_usb"],
+    "needs": [],
     "wiring": [],  # tests skip until specific wiring is present
     "skip_boards": [],
     "automation": "fixture",

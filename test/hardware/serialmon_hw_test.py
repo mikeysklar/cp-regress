@@ -27,7 +27,6 @@ from serialmon import SerialError, SerialMonitor, SerialUnexpectedError
 
 pytestmark = [
     pytest.mark.smoke,
-    pytest.mark.needs("native_usb"),
     pytest.mark.destructive,
 ]
 

@@ -1,6 +1,6 @@
 # memory_soak: Memory soak: leaks, fragmentation, monotonic time drift
 
-Tier: nightly / automation: auto / boards: all with native_usb
+Tier: nightly / automation: auto / boards: all
 
 ## Regressions it targets
 

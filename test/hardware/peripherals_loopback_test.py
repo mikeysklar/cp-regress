@@ -15,7 +15,6 @@ import pytest
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("native_usb"),
     pytest.mark.targets(7616, 10022, 3339, 717, 1216),
 ]
 

@@ -1,6 +1,6 @@
 # peripherals_selfcheck: Basic peripheral API checks without wiring
 
-**Tier / automation / boards:** smoke / auto / all with native_usb
+**Tier / automation / boards:** smoke / auto / all
 
 ## Regressions it targets
 

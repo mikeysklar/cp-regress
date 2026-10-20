@@ -1,6 +1,6 @@
 # core_vm: Core language VM
 
-Nightly / auto / all boards with native_usb (15 tests on "small" boards, 40 on others)
+Nightly / auto / all boards (15 tests on "small" boards, 40 on others)
 
 ## Regressions it targets
 
@@ -39,7 +39,7 @@ Additional direct checks:
 - If the tree is missing, the whole test is skipped with a clear reason
 
 **Board requirements:**
-- native_usb capability (CDC console available)
+- a serial console (any board)
 - Adequate flash to hold test sources (~40 KB decompressed test files)
 - Adequate RAM for test execution (tests are small, but memory checks intentionally try to allocate large buffers)
 

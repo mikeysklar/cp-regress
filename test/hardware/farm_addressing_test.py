@@ -19,7 +19,6 @@ import farmlib
 
 pytestmark = [
     pytest.mark.smoke,
-    pytest.mark.needs("native_usb"),
 ]
 
 

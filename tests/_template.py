@@ -11,7 +11,7 @@ META = {
     "title": "One-line description of what this fixture proves",
     "category": "USB",               # USB | Display | Network | BLE | Core | Peripherals | Power | Audio
     "tier": "smoke",                 # smoke (every merge, <2 min/board) | nightly | release
-    "needs": ["native_usb"],         # board caps from farm.toml; test skips if any are missing
+    "needs": [],                            # board caps from farm.toml; test skips if any are missing
     "wiring": [],                    # farm.toml wiring keys; test skips until they are present
     "skip_boards": [],               # board names to never run on (e.g. ["metro_m0"] if it resets)
     "automation": "auto",            # auto | fixture (needs extra hardware) | assisted (a human step)

@@ -42,7 +42,6 @@ from fixtures.secrets import (DEFAULT_SECRETS_DIR, NO_SECRETS_FILE, PASSWORD, PL
 
 pytestmark = [
     pytest.mark.nightly,
-    pytest.mark.needs("native_usb"),
 ]
 
 SCENARIOS = load_scenarios(DEFAULT_SECRETS_DIR)

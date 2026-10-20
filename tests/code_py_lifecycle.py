@@ -7,7 +7,7 @@ META = {
     "title": "code.py lifecycle, boot.py execution, run_reason, reset_reason, exceptions",
     "category": "Core",
     "tier": "smoke",
-    "needs": ["native_usb"],
+    "needs": [],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",

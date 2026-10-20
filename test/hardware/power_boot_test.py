@@ -45,7 +45,6 @@ pytestmark = [
     pytest.mark.release,
     pytest.mark.power_boot,
     pytest.mark.destructive,
-    pytest.mark.needs("native_usb"),
     # A string condition is evaluated at setup, before the board fixture opens anything.
     pytest.mark.skipif("not _asked(config)", reason="power-cycles boards: run with -m power_boot"),
 ]

@@ -12,7 +12,7 @@ META = {
     "title": "settings.toml parsing and os.getenv behavior",
     "category": "Core",
     "tier": "smoke",
-    "needs": ["native_usb"],
+    "needs": [],
     "wiring": [],
     "skip_boards": [],
     "automation": "auto",
