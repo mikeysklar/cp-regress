@@ -141,6 +141,10 @@ class Board:
         self.power = dict(cfg.get("power", {}))
         self.flash = dict(cfg.get("flash", {}))
         self.notes = cfg.get("notes", "")
+        # Where files go: "drive" (CIRCUITPY over USB MSC) or "repl" (raw REPL, for boards
+        # with no native USB). Everything that reads or writes board files goes through
+        # write_file / read_file / remove_file, which pick the transport from this.
+        self.fs = cfg.get("fs", "drive")
         self.uhubctl = host_cfg.get("uhubctl", "uhubctl")
 
     def __repr__(self):
@@ -277,7 +281,10 @@ class Board:
 
     def boot_out(self):
         """boot_out.txt as the host reads it from the mount, cache dropped first. Can be stale
-        right after a reset; board_boot_out() is the board's own view."""
+        right after a reset; board_boot_out() is the board's own view. A board with no drive
+        answers with board_boot_out()."""
+        if self.fs != "drive":
+            return self.board_boot_out() or ""
         mp = self.mount()
         if not mp:
             return ""
@@ -333,6 +340,10 @@ class Board:
         return m.group(1) if m else None
 
     def write_file(self, rel, data, sync=True):
+        if self.fs == "repl":
+            with self.repl() as r:
+                r.put_file(rel, data)
+            return "/" + rel
         mp = self.mount()
         if not mp:
             raise FarmError("%s: CIRCUITPY not mounted" % self.name)
@@ -348,6 +359,10 @@ class Board:
         return path
 
     def read_file(self, rel, binary=False):
+        if self.fs == "repl":
+            with self.repl() as r:
+                data = r.get_file(rel)
+            return data if data is None or binary else data.decode(errors="replace")
         mp = self.mount()
         path = os.path.join(mp, rel)
         if not os.path.exists(path):
@@ -356,6 +371,10 @@ class Board:
             return f.read()
 
     def remove_file(self, rel):
+        if self.fs == "repl":
+            with self.repl() as r:
+                r.del_file(rel)
+            return
         mp = self.mount()
         path = os.path.join(mp, rel)
         if os.path.exists(path):
@@ -384,6 +403,7 @@ class Board:
     def wait_ready(self, timeout=None, need_mount=True):
         """Wait for tty (+ mount), then the settle time. Returns seconds taken or None."""
         timeout = timeout or 60 + self.power.get("settle", 12)
+        need_mount = need_mount and self.fs == "drive"
         t0 = time.time()
         while time.time() - t0 < timeout:
             if self.present() and self.tty() and (not need_mount or self.block_devs()):
@@ -435,6 +455,9 @@ class Board:
                 raise FarmError("%s: restore did not stick on the board: %s"
                                 % (self.name, "; ".join(bad)))
             return
+        if self.fs != "drive":
+            raise FarmError("%s: board cannot hash files (no REPL answer or no hashlib), "
+                            "cannot verify the restore" % self.name)
         # The board cannot say: fall back to the host read, with the cache dropped first.
         mp = self.mount()
         if not mp:

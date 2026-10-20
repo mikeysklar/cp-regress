@@ -41,10 +41,12 @@ pyserial. No other host packages.
 `present() vid_pid() devnum() interfaces() tty() data_tty() ttys() block_devs() mount()
 boot_out() version() write_file(rel, data) read_file(rel, binary) remove_file(rel)
 power_cycle() wait_ready(timeout, need_mount) repl() preserved(files)`, attributes
-`name board_id usb port caps wiring power`.
+`name board_id usb port caps wiring power fs`. On an `fs = "repl"` board there is no
+drive: `mount()` finds nothing, and the file methods go over the raw REPL.
 
 `Repl`: `prompt() exec_raw(code, timeout) run_device(body, timeout) soft_reboot()
-read_until(token, timeout) read_for(seconds) write(bytes) drain()`; use as a context manager.
+read_until(token, timeout) read_for(seconds) write(bytes) drain()
+put_file(rel, data) get_file(rel) del_file(rel)`; use as a context manager.
 
 ## Hard rules
 

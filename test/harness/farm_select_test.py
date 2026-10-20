@@ -84,6 +84,8 @@ def test_the_real_farm_toml_is_clean(root_conftest):
     ({"skip_tests": ["/"]}, "must be a list of test paths"),
     ({"dns_tests": ["hardware/no_such_test.py"]}, "names no file or folder"),
     ({"run_tests": ["hardware/no_such_test.py"]}, "names no file or folder"),
+    ({"fs": "webdav"}, "'fs' must be one of drive, repl"),
+    ({"fs": "repl", "caps": ["small"]}, "needs binascii"),
 ])
 def test_bad_board_entries(changes, problem):
     with pytest.raises(FarmConfigError, match=problem):
@@ -108,6 +110,11 @@ def test_board_entry_warnings(changes, warning):
 ])
 def test_flash_keys_lib_flash_reads_are_known(flash_cfg):
     assert validate_board_entry(entry(flash=flash_cfg)) == []
+
+
+def test_fs_kinds_are_accepted():
+    assert validate_board_entry(entry(fs="repl")) == []
+    assert validate_board_entry(entry(fs="drive")) == []
 
 
 def test_selectors_are_checked_against_test_dir():

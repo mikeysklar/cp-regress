@@ -39,7 +39,7 @@ NAME_RE = re.compile(r"^[A-Za-z0-9_.-]+$")  # used in lock paths, xdist groups a
 HEX_RE = re.compile(r"^0x[0-9a-fA-F]+$")
 
 KNOWN_KEYS = {"name", "board_id", "usb", "port", "caps", "power", "notes", "flash", "wiring",
-              "run_tests", "skip_tests", "dns_tests"}
+              "run_tests", "skip_tests", "dns_tests", "fs"}
 # Keys that would cache what must be resolved from `usb` at the moment of use.
 CACHED_KEYS = {"tty", "serial", "dev", "drive", "mount", "label", "circuitpy", "location"}
 KNOWN_CAPS = {"native_usb", "uf2", "wifi", "ble", "esp32spi", "usb_host", "reset_ok", "small"}
@@ -47,6 +47,9 @@ KNOWN_CAPS = {"native_usb", "uf2", "wifi", "ble", "esp32spi", "usb_host", "reset
 # and how many times a device run that lost the board is run again, for a board that does not
 # always come up (the Feather STM32F405's crystal load caps).
 POWER_KEYS = {"r": 1, "w": 1, "settle": 0, "tries": 1}
+# fs: how board files are read and written (lib/farmlib.py Board.write_file). "drive" is the
+# CIRCUITPY mount; "repl" is the raw REPL, for boards with no native USB.
+FS_KINDS = ("drive", "repl")
 
 # flash.method -> {key: kind}, required then optional. Kinds: "str", "hex" (a string such as
 # "0x1000", because lib/flash.py hands it to esptool or int(x, 0)), "int" (kHz for openocd).
@@ -139,6 +142,13 @@ def validate_board_entry(entry, test_dir=None):
         warnings.append("board '%s': unknown caps %s" % (name, ", ".join(unknown)))
     if not isinstance(entry.get("wiring", {}), dict):
         raise FarmConfigError("board '%s': 'wiring' must be a table" % name)
+    fs = entry.get("fs", "drive")
+    if fs not in FS_KINDS:
+        raise FarmConfigError("board '%s': 'fs' must be one of %s, got %r"
+                              % (name, ", ".join(FS_KINDS), fs))
+    if fs == "repl" and "small" in caps:
+        raise FarmConfigError("board '%s': fs = \"repl\" needs binascii, which 'small' boards "
+                              "(SAMD21) do not have" % name)
 
     power = entry.get("power", {})
     if not isinstance(power, dict):

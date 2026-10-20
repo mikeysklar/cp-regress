@@ -140,3 +140,15 @@ def test_device_error_raises_and_keeps_the_old_file(repl, tmp_path):
     with pytest.raises(farmlib.FarmError, match="put_file code.py failed"):
         repl.put_file("code.py", "new")
     assert (tmp_path / "code.py").read_text() == "keep me"
+
+
+def test_board_with_repl_fs_goes_through_the_repl(repl, tmp_path, monkeypatch):
+    b = farmlib.Board({"name": "fake_c6", "board_id": "x", "usb": "3-6.3.1", "fs": "repl"}, {})
+    monkeypatch.setattr(b, "repl", lambda iface=0: contextlib.nullcontext(repl))
+    monkeypatch.setattr(b, "mount", lambda *a, **k: pytest.fail("a repl board never mounts"))
+    assert b.write_file("code.py", "print(2)\n") == "/code.py"
+    assert (tmp_path / "code.py").read_text() == "print(2)\n"
+    assert b.read_file("code.py") == "print(2)\n"
+    assert b.read_file("code.py", binary=True) == b"print(2)\n"
+    b.remove_file("code.py")
+    assert b.read_file("code.py") is None
