@@ -425,14 +425,7 @@ class FsBackup:
         if rel in self.saved:
             return
         if mp is None:
-            data = self.board.read_file(rel, binary=True)
-            if data is not None:
-                dest = os.path.join(self.dir, "files", rel)
-                os.makedirs(os.path.dirname(dest), exist_ok=True)
-                with open(dest, "wb") as f:
-                    f.write(data)
-            self.saved[rel] = data
-            self._write_manifest()
+            self.save_bytes(rel, self.board.read_file(rel, binary=True))
             return
         path = os.path.join(mp, rel)
         if os.path.isfile(path):
@@ -450,6 +443,18 @@ class FsBackup:
                 if d not in self.new_dirs:
                     self.new_dirs.append(d)
                 d = os.path.dirname(d)
+        self._write_manifest()
+
+    def save_bytes(self, rel, data):
+        """Back up rel as data, already read from the board (None: it did not exist)."""
+        if rel in self.saved:
+            return
+        if data is not None:
+            dest = os.path.join(self.dir, "files", rel)
+            os.makedirs(os.path.dirname(dest), exist_ok=True)
+            with open(dest, "wb") as f:
+                f.write(data)
+        self.saved[rel] = data
         self._write_manifest()
 
     def restore(self):
@@ -567,7 +572,19 @@ def apply_tree(b, tree, backup):
 
 def _apply_tree_on_board(b, tree, backup):
     """apply_tree() for a board with no drive: sha256 of every path in one REPL session
-    decides what changed, then each changed file goes over b.write_file. No free-space check."""
+    decides what changed, then each changed file goes over b.write_file. No free-space check.
+    An fs = "web" board whose workflow answers does all of it over one resolved WebFs."""
+    w = b.web() if b.fs == "web" else None
+    if w:
+        changed = []
+        for rel, data in sorted(tree.items()):
+            old = w.get(rel)
+            if old is None or _md5(old) != _md5(data):
+                changed.append(rel)
+                backup.save_bytes(rel, old)
+        for rel in sorted(changed, key=lambda r: r == "code.py"):
+            w.put(rel, tree[rel])
+        return changed
     have = b.board_sha256(sorted(tree), timeout=30)
     if have is None:
         raise farmlib.FarmError("%s: cannot hash files on the board (no REPL or no hashlib)"

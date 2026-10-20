@@ -16,7 +16,9 @@
 # power: uhubctl repeat / wait values that actually cut this port.
 # fs (optional, default "drive"): how board files are read and written. "drive" is the
 #   CIRCUITPY mount; "repl" is the raw REPL (base64, lib/farmlib.py Repl.put_file), for boards
-#   with no native USB and so no drive. Not for "small" boards: needs binascii.
+#   with no native USB and so no drive. Not for "small" boards: needs binascii. "web" is the
+#   web workflow's /fs/ API (Repl until it answers: found by MAC over mDNS, board_id checked,
+#   password farmlib.WEB_API_PASSWORD, which flashed_fs puts in settings.toml); needs "wifi".
 # flash: how flashed_firmware writes an image (uf2 copy, esptool + tinyuf2, or openocd over SWD).
 # run_tests / skip_tests (optional, pytest only): paths under test/ as a folder, a file or a
 #   test, after Brent's hil-boards.json. Only run_tests run on this board (omit for all);

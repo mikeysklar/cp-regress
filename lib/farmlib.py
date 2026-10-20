@@ -21,6 +21,9 @@ import shutil
 import subprocess
 import termios
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from contextlib import contextmanager
 
 try:
@@ -32,6 +35,8 @@ SYS_USB = "/sys/bus/usb/devices"
 DEVTEST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "devtest.py")
 RESULT_TAG = "@@R "
 UHUBCTL_LOCK = "/tmp/uhubctl.lock"  # the lock farm-helpers.sh cycle() takes
+# CIRCUITPY_WEB_API_PASSWORD as test/fixtures/secrets.py writes it into settings.toml.
+WEB_API_PASSWORD = "cpr-test"
 
 
 class FarmError(Exception):
@@ -141,8 +146,8 @@ class Board:
         self.power = dict(cfg.get("power", {}))
         self.flash = dict(cfg.get("flash", {}))
         self.notes = cfg.get("notes", "")
-        # Where files go: "drive" (CIRCUITPY over USB MSC) or "repl" (raw REPL, for boards
-        # with no native USB). Everything that reads or writes board files goes through
+        # Where files go: "drive" (CIRCUITPY over USB MSC), "repl" (raw REPL, for boards with
+        # no native USB) or "web" (web workflow /fs/, REPL until it answers). Everything that reads or writes board files goes through
         # write_file / read_file / remove_file, which pick the transport from this.
         self.fs = cfg.get("fs", "drive")
         self.uhubctl = host_cfg.get("uhubctl", "uhubctl")
@@ -339,8 +344,59 @@ class Board:
         m = re.search(r"Adafruit CircuitPython (\S+)", self.boot_out())
         return m.group(1) if m else None
 
+    # ---------- web workflow ----------
+    def mac(self):
+        """The 12 hex digits of this board's MAC when its USB serial is one (ESP32 USB-JTAG
+        units and Adafruit ESP32 boards report it, e.g. 10:BD:A3:DF:20:14), else None."""
+        sn = re.sub(r"[:-]", "", _read(os.path.join(self.sysfs(), "serial"), "") or "").lower()
+        return sn if re.fullmatch(r"[0-9a-f]{12}", sn) else None
+
+    def web(self, password=WEB_API_PASSWORD):
+        """A WebFs for this board, resolved now, or None when its web workflow does not answer.
+
+        The host comes from mDNS: espressif's default hostname ends in the STA MAC
+        (ports/espressif/common-hal/wifi/__init__.c:538), which matches the USB serial. Without
+        an mDNS match the board is asked for wifi.radio.ipv4_address over the REPL. Either way
+        /cp/version.json must name this board_id before anything is written, and the board
+        must take WEB_API_PASSWORD (it will not before flashed_fs writes its settings.toml)."""
+        cands = []
+        mac = self.mac()
+        if mac:
+            cands = ["http://%s:%s" % (ip, port) for host, ip, port in _avahi_circuitpython()
+                     if host.endswith("-%s.local" % mac)]
+        if not cands and serial is not None:
+            try:
+                with self.repl() as r:
+                    out, err = r.exec_raw("import wifi\nprint('CPRIP', wifi.radio.ipv4_address)\n",
+                                          timeout=10)
+                m = re.search(r"CPRIP (\d+\.\d+\.\d+\.\d+)", out) if not err.strip() else None
+                if m:
+                    cands = ["http://%s" % m.group(1)]
+            except (FarmError, OSError):
+                pass
+        for base in cands:
+            try:
+                with urllib.request.urlopen(base + "/cp/version.json", timeout=5) as resp:
+                    info = json.loads(resp.read().decode())
+            except (urllib.error.URLError, OSError, ValueError):
+                continue
+            if info.get("board_id") == self.board_id:
+                w = WebFs(self, base, password=password)
+                return w if w.authorized() else None
+        return None
+
+    def _web_files(self):
+        """The WebFs to use on an fs = "web" board, or None for the REPL. A web board whose
+        workflow does not answer (no settings.toml yet, WiFi down) falls back to the REPL,
+        which is how its first settings.toml gets there."""
+        return self.web() if self.fs == "web" else None
+
     def write_file(self, rel, data, sync=True):
-        if self.fs == "repl":
+        if self.fs != "drive":
+            w = self._web_files()
+            if w:
+                w.put(rel, data)
+                return "/" + rel
             with self.repl() as r:
                 r.put_file(rel, data)
             return "/" + rel
@@ -359,9 +415,13 @@ class Board:
         return path
 
     def read_file(self, rel, binary=False):
-        if self.fs == "repl":
-            with self.repl() as r:
-                data = r.get_file(rel)
+        if self.fs != "drive":
+            w = self._web_files()
+            if w:
+                data = w.get(rel)
+            else:
+                with self.repl() as r:
+                    data = r.get_file(rel)
             return data if data is None or binary else data.decode(errors="replace")
         mp = self.mount()
         path = os.path.join(mp, rel)
@@ -371,7 +431,11 @@ class Board:
             return f.read()
 
     def remove_file(self, rel):
-        if self.fs == "repl":
+        if self.fs != "drive":
+            w = self._web_files()
+            if w:
+                w.delete(rel)
+                return
             with self.repl() as r:
                 r.del_file(rel)
             return
@@ -707,6 +771,85 @@ class Repl:
         _, err = self.exec_raw(code, timeout=15)
         if err.strip():
             raise FarmError("%s: del_file %s failed: %s" % (self.board.name, rel, err.strip()[-300:]))
+
+
+class WebFs:
+    """Board files over the web workflow's /fs/ API (supervisor/shared/web_workflow/
+    web_workflow.c:1239-1407, circuitpython 30d7addb4e). Basic auth with an empty user. PUT
+    answers 201 or 204, and 409 while a USB host holds the drive; every PUT starts an
+    autoreload (web_workflow.c:1391)."""
+
+    def __init__(self, board, base, password=WEB_API_PASSWORD, timeout=15):
+        self.board = board
+        self.base = base.rstrip("/")
+        self.auth = "Basic " + base64.b64encode((":" + password).encode()).decode()
+        self.timeout = timeout
+
+    def _req(self, method, rel, data=None, headers=None):
+        url = self.base + "/fs/" + urllib.parse.quote(rel.lstrip("/"))
+        req = urllib.request.Request(url, data=data, method=method)
+        req.add_header("Authorization", self.auth)
+        for k, v in (headers or {}).items():
+            req.add_header(k, v)
+        try:
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                return resp.status, resp.read()
+        except urllib.error.HTTPError as e:
+            return e.code, b""
+        except (urllib.error.URLError, OSError) as e:
+            raise FarmError("%s: %s %s: %s" % (self.board.name, method, url, e)) from e
+
+    def _fail(self, what, rel, status):
+        why = " (a USB host holds the drive)" if status == 409 else ""
+        raise FarmError("%s: web %s %s: HTTP %s%s" % (self.board.name, what, rel, status, why))
+
+    def authorized(self):
+        """True when the board takes this password: GET /fs/ as JSON answers 200."""
+        try:
+            st, _ = self._req("GET", "/", headers={"Accept": "application/json"})
+        except FarmError:
+            return False
+        return st == 200
+
+    def put(self, rel, data):
+        if isinstance(data, str):
+            data = data.encode()
+        parent = os.path.dirname(rel.lstrip("/"))
+        if parent:
+            st, _ = self._req("PUT", parent + "/")
+            if st not in (201, 204):
+                self._fail("mkdir", parent, st)
+        st, _ = self._req("PUT", rel, data, {"X-Timestamp": str(int(time.time() * 1000))})
+        if st not in (201, 204):
+            self._fail("put", rel, st)
+
+    def get(self, rel):
+        st, body = self._req("GET", rel)
+        if st == 404:
+            return None
+        if st != 200:
+            self._fail("get", rel, st)
+        return body
+
+    def delete(self, rel):
+        st, _ = self._req("DELETE", rel)
+        if st not in (204, 404):
+            self._fail("delete", rel, st)
+
+
+def _avahi_circuitpython(timeout=8):
+    """[(hostname, ip, port)] of every _circuitpython._tcp service avahi resolves now."""
+    try:
+        out = subprocess.run(["avahi-browse", "-rtp", "_circuitpython._tcp"],
+                             capture_output=True, text=True, timeout=timeout).stdout
+    except (OSError, subprocess.TimeoutExpired):
+        return []
+    found = []
+    for line in out.splitlines():
+        f = line.split(";")
+        if len(f) >= 9 and f[0] == "=" and f[2] == "IPv4":
+            found.append((f[6].lower(), f[7], f[8]))
+    return found
 
 
 def device_source(body):

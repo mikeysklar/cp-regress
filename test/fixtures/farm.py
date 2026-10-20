@@ -48,8 +48,9 @@ KNOWN_CAPS = {"native_usb", "uf2", "wifi", "ble", "esp32spi", "usb_host", "reset
 # always come up (the Feather STM32F405's crystal load caps).
 POWER_KEYS = {"r": 1, "w": 1, "settle": 0, "tries": 1}
 # fs: how board files are read and written (lib/farmlib.py Board.write_file). "drive" is the
-# CIRCUITPY mount; "repl" is the raw REPL, for boards with no native USB.
-FS_KINDS = ("drive", "repl")
+# CIRCUITPY mount; "repl" is the raw REPL, for boards with no native USB; "web" is the web
+# workflow, with the REPL until it answers (so also needs binascii) and "wifi" in caps.
+FS_KINDS = ("drive", "repl", "web")
 
 # flash.method -> {key: kind}, required then optional. Kinds: "str", "hex" (a string such as
 # "0x1000", because lib/flash.py hands it to esptool or int(x, 0)), "int" (kHz for openocd).
@@ -146,9 +147,11 @@ def validate_board_entry(entry, test_dir=None):
     if fs not in FS_KINDS:
         raise FarmConfigError("board '%s': 'fs' must be one of %s, got %r"
                               % (name, ", ".join(FS_KINDS), fs))
-    if fs == "repl" and "small" in caps:
-        raise FarmConfigError("board '%s': fs = \"repl\" needs binascii, which 'small' boards "
-                              "(SAMD21) do not have" % name)
+    if fs in ("repl", "web") and "small" in caps:
+        raise FarmConfigError("board '%s': fs = \"%s\" needs binascii, which 'small' boards "
+                              "(SAMD21) do not have" % (name, fs))
+    if fs == "web" and "wifi" not in caps:
+        raise FarmConfigError("board '%s': fs = \"web\" needs 'wifi' in caps" % name)
 
     power = entry.get("power", {})
     if not isinstance(power, dict):
