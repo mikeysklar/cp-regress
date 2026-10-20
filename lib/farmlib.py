@@ -10,6 +10,7 @@ Rules this file enforces (from the bravo farm reference):
   * uhubctl runs unprivileged, never through sudo.
 """
 
+import base64
 import fcntl
 import glob
 import hashlib
@@ -82,6 +83,50 @@ for p in PATHS:
         print('CPRH', p, ''.join('%02x' % c for c in h.digest()))
     except OSError:
         print('CPRH', p, 'MISSING')
+"""
+
+# Runs on the board, first piece of Repl.put_file: make the parent folders of PATH and open
+# PATH + '.cprtmp' for writing. The following pieces are f.write(a2b_base64(...)) lines.
+_PUT_OPEN = """\
+import binascii, os
+d = ''
+for part in PATH.split('/')[1:-1]:
+    d += '/' + part
+    try:
+        os.mkdir(d)
+    except OSError:
+        pass
+f = open(PATH + '.cprtmp', 'wb')
+"""
+
+# Last piece of Repl.put_file: close, swap the temp file in (FAT rename will not overwrite),
+# report the size. A failed transfer leaves PATH as it was.
+_PUT_CLOSE = """\
+f.close()
+try:
+    os.remove(PATH)
+except OSError:
+    pass
+os.rename(PATH + '.cprtmp', PATH)
+print('CPRP', os.stat(PATH)[6])
+"""
+
+# Runs on the board: PATH as base64 lines between CPRG BEGIN / END, or CPRG MISSING.
+_GET_FILE = """\
+import binascii
+try:
+    f = open(PATH, 'rb')
+except OSError:
+    print('CPRG MISSING')
+else:
+    print('CPRG BEGIN')
+    while True:
+        b = f.read(384)
+        if not b:
+            break
+        print(binascii.b2a_base64(b, newline=False).decode())
+    f.close()
+    print('CPRG END')
 """
 
 
@@ -593,6 +638,52 @@ class Repl:
         self.prompt()
         self.write(b"\x04")
         return self.read_until(b"soft reboot", timeout=timeout)
+
+    # ---------- files over the raw REPL, for boards with no CIRCUITPY drive ----------
+    # Python can write the filesystem when no USB host holds it: filesystem.c:258
+    # filesystem_is_writable_by_python() (circuitpython 30d7addb4e). Needs binascii, so not
+    # for the Metro M0, which keeps its drive. Nothing here resets or reloads the board.
+
+    def put_file(self, rel, data, chunk=768):
+        """Write data (bytes or str) to /rel on the board, `chunk` bytes per raw REPL piece,
+        base64 encoded. Parent folders are made. Raises FarmError unless the board reports the
+        full size back."""
+        if isinstance(data, str):
+            data = data.encode()
+        head = "PATH = %r\n" % ("/" + rel.lstrip("/"),) + _PUT_OPEN
+        pieces = [head]
+        for i in range(0, len(data), chunk):
+            b64 = base64.b64encode(data[i:i + chunk]).decode()
+            pieces.append("f.write(binascii.a2b_base64(%r))\n" % b64)
+        pieces.append(_PUT_CLOSE)
+        outs, err = self.exec_raw_pieces(pieces, timeout=30 + len(data) // 500)
+        if err.strip():
+            raise FarmError("%s: put_file %s failed: %s" % (self.board.name, rel, err.strip()[-300:]))
+        m = re.search(r"CPRP (\d+)", outs[-1] if len(outs) == len(pieces) else "")
+        if not m or int(m.group(1)) != len(data):
+            raise FarmError("%s: put_file %s: board reports %s bytes, sent %d"
+                            % (self.board.name, rel, m.group(1) if m else "no size", len(data)))
+
+    def get_file(self, rel, timeout=60):
+        """Bytes of /rel on the board, or None when it does not exist."""
+        code = "PATH = %r\n" % ("/" + rel.lstrip("/"),) + _GET_FILE
+        out, err = self.exec_raw(code, timeout=timeout)
+        if err.strip():
+            raise FarmError("%s: get_file %s failed: %s" % (self.board.name, rel, err.strip()[-300:]))
+        lines = [ln.strip() for ln in out.splitlines()]
+        if "CPRG MISSING" in lines:
+            return None
+        if "CPRG BEGIN" not in lines or "CPRG END" not in lines:
+            raise FarmError("%s: get_file %s: truncated reply" % (self.board.name, rel))
+        body = lines[lines.index("CPRG BEGIN") + 1:lines.index("CPRG END")]
+        return b"".join(base64.b64decode(ln) for ln in body)
+
+    def del_file(self, rel):
+        """Remove /rel on the board; a missing file is not an error."""
+        code = "import os\ntry:\n    os.remove(%r)\nexcept OSError:\n    pass\n" % ("/" + rel.lstrip("/"),)
+        _, err = self.exec_raw(code, timeout=15)
+        if err.strip():
+            raise FarmError("%s: del_file %s failed: %s" % (self.board.name, rel, err.strip()[-300:]))
 
 
 def device_source(body):
