@@ -222,8 +222,8 @@ def write_settings(board, backups, data):
     bk = backups.setdefault(board.name, FsBackup(board))
     if data is not None:
         return apply_tree(board, {"settings.toml": data}, bk)
-    mp = board.mount()
-    if not mp:
+    mp = board.mount() if board.fs == "drive" else None
+    if board.fs == "drive" and not mp:
         raise farmlib.FarmError("%s: CIRCUITPY not mounted" % board.name)
     bk.save(mp, "settings.toml")
     board.remove_file("settings.toml")

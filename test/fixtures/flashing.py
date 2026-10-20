@@ -420,7 +420,19 @@ class FsBackup:
                        "new_dirs": self.new_dirs}, f, indent=1, sort_keys=True)
 
     def save(self, mp, rel):
+        """Back up rel from the drive at mp, or, with mp None (an fs = "repl" board), from the
+        board itself. Folders made on a repl board are not tracked, so not removed again."""
         if rel in self.saved:
+            return
+        if mp is None:
+            data = self.board.read_file(rel, binary=True)
+            if data is not None:
+                dest = os.path.join(self.dir, "files", rel)
+                os.makedirs(os.path.dirname(dest), exist_ok=True)
+                with open(dest, "wb") as f:
+                    f.write(data)
+            self.saved[rel] = data
+            self._write_manifest()
             return
         path = os.path.join(mp, rel)
         if os.path.isfile(path):
@@ -444,6 +456,8 @@ class FsBackup:
         """Put every original back and md5-check it. Returns a list of problems."""
         b = self.board
         problems = []
+        if b.fs != "drive":
+            return self._restore_on_board()
         mp = b.mount()
         if not mp:
             return ["%s: CIRCUITPY not mounted, originals left in %s" % (b.name, self.dir)]
@@ -473,6 +487,32 @@ class FsBackup:
         return problems
 
 
+    def _restore_on_board(self):
+        """restore() for a board with no drive: write back through the board, then compare
+        sha256 as the board reads it."""
+        b = self.board
+        problems = []
+        for rel, data in self.saved.items():
+            try:
+                if data is None:
+                    b.remove_file(rel)
+                else:
+                    b.write_file(rel, data)
+            except (farmlib.FarmError, OSError) as e:
+                problems.append("%s: restore %s: %s" % (b.name, rel, e))
+        want = {rel: hashlib.sha256(d).hexdigest() for rel, d in self.saved.items()
+                if d is not None}
+        got = b.board_sha256(sorted(want)) if want else {}
+        if got is None:
+            problems.append("%s: cannot hash on the board, restore unverified" % b.name)
+        else:
+            problems += ["%s: %s sha256 mismatch after restore" % (b.name, rel)
+                         for rel in sorted(want) if got[rel] != want[rel]]
+        if not problems:
+            shutil.rmtree(self.dir, ignore_errors=True)
+        return problems
+
+
 def hard_reset(b):
     """Reset so the supervisor re-reads settings.toml. microcontroller.reset() where it is safe,
     a port power cycle where it is not (Metro M0)."""
@@ -495,6 +535,8 @@ def hard_reset(b):
 
 def apply_tree(b, tree, backup):
     """Write the files of tree whose bytes differ from the drive. Returns the paths written."""
+    if b.fs != "drive":
+        return _apply_tree_on_board(b, tree, backup)
     mp = b.mount()
     if not mp:
         raise farmlib.FarmError("%s: CIRCUITPY not mounted" % b.name)
@@ -520,6 +562,21 @@ def apply_tree(b, tree, backup):
         backup.save(mp, rel)
         b.write_file(rel, tree[rel], sync=False)
     os.sync()
+    return changed
+
+
+def _apply_tree_on_board(b, tree, backup):
+    """apply_tree() for a board with no drive: sha256 of every path in one REPL session
+    decides what changed, then each changed file goes over b.write_file. No free-space check."""
+    have = b.board_sha256(sorted(tree), timeout=30)
+    if have is None:
+        raise farmlib.FarmError("%s: cannot hash files on the board (no REPL or no hashlib)"
+                                % b.name)
+    changed = [rel for rel, data in sorted(tree.items())
+               if have.get(rel) != hashlib.sha256(data).hexdigest()]
+    for rel in sorted(changed, key=lambda r: r == "code.py"):
+        backup.save(None, rel)
+        b.write_file(rel, tree[rel])
     return changed
 
 
