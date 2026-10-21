@@ -309,3 +309,29 @@ def test_list_boards_reports_every_problem(tmp_path):
     r = run_list_boards(farm)
     assert r.returncode == 4, r.stdout + r.stderr  # pytest.UsageError
     assert "never a tty or drive" in r.stderr and "tty not allowed" in r.stderr
+
+
+def test_power_also_is_checked():
+    assert validate_board_entry(entry(usb="3-6.4.3", power={"also": ["3-6.4.4"]})) == []
+    for bad in ("3-6.4.4", ["/dev/ttyUSB1"], ["3-6.4.3"], [4]):
+        with pytest.raises(FarmConfigError, match="power.also"):
+            validate_board_entry(entry(usb="3-6.4.3", power={"also": bad}))
+
+
+def test_power_cycle_cuts_the_also_ports(monkeypatch, tmp_path):
+    import farmlib  # pylint: disable=import-outside-toplevel
+    calls = []
+    monkeypatch.setattr(farmlib, "UHUBCTL_LOCK", str(tmp_path / "lock"))
+    monkeypatch.setattr(farmlib.subprocess, "run", lambda cmd, **k: calls.append(cmd) or
+                        types.SimpleNamespace(returncode=0, stderr=""))
+    monkeypatch.setattr(farmlib.time, "sleep", lambda s: None)
+    same = farmlib.Board({"name": "c5", "board_id": "x", "usb": "3-6.4.3",
+                          "power": {"also": ["3-6.4.4"]}}, {})
+    same.power_cycle(wait=False)
+    assert [c[1:6] for c in calls] == [["-l", "3-6.4", "-p", "3,4", "-a"]] and "cycle" in calls[0]
+    calls.clear()
+    split = farmlib.Board({"name": "p4", "board_id": "x", "usb": "3-6.3.4.4",
+                           "power": {"also": ["3-6.1.2"]}}, {})
+    split.power_cycle(wait=False)
+    assert [(c[2], c[4], c[6]) for c in calls] == [("3-6.3.4", "4", "off"), ("3-6.1", "2", "off"),
+                                                   ("3-6.3.4", "4", "on"), ("3-6.1", "2", "on")]

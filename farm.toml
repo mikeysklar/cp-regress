@@ -13,7 +13,8 @@
 #   reset_ok    microcontroller.reset() is safe on this board
 # wiring: jumpers / fixtures physically attached. Tests that need them skip
 #   until you add the key here. Pin names are board.<NAME>.
-# power: uhubctl repeat / wait values that actually cut this port.
+# power: uhubctl repeat / wait values that actually cut this port. also (optional): other hub
+#   ports that feed the same board, cut with it (a dev kit with a USB-JTAG and a UART port).
 # fs (optional, default "drive"): how board files are read and written. "drive" is the
 #   CIRCUITPY mount; "repl" is the raw REPL (base64, lib/farmlib.py Repl.put_file), for boards
 #   with no native USB and so no drive. Not for "small" boards: needs binascii. "web" is the
@@ -166,7 +167,9 @@ usb = "3-6.4.3"
 port = "espressif"
 caps = ["wifi", "ble", "reset_ok"]
 fs = "web"
-power = { r = 80, w = 300, settle = 15 }
+# Cycling 3-6.4.3 alone did not reset it (uptime 32 s -> 70 s); both ports did. The first
+# write 10 s after that timed out, so a longer settle.
+power = { r = 80, w = 300, settle = 20, also = ["3-6.4.4"] }
 notes = "No native USB: console on the USB-JTAG/serial port; its UART port (3-6.4.4) also powers it."
 wiring = {}
 

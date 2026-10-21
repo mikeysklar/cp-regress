@@ -142,3 +142,24 @@ def test_tries_must_be_a_positive_integer(value):
              "power": {"tries": value}}
     with pytest.raises(FarmConfigError, match="power.tries"):
         validate_board_entry(entry)
+
+
+def test_recover_adds_the_board_settings_first(health):  # pylint: disable=unused-argument
+    b = FlakyBoard(good={1})
+    b.settings = {"CIRCUITPY_SAFE_MODE_DELAY": 0}
+    b.add_missing_settings = lambda: ["CIRCUITPY_SAFE_MODE_DELAY"]
+    ok, why = cpr_run.recover(b)
+    assert ok and b.cycles == 1
+    assert why == "healthy after 1 power cycles (added CIRCUITPY_SAFE_MODE_DELAY to settings.toml)"
+
+
+def test_add_missing_settings_only_adds(monkeypatch):
+    import farmlib  # pylint: disable=import-outside-toplevel
+    b = farmlib.Board({"name": "s31", "board_id": "x", "usb": "3-6.4.2", "fs": "repl",
+                       "settings": {"CIRCUITPY_SAFE_MODE_DELAY": 0, "A": "x", "B": True}}, {})
+    files = {"settings.toml": b'A = "keep"'}
+    monkeypatch.setattr(b, "read_file", lambda rel, binary=False: files.get(rel))
+    monkeypatch.setattr(b, "write_file", lambda rel, data, sync=True: files.__setitem__(rel, data))
+    assert b.add_missing_settings() == ["B", "CIRCUITPY_SAFE_MODE_DELAY"]
+    assert files["settings.toml"] == b'A = "keep"\nB = true\nCIRCUITPY_SAFE_MODE_DELAY = 0\n'
+    assert b.add_missing_settings() == []

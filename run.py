@@ -229,7 +229,15 @@ def recover(board):
     """Power cycle and re-check, up to power.tries times (default 1). Returns (ok, why)."""
     tries = board.power.get("tries", 1)
     whys = []
-    for _ in range(tries):
+    added = []
+    if getattr(board, "settings", None):
+        try:
+            added = board.add_missing_settings()
+        except Exception as e:  # noqa: BLE001
+            whys.append("settings: %s" % e)
+    if added:  # the S31 Korvo-1 sits in safe mode until CIRCUITPY_SAFE_MODE_DELAY is there
+        whys.append("added %s to settings.toml" % ", ".join(added))
+    for n in range(1, tries + 1):
         try:
             board.power_cycle()
             time.sleep(board.power.get("settle", 12))
@@ -238,7 +246,7 @@ def recover(board):
             break
         ok, why = board_health(board)
         if ok:
-            return True, ("healthy after %d power cycles (%s)" % (len(whys) + 1, "; ".join(whys))
+            return True, ("healthy after %d power cycles (%s)" % (n, "; ".join(whys))
                           if whys else "")
         whys.append(why)
     # A VBUS cycle does not reset every board (the M4 AirLift sat off the bus until an SWD

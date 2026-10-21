@@ -452,8 +452,13 @@ class Board:
 
     # ---------- power / readiness ----------
     def power_cycle(self, off_s=3, wait=True):
-        """Cut and restore this port. With wait, return wait_ready()'s result; else 0."""
-        hub, port = self.usb.rsplit(".", 1)
+        """Cut and restore this port, and the power.also ports with it (a board fed by two
+        USB ports, like the ESP32-C5 DevKitC, only resets when both go). With wait, return
+        wait_ready()'s result; else 0."""
+        hubs = {}
+        for path in [self.usb] + list(self.power.get("also", [])):
+            hub, port = path.rsplit(".", 1)
+            hubs.setdefault(hub, []).append(port)
         r = str(self.power.get("r", 30))
         w = str(self.power.get("w", 500))
         # Serialised with the farm's shell helpers: hub_activate() re-asserts power across the
@@ -461,8 +466,22 @@ class Board:
         with open(UHUBCTL_LOCK, "w") as lockf:
             fcntl.flock(lockf, fcntl.LOCK_EX)
             try:
-                res = subprocess.run([self.uhubctl, "-l", hub, "-p", port, "-a", "cycle", "-d",
-                                      str(off_s), "-r", r, "-w", w], capture_output=True, text=True)
+                if len(hubs) == 1:
+                    (hub, ports), = hubs.items()
+                    steps = [(hub, ports, "cycle")]
+                else:  # every port off, then every port on: no window with one side fed
+                    steps = [(h, p, "off") for h, p in hubs.items()] + \
+                            [(h, p, "on") for h, p in hubs.items()]
+                for i, (hub, ports, action) in enumerate(steps):
+                    cmd = [self.uhubctl, "-l", hub, "-p", ",".join(ports), "-a", action,
+                           "-r", r, "-w", w]
+                    if action == "cycle":
+                        cmd += ["-d", str(off_s)]
+                    res = subprocess.run(cmd, capture_output=True, text=True)
+                    if res.returncode != 0:
+                        break
+                    if action == "off" and steps[i + 1][2] == "on":
+                        time.sleep(off_s)
             finally:
                 fcntl.flock(lockf, fcntl.LOCK_UN)
         if res.returncode != 0:
@@ -485,6 +504,27 @@ class Board:
 
     def repl(self, iface=0):
         return Repl(self, iface)
+
+    def add_missing_settings(self):
+        """Append the farm.toml settings keys settings.toml does not set. Returns the keys
+        added. Only adds: a key the file already has is left as it is."""
+        if not getattr(self, "settings", None):
+            return []
+        old = self.read_file("settings.toml", binary=True) or b""
+        text = old.decode(errors="replace")
+        missing = [k for k in sorted(self.settings)
+                   if not re.search(r"^\s*%s\s*=" % re.escape(k), text, re.M)]
+        if not missing:
+            return []
+        lines = []
+        for k in missing:
+            v = self.settings[k]
+            lines.append("%s = %s" % (k, ("true" if v else "false") if isinstance(v, bool)
+                                       else str(v) if isinstance(v, int)
+                                       else '"%s"' % str(v).replace("\\", "\\\\").replace('"', '\\"')))
+        sep = b"" if not old or old.endswith(b"\n") else b"\n"
+        self.write_file("settings.toml", old + sep + ("\n".join(lines) + "\n").encode())
+        return missing
 
     # ---------- preserve user files ----------
     @contextmanager

@@ -172,7 +172,13 @@ def validate_board_entry(entry, test_dir=None):
     if "sudo" in power:
         raise FarmConfigError("board '%s': power.sudo not allowed; uhubctl runs unprivileged"
                               % name)
-    for key in sorted(set(power) - set(POWER_KEYS)):
+    also = power.get("also", [])
+    if not isinstance(also, list) or not all(isinstance(a, str) and USB_PATH_RE.match(a)
+                                             and a != usb for a in also):
+        raise FarmConfigError("board '%s': power.also must be a list of other hub port paths "
+                              "that feed the same board, like [\"3-6.4.4\"], got %r"
+                              % (name, also))
+    for key in sorted(set(power) - set(POWER_KEYS) - {"also"}):
         warnings.append("board '%s': unknown power key '%s'" % (name, key))
 
     flash = entry.get("flash", {})
