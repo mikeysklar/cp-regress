@@ -184,11 +184,11 @@ class Board:
         return hits[0] if hits else None
 
     def ttys(self):
-        """All CDC ttys for this board, console first."""
+        """All ttys for this board, console first: CDC (...:1.0) or a USB-UART bridge
+        (...:1.0-port0, a CP2102N on a board with no native USB)."""
         tail = self.usb.split("-", 1)[1]
-        hits = sorted(glob.glob("/dev/serial/by-path/*usb-0:%s:1.*" % tail),
-                      key=lambda p: int(p.rsplit(".", 1)[1]))
-        return hits
+        hits = glob.glob("/dev/serial/by-path/*usb-0:%s:1.*" % tail)
+        return sorted(hits, key=lambda p: [int(n) for n in re.findall(r"\d+", p.rsplit(":1.", 1)[1])])
 
     def tty(self):
         t = self.ttys()
