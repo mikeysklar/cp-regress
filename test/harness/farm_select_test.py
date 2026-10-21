@@ -337,6 +337,35 @@ def test_power_cycle_cuts_the_also_ports(monkeypatch, tmp_path):
                                                    ("3-6.3.4", "4", "on"), ("3-6.1", "2", "on")]
 
 
+def _uhubctl_calls(monkeypatch, tmp_path, present):
+    """Record uhubctl commands; present() answers from the list, then stays False."""
+    import farmlib  # pylint: disable=import-outside-toplevel
+    calls = []
+    monkeypatch.setattr(farmlib, "UHUBCTL_LOCK", str(tmp_path / "lock"))
+    monkeypatch.setattr(farmlib.subprocess, "run", lambda cmd, **k: calls.append(cmd) or
+                        types.SimpleNamespace(returncode=0, stderr=""))
+    monkeypatch.setattr(farmlib.time, "sleep", lambda s: None)
+    monkeypatch.setattr(farmlib.Board, "present", lambda self: present.pop(0) if present else False)
+    return farmlib, calls
+
+
+def test_confirm_off_waits_for_the_board_to_leave(monkeypatch, tmp_path):
+    farmlib, calls = _uhubctl_calls(monkeypatch, tmp_path, [True, True, False])
+    b = farmlib.Board({"name": "m4", "board_id": "x", "usb": "3-3.3.1"}, {})
+    b.power_cycle(wait=False, confirm_off=True)
+    assert [(c[2], c[4], c[6]) for c in calls] == [("3-3.3", "1", "off"), ("3-3.3", "1", "on")]
+
+
+def test_confirm_off_fails_when_the_board_stays(monkeypatch, tmp_path):
+    farmlib, calls = _uhubctl_calls(monkeypatch, tmp_path, [True] * 10 ** 6)
+    clock = iter(range(0, 10 ** 6))
+    monkeypatch.setattr(farmlib.time, "monotonic", lambda: next(clock))
+    b = farmlib.Board({"name": "c6", "board_id": "x", "usb": "3-6.3.1"}, {})
+    with pytest.raises(farmlib.FarmError, match="still on the bus"):
+        b.power_cycle(wait=False, confirm_off=True, off_timeout=5)
+    assert [c[6] for c in calls] == ["off", "on"]  # switched back on all the same
+
+
 def test_console_baud_is_checked():
     assert validate_board_entry(entry(console_baud=115200)) == []
     for bad in (0, "115200", True, 300):

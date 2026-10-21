@@ -470,11 +470,17 @@ class Board:
             os.sync()
 
     # ---------- power / readiness ----------
-    def power_cycle(self, off_s=3, wait=True):
+    def power_cycle(self, off_s=3, wait=True, confirm_off=False, off_timeout=10):
         """Cut and restore this port, and the power.also ports with it (a board fed by two
         USB ports, like the ESP32-C5 DevKitC, only resets when both go). With wait, return
-        wait_ready()'s result; else 0."""
-        hubs = {}
+        wait_ready()'s result; else 0.
+
+        With confirm_off, the board must drop off the bus within off_timeout seconds of the
+        ports going off, or FarmError (after switching them back on): some hubs report a port
+        off while VBUS stays up (3-6.3 and 3-6 here), and a board on a battery stays up too.
+        After Brent's power_cycle_board(confirm_off=True), hil_board_utils.py:708 @ eec4238.
+        """
+        hubs, stuck = {}, False
         for path in [self.usb] + list(self.power.get("also", [])):
             hub, port = path.rsplit(".", 1)
             hubs.setdefault(hub, []).append(port)
@@ -485,7 +491,7 @@ class Board:
         with open(UHUBCTL_LOCK, "w") as lockf:
             fcntl.flock(lockf, fcntl.LOCK_EX)
             try:
-                if len(hubs) == 1:
+                if len(hubs) == 1 and not confirm_off:
                     (hub, ports), = hubs.items()
                     steps = [(hub, ports, "cycle")]
                 else:  # every port off, then every port on: no window with one side fed
@@ -500,12 +506,27 @@ class Board:
                     if res.returncode != 0:
                         break
                     if action == "off" and steps[i + 1][2] == "on":
+                        if confirm_off and not self._wait_gone(off_timeout):
+                            stuck = True
                         time.sleep(off_s)
             finally:
                 fcntl.flock(lockf, fcntl.LOCK_UN)
         if res.returncode != 0:
             raise FarmError("uhubctl failed: %s" % res.stderr.strip())
+        if stuck:
+            raise FarmError("%s: still on the bus %g s after its port went off (the hub does "
+                            "not cut VBUS, or the board has another supply)"
+                            % (self.name, off_timeout))
         return self.wait_ready() if wait else 0
+
+    def _wait_gone(self, timeout, interval=0.2):
+        """True once the board has left the bus (no sysfs device at its USB path)."""
+        deadline = time.monotonic() + timeout
+        while self.present():
+            if time.monotonic() >= deadline:
+                return False
+            time.sleep(interval)
+        return True
 
     def wait_ready(self, timeout=None, need_mount=True):
         """Wait for tty (+ mount), then the settle time. Returns seconds taken or None."""

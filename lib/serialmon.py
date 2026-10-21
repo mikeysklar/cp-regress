@@ -560,20 +560,21 @@ class SerialMonitor:
             return None
         return up if up < limit else None
 
-    def port_reset(self, delay=3, timeout=None):
+    def port_reset(self, delay=3, timeout=None, confirm_off=False):
         """Power-cycle the board's hub port, wait for the console to re-enumerate, reopen it, and
         return the boot start (the cursor moves there). delay is how long power stays off.
 
         After Brent's port_reset (hil_board_utils.py:934 @ cf64e03), but through
         Board.power_cycle(): unprivileged uhubctl, serialized with the farm's other cycles by
         flock, with this board's -r/-w from farm.toml. Never sudo, no port cache. As with his,
-        the first lines of the boot can be missed.
+        the first lines of the boot can be missed. confirm_off: FarmError unless the board
+        really left the bus (Board.power_cycle), like his confirm_off @ eec4238.
         """
         self._check_open()
         self._shutdown()
         self._event("port reset (uhubctl cycle, %s s off)" % delay)
         try:
-            self.board.power_cycle(off_s=delay, wait=False)
+            self.board.power_cycle(off_s=delay, wait=False, confirm_off=confirm_off)
         except FarmError as e:
             with self._cond:  # expect()/assert_none() try to reopen instead of waiting
                 self._error = e
