@@ -205,6 +205,23 @@ class ProtoMQ:
         """This client's entry from /clients, or None."""
         return next((c for c in self.clients() if c.get("id") == self.client), None)
 
+    def expect_client(self, timeout, interval=0.05):
+        """This client's entry from /clients once it connects, or AssertionError after timeout
+        naming who is connected (Brent's ProtoMQ.expect_client, hil_protomq.py:153 @ 242a162).
+        A poll is a local HTTP request of a few ms, so the connect is seen within about
+        interval."""
+        end = time.time() + timeout
+        while True:
+            clients = self.clients()
+            c = next((c for c in clients if c.get("id") == self.client), None)
+            if c is not None:
+                return c
+            if time.time() >= end:
+                raise AssertionError("%s not connected to ProtoMQ after %g s; connected: %s"
+                                     % (self.client, timeout,
+                                        sorted(str(c.get("id")) for c in clients) or "none"))
+            time.sleep(interval)
+
     def wait_subscribed(self, topic, timeout=30):
         """Block until this client is subscribed to topic. True if it happened in time."""
         end = time.time() + timeout
