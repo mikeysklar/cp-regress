@@ -23,17 +23,26 @@ META = {
 
 DEVICE = r'''
 import board
-import busio
+try:
+    import busio
+except ImportError:  # not in every build
+    busio = None
 import digitalio
-import pwmio
-import analogio
+try:
+    import pwmio
+except ImportError:  # not in every build
+    pwmio = None
+try:
+    import analogio
+except ImportError:  # not in every build (nRF54LM20 zephyr-cp has no analogio)
+    analogio = None
 import microcontroller
 import time
 
 # I2C buses on SCL/SDA (most boards have these). Without pull-ups CircuitPython must raise
 # a clean RuntimeError, not hang or hard fault.
 i2c_has_pullups = False
-if hasattr(board, "SCL") and hasattr(board, "SDA"):
+if busio and hasattr(board, "SCL") and hasattr(board, "SDA"):
     try:
         bus = busio.I2C(board.SCL, board.SDA)
         i2c_has_pullups = True
@@ -48,7 +57,7 @@ if hasattr(board, "SCL") and hasattr(board, "SDA"):
     except Exception as e:
         check("i2c_construct", False, "%s: %s" % (type(e).__name__, e))
 else:
-    skip("i2c_construct", "board lacks SCL/SDA")
+    skip("i2c_construct", "board lacks SCL/SDA" if busio else "no busio module")
 
 # Claiming the same pin twice should raise ValueError. Pick a plain GPIO by name; never a
 # console, display or LED-only pin (the S2's DEBUG_TX/RX carry the farm console).
@@ -95,7 +104,7 @@ else:
 # #1603: board.I2C() called twice should return the same object (needs pull-ups)
 if not i2c_has_pullups:
     skip("i2c_singleton", "no I2C pull-ups on this board; add an I2C sensor to wiring")
-elif hasattr(board, "SCL") and hasattr(board, "SDA"):
+elif busio and hasattr(board, "SCL") and hasattr(board, "SDA"):
     try:
         i2c1 = board.I2C()
         i2c2 = board.I2C()
@@ -103,10 +112,10 @@ elif hasattr(board, "SCL") and hasattr(board, "SDA"):
     except Exception as e:
         check("i2c_singleton", False, "%s: %s" % (type(e).__name__, e))
 else:
-    skip("i2c_singleton", "board lacks SCL/SDA")
+    skip("i2c_singleton", "board lacks SCL/SDA" if busio else "no busio module")
 
 # SPI with MOSI only should construct
-if hasattr(board, "SCK") and hasattr(board, "MOSI"):
+if busio and hasattr(board, "SCK") and hasattr(board, "MOSI"):
     try:
         spi = busio.SPI(board.SCK, MOSI=board.MOSI)
         check("spi_mosi_only", True, "SPI(SCK, MOSI=...) constructed")
@@ -114,7 +123,7 @@ if hasattr(board, "SCK") and hasattr(board, "MOSI"):
     except Exception as e:
         check("spi_mosi_only", False, "%s: %s" % (type(e).__name__, e))
 else:
-    skip("spi_mosi_only", "board lacks SCK/MOSI")
+    skip("spi_mosi_only", "board lacks SCK/MOSI" if busio else "no busio module")
 
 # PWM: frequency and duty_cycle round trip at 3 frequencies
 pwm_pin = None
@@ -124,7 +133,7 @@ for attr in ("D9", "D5", "D10", "D6", "D11"):
         pwm_pin = p
         break
 
-if pwm_pin is not None:
+if pwmio and pwm_pin is not None:
     pwm = None
     try:
         # .frequency is only writable with variable_frequency=True
@@ -152,10 +161,10 @@ if pwm_pin is not None:
             check("pwm_duty_roundtrip", False, "%s: %s" % (type(e).__name__, e))
         pwm.deinit()
 else:
-    skip("pwm_construct", "no suitable PWM pin found")
+    skip("pwm_construct", "no suitable PWM pin found" if pwmio else "no pwmio module")
 
 # AnalogIn on A0
-if hasattr(board, "A0"):
+if analogio and hasattr(board, "A0"):
     try:
         ain = analogio.AnalogIn(board.A0)
         val = ain.value
@@ -166,7 +175,7 @@ if hasattr(board, "A0"):
     except Exception as e:
         check("analog_read", False, "%s: %s" % (type(e).__name__, e))
 else:
-    skip("analog_read", "board lacks A0")
+    skip("analog_read", "board lacks A0" if analogio else "no analogio module")
 
 # microcontroller.cpu.temperature
 try:
