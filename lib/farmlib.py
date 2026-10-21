@@ -26,6 +26,8 @@ import urllib.parse
 import urllib.request
 from contextlib import contextmanager
 
+import cpstrings
+
 try:
     import serial  # pyserial
 except ImportError:  # pragma: no cover - reported by run.py
@@ -619,6 +621,7 @@ class Repl:
         buf = self.pending
         end = time.time() + timeout
         while True:
+            buf = bytearray(cpstrings.to_english(buf))  # a translated build's supervisor lines
             i = buf.find(token)
             if i >= 0:
                 cut = i + len(token)
@@ -661,7 +664,7 @@ class Repl:
                 continue
             start = len(self.transcript)
             self.drain(quiet=0.5, limit=2)
-            later = bytes(self.transcript[start:])
+            later = cpstrings.to_english(bytes(self.transcript[start:]))
             if b"soft reboot" in later or b"Press any key" in later or b"Code done" in later:
                 continue
             return

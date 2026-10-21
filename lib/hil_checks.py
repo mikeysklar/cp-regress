@@ -42,6 +42,8 @@ import re
 import time
 from dataclasses import dataclass
 
+from cpstrings import to_english
+
 # --- Brent's constants, his names and values (hil_checks.py:7-15 @ cf64e03) ---------------------
 
 # ESP32 ROM line after an EN-pin reset, booting from flash (not download mode). ESP32 classic
@@ -234,7 +236,8 @@ class Banner:
 
 
 def _text(s):
-    return s.decode(errors="replace") if isinstance(s, (bytes, bytearray)) else s
+    """str in English: a translated build's supervisor lines are mapped back (cpstrings)."""
+    return to_english(s.decode(errors="replace") if isinstance(s, (bytes, bytearray)) else s)
 
 
 def parse_banner(text):

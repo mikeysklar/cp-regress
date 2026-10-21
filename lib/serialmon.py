@@ -38,6 +38,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
+from cpstrings import to_english
 from farmlib import FarmError
 
 try:
@@ -373,7 +374,8 @@ class SerialMonitor:
 
     def _emit(self, raw, now, mono):
         text = ANSI_ESCAPE_RE.sub("", raw.decode(errors="replace")).rstrip("\r")
-        self._lines.append(SerialLine(len(self._lines), now, text, mono))
+        # Lines are matched in English; the log keeps what a translated build printed.
+        self._lines.append(SerialLine(len(self._lines), now, to_english(text), mono))
         serial_log.info("%s | %s", self.board.name, text)
 
     # -- sending ----------------------------------------------------------------
@@ -397,14 +399,14 @@ class SerialMonitor:
 
     def _raw_since(self, offset):
         with self._cond:
-            return bytes(self._raw[max(0, offset - self._raw_base):])
+            return to_english(bytes(self._raw[max(0, offset - self._raw_base):]))
 
     def _wait_raw(self, token, offset, timeout):
         """True once token shows in the raw stream after offset, False on timeout."""
         deadline = time.monotonic() + timeout
         while True:
             with self._cond:
-                if token in self._raw[max(0, offset - self._raw_base):]:
+                if token in to_english(self._raw[max(0, offset - self._raw_base):]):
                     return True
                 remaining = deadline - time.monotonic()
                 if not self._error and not self._closed and remaining > 0:
@@ -585,7 +587,7 @@ class SerialMonitor:
         if len(lines) > count:
             shown.insert(0, "  ... %d earlier lines" % (len(lines) - count))
         if partial:
-            text = ANSI_ESCAPE_RE.sub("", partial.decode(errors="replace"))
+            text = to_english(ANSI_ESCAPE_RE.sub("", partial.decode(errors="replace")))
             shown.append("  [partial] %s" % text)
         return "\n".join(shown) if shown else "  (no lines)"
 

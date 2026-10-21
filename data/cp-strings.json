@@ -1,0 +1,959 @@
+{
+ "literal": [
+  [
+   "Automatisches Neuladen ist aktiviert. Speichere Dateien einfach über USB, um sie auszuführen, oder gib REPL ein, um sie zu deaktivieren.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Ang awtomatikong pag re-reload ay ON. i-save lamang ang mga files sa USB para patakbuhin sila o pasukin ang REPL para i-disable ito.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Otomatik yeniden yükleme aktif. Dosyaları çalıştırmak için USB aracılığı ile kaydedin ya da deaktif etmek için REPL moda girin.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "O recarregamento automático está ativo. Simplesmente salve os arquivos via USB para executá-los ou digite REPL para desativar.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Auto-reload aktif. Silahkan simpan data-data (files) melalui USB untuk menjalankannya atau masuk ke REPL untukmenonaktifkan.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "REPL moda girmek için herhangi bir tuşa basınız. Programı yeniden yüklemek için CTRL+D tuş kombinasyonunu kullanabilirsiniz.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Η αυτόματη επαναφόρτωση είναι ενεργή. Αποθηκεύστε αρχεία μέσω USB για να τρέξετε ή ανοίξτε το REPL για απενεργοποίηση.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Auto-reload habilitado. Simplemente guarda los archivos vía USB para ejecutarlos o entra al REPL para deshabilitarlo.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Auto-herlaad staat aan. Sla bestanden simpelweg via USB op om ze uit te voeren of start REPL om ze uit te schakelen.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Samo-przeładowywanie włączone. Po prostu zapisz pliki przez USB aby je uruchomić, albo wejdź w konsolę aby wyłączyć.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Auto-chargement activé. Sauvegardez les fichiers via USB pour les lancer ou démarrez le REPL pour le désactiver.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Automatické opětovné načtení je zapnuto. Jednoduše uložte soubory přes USB a spusťte je, nebo vypněte REPL.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Auto-reload be on. Put yer files on USB to weigh anchor, er' bring'er about t' the REPL t' scuttle.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Zìdòng chóngxīn jiāzài. Zhǐ xū tōngguò USB bǎocún wénjiàn lái yùnxíng tāmen huò shūrù REPL jìnyòng.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Автоматическая перезагрузка включена. Просто сохрани файл по USB или зайди в REPL чтобы отключить.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Autoladdning är på. Spara filer via USB för att köra dem eller gå till REPL för att inaktivera.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "L'auto-reload è attivo. Salva i file su USB per eseguirli o entra nel REPL per disabilitarlo.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Appuyez sur n'importe quelle touche pour utiliser le REPL. Utilisez CTRL-D pour relancer.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Ο κώδικας σταμάτησε λόγω της αυτόματης επαναφόρτωσης. Η επαναφόρτωση θα γίνει σύντομα.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "Druk op een willekeurige toets om de REPL te starten. Gebruik CTRL+D om te herstarten.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Zmáčkněte jakoukoli klávesu pro spuštění REPLu. Použijte CTRL-D pro opětovné načtení.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Pindutin ang kahit anong key para pumasok sa REPL. Gamitin ang CTRL-D para mag-reload",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Πατήστε οποιοδήποτε πλήκτρο για να μπείτε στο REPL. Πατήστε CTRL-D για επαναφόρτωση.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Program otomatik yeniden yükleme tarafından durduruldu. Birazdan tekrar yüklenecek.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "Нажмите любую клавишу чтобы зайти в REPL. Используйте CTRL-D для перезагрузки.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Tryck på valfri tangent för att gå in i REPL. Använd CTRL-D för att ladda om.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "dài mǎ yīn zì dòng chóng xīn jiā zǎi ér tíng zhǐ. jí jiāng chóng xīn jiā zǎi.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "Tekan sembarang tombol untuk masuk ke REPL. Tekan CTRL-D untuk memuat ulang.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Drücke eine beliebige Taste um REPL zu betreten. Drücke STRG-D zum neuladen.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Wciśnij dowolny klawisz aby otworzyć REPL. Aby przeładować wciśnij CTRL-D.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Kode dihentikan karena pemuatan ulang otomatis. Akan segera dimuat ulang.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "Pressione qualquer tecla para entrar no REPL. Use CTRL-D para recarregar.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Code wurde durch automatisches Neuladen gestoppt. Wird bald neu geladen.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "Wykonywanie zatrzymane przez auto-reload. Wkrótce nastąpi przeładowanie.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "Berjalan di mode aman(safe mode)! Tidak menjalankan kode yang disimpan.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "Presiona cualquier tecla para entrar al REPL. Usa CTRL-D para recargar.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "¡Ejecutando en modo seguro! No se esta ejecutando el código almacenado.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "Программа остановлена автоматической перезагрузкой. Скоро перезагрузка.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "Kód byl zastaven kvůli automatickému načtení. K načtení dojde brzy.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "El código central de CircuitPython se estrelló con fuerza. ¡Whoops!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Uruchomiony tryb bezpieczeństwa! Zapisany kod nie jest uruchamiany.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "Draaiende in veilige modus! Opgeslagen code wordt niet uitgevoerd.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "자동 새로 고침이 켜져 있습니다. USB를 통해 파일을 저장하여 실행하십시오. 비활성화하려면 REPL을 입력하십시오.",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "Sicherheitsmodus aktiv! Gespeicherter Code wird nicht ausgeführt",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "Modalità sicura in esecuzione! Codice salvato non in esecuzione.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "àn rèn hé jiàn jìn rù REPL. shǐ yòng CTRL-D zhòng xīn jiā zǎi .",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Premi un tasto per entrare la REPL. Usa CTRL-D per ricaricare.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "O código parou pela recarga automática. Recarregando em breve.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "Koden stoppades av automatisk laddning. Omladdning sker strax.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "Tumatakbo sa safe mode! Hindi tumatakbo ang nai-save na code.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "Работает в безопасном режиме! Сохраненный код не выполняется.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "Rodando em modo seguro! O código salvo não está em execução.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "Zài ānquán móshì xià yùnxíng! Bù yùnxíng yǐ bǎocún de dàimǎ.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "Fallo grave: error de acceso a memoria o de instrucción.",
+   "Hard fault: memory access or instruction error."
+  ],
+  [
+   "Code arreté par rehargement auto. Rechargement imminent.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "Der CircuitPython-Kerncode ist hart abgestürzt. Hoppla!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Código detenido por la auto-recarga. Recargando pronto.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "Mode sans échec ! Le code sauvegardé n'est pas éxecuté.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "Harter Fehler: Speicherzugriff- oder Anweisungsfehler.",
+   "Hard fault: memory access or instruction error."
+  ],
+  [
+   "Πατήστε reset για να βγείτε από την ασφαλή λειτουργία.",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "Жесткая ошибка: доступ к памяти или ошибка инструкции.",
+   "Hard fault: memory access or instruction error."
+  ],
+  [
+   "Fatální chyba: přístup k paměti nebo chyba instrukce.",
+   "Hard fault: memory access or instruction error."
+  ],
+  [
+   "オートリロードがオンです。ファイルをUSB経由で保存するだけで実行できます。REPLに入ると無効化します。",
+   "Auto-reload is on. Simply save files over USB to run them or enter REPL to disable."
+  ],
+  [
+   "O núcleo principal do CircuitPython falhou feio. Ops!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Běh v nouzovém režimu! Uložený kód není zpracováván.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "Hard fault: erreur d'instruction ou d'accès mémoire.",
+   "Hard fault: memory access or instruction error."
+  ],
+  [
+   "Traceback (bagian terakhir dari panggilan terkini):",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "Falha grave: acesso à memória ou erro de instrução.",
+   "Hard fault: memory access or instruction error."
+  ],
+  [
+   "Нажмите на сброс чтобы выйти из безопасного режима.",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "Hard fault: kesalahan akses memori atau instruksi.",
+   "Hard fault: memory access or instruction error."
+  ],
+  [
+   "Kod rdzenia CircuitPython mocno się zawiesił. Ups!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Jádro kódu CircuitPython tvrdě havarovalo. Jejda!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Drücke Reset, um den Sicherheitsmodus zu beenden.",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "Vous avez appuyé sur le bouton BOOT au démarrage.",
+   "You pressed the BOOT button at start up."
+  ],
+  [
+   "Appuyer sur reset pour sortir du mode sans échec.",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "Zurückverfolgung (jüngste Aufforderung zuletzt):",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "Traceback (appels les plus récents en dernier) :",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "Vous avez appuyé sur le bouton BOOT au démarrage",
+   "You pressed the BOOT button at start up"
+  ],
+  [
+   "CircuitPython core code is hard gecrashed. Ojee!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Основной код CircuitPython сильно разбился. Упс!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Sie befinden sich im abgesicherten Modus, weil:",
+   "You are in safe mode because:"
+  ],
+  [
+   "Η αυτόματη επαναφόρτωση είναι απενεργοποιημένη.",
+   "Auto-reload is off."
+  ],
+  [
+   "Le mode sans échec est actif pour cette raison:",
+   "You are in safe mode because:"
+  ],
+  [
+   "Pressione reset para sair do modo de segurança.",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "yìng gùzhàng: nèicún fǎngwèn huò zhǐlìng cuòwù.",
+   "Hard fault: memory access or instruction error."
+  ],
+  [
+   "Kode inti CircuitPython mengalami crash. Aduh!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Stiskněte reset pro ukončení nouzového režimu.",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "Naciśnij reset aby wyjść z trybu bezpiecznego.",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "CircuitPython kärnkod kraschade hårt. Hoppsan!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Hårt fel: minnesåtkomst eller instruktionsfel.",
+   "Hard fault: memory access or instruction error."
+  ],
+  [
+   "Ο πυρήνας της CircuitPython κατέρευσε. Οουπς!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "CircuitPython core code crashed hard. Crikey!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Runnin' in safe mode! Nay runnin' saved code.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "Você pressionou o botão BOOT na inicialização",
+   "You pressed the BOOT button at start up"
+  ],
+  [
+   "CircuitPython de héxīn chūxiàn gùzhàng. Āiyā!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Usted presionó el botón BOOT en el arranque.",
+   "You pressed the BOOT button at start up."
+  ],
+  [
+   "Traceback (chiamata più recente per ultima):",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "Ślad wyjątku (najnowsze wywołanie na końcu):",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "nín zài qǐ dòng shí àn xià le qǐ dòng àn niǔ",
+   "You pressed the BOOT button at start up"
+  ],
+  [
+   "Der BOOT-Knopf wurde beim Starten gedrückt.",
+   "You pressed the BOOT button at start up."
+  ],
+  [
+   "Der BOOT-Knopf wurde beim Starten gedrückt",
+   "You pressed the BOOT button at start up"
+  ],
+  [
+   "Presione reset para salir del modo seguro.",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "아무 키나 눌러 REPL을 입력한다. 다시 로드할땐 CTRL-D를 사용한다.",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Traceback (a última chamada mais recente):",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "REPLに入るため、エンターキーを押す。リーロードするため、Ctl-Dを入力する。",
+   "Press any key to enter the REPL. Use CTRL-D to reload."
+  ],
+  [
+   "Traceback (Zuìjìn yīcì diàoyòng zhǐlìng):",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "Tekan reset untuk keluar dari mode aman.",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "A atualização automática está desligada.",
+   "Auto-reload is off."
+  ],
+  [
+   "Você pressionou o botão BOOT ao iniciar.",
+   "You pressed the BOOT button at start up."
+  ],
+  [
+   "Kör i säkert läge! Sparad kod körs inte.",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "CircuitPython kor kodu patladı. Haydaaa!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Güvenli moddan çıkmak için reset'e basın",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "Automatisches Neuladen ist deaktiviert.",
+   "Auto-reload is off."
+  ],
+  [
+   "Usted presionó el botón BOOT al iniciar",
+   "You pressed the BOOT button at start up"
+  ],
+  [
+   "Anda menekan tombol BOOT saat memulai.",
+   "You pressed the BOOT button at start up."
+  ],
+  [
+   "Traceback (pinakahuling huling tawag):",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "Traceback (meest recente call laatst):",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "Você está no modo de segurança porque:",
+   "You are in safe mode because:"
+  ],
+  [
+   "Автоматическая перезагрузка отключена.",
+   "Auto-reload is off."
+  ],
+  [
+   "Tryck reset för att lämna säkert läge.",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "Anda menekan tombol BOOT saat memulai",
+   "You pressed the BOOT button at start up"
+  ],
+  [
+   "Jste v bezpečnostním režimu z důvodu:",
+   "You are in safe mode because:"
+  ],
+  [
+   "Při spuštění jsi stiskl tlačítko BOOT",
+   "You pressed the BOOT button at start up"
+  ],
+  [
+   "CircuitPythonのコアコードが激しくクラッシュしました。おっと！",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "Jesteś w trybie bezpiecznym ponieważ:",
+   "You are in safe mode because:"
+  ],
+  [
+   "Du tryckte ner BOOT-knappen vid start",
+   "You pressed the BOOT button at start up"
+  ],
+  [
+   "Du tryckte på BOOT-knappen vid start.",
+   "You pressed the BOOT button at start up."
+  ],
+  [
+   "Traceback (ultima llamada reciente):",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "Otomatik yeniden yükleme devre dışı.",
+   "Auto-reload is off."
+  ],
+  [
+   "nínzài qǐdòngshí ànxià le BOOTànniǔ.",
+   "You pressed the BOOT button at start up."
+  ],
+  [
+   "àn chóng zhì tuì chū ān quán mó shì.",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "memulai ulang software(soft reboot)",
+   "soft reboot"
+  ],
+  [
+   "Anda berada dalam mode aman karena:",
+   "You are in safe mode because:"
+  ],
+  [
+   "Η εκτέλεση του κώδικα ολοκληρώθηκε.",
+   "Code done running."
+  ],
+  [
+   "Είσαστε τε ασφαλή λειτουργία διότι:",
+   "You are in safe mode because:"
+  ],
+  [
+   "Le noyau CircuitPython est planté !",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "자동 업로드에 의해 코드가 중지되었습니다. 곧 다시 로드됩니다.",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "CircuitPython 핵심 코드가 심하게 충돌했습니다. 앗!",
+   "CircuitPython core code crashed hard. Whoops!"
+  ],
+  [
+   "nín chǔ yú ān quán mó shì, yīn wéi:",
+   "You are in safe mode because:"
+  ],
+  [
+   "Awtomatikong pag re-reload ay OFF.",
+   "Auto-reload is off."
+  ],
+  [
+   "Вы в безопасном режиме потому что:",
+   "You are in safe mode because:"
+  ],
+  [
+   "При запуске вы нажали кнопку BOOT.",
+   "You pressed the BOOT button at start up."
+  ],
+  [
+   "O código concluiu a sua execução.",
+   "Code done running."
+  ],
+  [
+   "Вы нажали кнопку BOOT при запуске",
+   "You pressed the BOOT button at start up"
+  ],
+  [
+   "Zìdòng chóngxīn jiāzài yǐ guānbì.",
+   "Auto-reload is off."
+  ],
+  [
+   "L'auto-chargement est désactivé.",
+   "Auto-reload is off."
+  ],
+  [
+   "Automatické načtení je vypnuto.",
+   "Auto-reload is off."
+  ],
+  [
+   "オートリロードでコード実行は中止された。まもなくリロードする。",
+   "Code stopped by auto-reload. Reloading soon."
+  ],
+  [
+   "Samo-przeładowywanie wyłączone.",
+   "Auto-reload is off."
+  ],
+  [
+   "Программа закончила выполнение.",
+   "Code done running."
+  ],
+  [
+   "El código terminó de ejecutar.",
+   "Code done running."
+  ],
+  [
+   "セーフモードで実行中！ 保存されたコードは実行していません。",
+   "Running in safe mode! Not running saved code."
+  ],
+  [
+   "Трассировка (последний вызов):",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "Du är i säkert läge eftersom:",
+   "You are in safe mode because:"
+  ],
+  [
+   "Estas en modo seguro porque:",
+   "You are in safe mode because:"
+  ],
+  [
+   "Code ay tapos na sa pagtakbo",
+   "Code done running."
+  ],
+  [
+   "Zakończono wykonywanie kodu.",
+   "Code done running."
+  ],
+  [
+   "Auto-recarga deshabilitada.",
+   "Auto-reload is off."
+  ],
+  [
+   "Exécution du code terminée.",
+   "Code done running."
+  ],
+  [
+   "Běh programu byl dokončen.",
+   "Code done running."
+  ],
+  [
+   "Caricamento codice pronto.",
+   "Code done running."
+  ],
+  [
+   "セーフモードからぬけるにはリセットを押してください。",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "치명적인 실수: 메모리 액세스 또는 명령 오류.",
+   "Hard fault: memory access or instruction error."
+  ],
+  [
+   "Traceback (senaste anrop):",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "Programm wird ausgeführt.",
+   "Code done running."
+  ],
+  [
+   "Autoladdning är avstängd.",
+   "Auto-reload is off."
+  ],
+  [
+   "Kode selesai beroperasi.",
+   "Code done running."
+  ],
+  [
+   "Auto-reload tidak aktif.",
+   "Auto-reload is off."
+  ],
+  [
+   "Auto-reload disattivato.",
+   "Auto-reload is off."
+  ],
+  [
+   "안전 모드에 있는 이유는 다음과 같습니다:",
+   "You are in safe mode because:"
+  ],
+  [
+   "Auto-herlaad staat uit.",
+   "Auto-reload is off."
+  ],
+  [
+   "Güvenli moddasın çünkü:",
+   "You are in safe mode because:"
+  ],
+  [
+   "재설정을 눌러 안전 모드를 종료합니다.",
+   "Press reset to exit safe mode."
+  ],
+  [
+   "Koden har kört klart.",
+   "Code done running."
+  ],
+  [
+   "Program çalıştırıldı.",
+   "Code done running."
+  ],
+  [
+   "redémarrage logiciel",
+   "soft reboot"
+  ],
+  [
+   "トレースバック（最新の呼び出しが末尾）:",
+   "Traceback (most recent call last):"
+  ],
+  [
+   "reinicialização soft",
+   "soft reboot"
+  ],
+  [
+   "Dàimǎ yùnxíng wánbì.",
+   "Code done running."
+  ],
+  [
+   "Auto-reload be off.",
+   "Auto-reload is off."
+  ],
+  [
+   "Мягкая перезагрузка",
+   "soft reboot"
+  ],
+  [
+   "malambot na reboot",
+   "soft reboot"
+  ],
+  [
+   "자동 재 장전이 꺼져 있습니다",
+   "Auto-reload is off."
+  ],
+  [
+   "programowy reset",
+   "soft reboot"
+  ],
+  [
+   "zachte herstart",
+   "soft reboot"
+  ],
+  [
+   "weicher reboot",
+   "soft reboot"
+  ],
+  [
+   "reinicio suave",
+   "soft reboot"
+  ],
+  [
+   "オートリロードはオフです。",
+   "Auto-reload is off."
+  ],
+  [
+   "セーフモードに入った理由:",
+   "You are in safe mode because:"
+  ],
+  [
+   "mjuk omstart",
+   "soft reboot"
+  ],
+  [
+   "ruǎn chóngqǐ",
+   "soft reboot"
+  ],
+  [
+   "코드 실행 완료.",
+   "Code done running."
+  ],
+  [
+   "Ausgabe:",
+   "output:"
+  ],
+  [
+   "sortie :",
+   "output:"
+  ],
+  [
+   "uitvoer:",
+   "output:"
+  ],
+  [
+   "wyjście:",
+   "output:"
+  ],
+  [
+   "výstup:",
+   "output:"
+  ],
+  [
+   "έξοδος:",
+   "output:"
+  ],
+  [
+   "salida:",
+   "output:"
+  ],
+  [
+   "ソフトリブート",
+   "soft reboot"
+  ],
+  [
+   "コード実行完了",
+   "Code done running."
+  ],
+  [
+   "utdata:",
+   "output:"
+  ],
+  [
+   "shūchū:",
+   "output:"
+  ],
+  [
+   "saída:",
+   "output:"
+  ],
+  [
+   "вывод:",
+   "output:"
+  ],
+  [
+   "çıktı:",
+   "output:"
+  ],
+  [
+   "出力:",
+   "output:"
+  ],
+  [
+   "산출:",
+   "output:"
+  ]
+ ],
+ "format": [
+  [
+   "\\ \\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\"\\ dosyası,\\ (\\d+)\\ numaralı\\ satır",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ Wénjiàn\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ dì\\ (\\d+)\\ háng",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ Αρχείο\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ γραμμή\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ Archivo\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ línea\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ Fichier\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ ligne\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ Bestand\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ regel\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ Arquivo\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ linha\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ Soubor\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ řádek\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ Datei\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ Zeile\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ Файл\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ строка\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ File\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ baris\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ Plik\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ linia\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ File\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ riga\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ Fil\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ rad\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ ファイル\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ 行\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   "\\ \\ 파일\\ \"(<\\w+>|[A-Za-z_][\\w./-]*)\",\\ 라인\\ (\\d+)",
+   "  File \"\\1\", line \\2"
+  ],
+  [
+   ",\\ içinde\\ (<\\w+>|[A-Za-z_][\\w./-]*)",
+   ", in \\1"
+  ],
+  [
+   ",\\ dalam\\ (<\\w+>|[A-Za-z_][\\w./-]*)",
+   ", in \\1"
+  ],
+  [
+   ",\\ dans\\ (<\\w+>|[A-Za-z_][\\w./-]*)",
+   ", in \\1"
+  ],
+  [
+   ",\\ στο\\ (<\\w+>|[A-Za-z_][\\w./-]*)",
+   ", in \\1"
+  ],
+  [
+   ",\\ zài\\ (<\\w+>|[A-Za-z_][\\w./-]*)",
+   ", in \\1"
+  ],
+  [
+   ",\\ en\\ (<\\w+>|[A-Za-z_][\\w./-]*)",
+   ", in \\1"
+  ],
+  [
+   ",\\ sa\\ (<\\w+>|[A-Za-z_][\\w./-]*)",
+   ", in \\1"
+  ],
+  [
+   ",\\ 에서\\ (<\\w+>|[A-Za-z_][\\w./-]*)",
+   ", in \\1"
+  ],
+  [
+   ",\\ em\\ (<\\w+>|[A-Za-z_][\\w./-]*)",
+   ", in \\1"
+  ],
+  [
+   ",\\ w\\ (<\\w+>|[A-Za-z_][\\w./-]*)",
+   ", in \\1"
+  ],
+  [
+   ",\\ в\\ (<\\w+>|[A-Za-z_][\\w./-]*)",
+   ", in \\1"
+  ],
+  [
+   "(<\\w+>|[A-Za-z_][\\w./-]*)\\ 内の",
+   ", in \\1"
+  ]
+ ],
+ "refs": [
+  "3607c32e85",
+  "be8692376f",
+  "11c912efc7",
+  "bcb395e310",
+  "5474786a3f",
+  "e55266ff5b",
+  "7dc7502aed"
+ ]
+}
