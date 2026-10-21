@@ -150,6 +150,9 @@ class Board:
         # no native USB) or "web" (web workflow /fs/, REPL until it answers). Everything that reads or writes board files goes through
         # write_file / read_file / remove_file, which pick the transport from this.
         self.fs = cfg.get("fs", "drive")
+        # Extra settings.toml keys this board always needs, merged under the module's own
+        # (the S31 Korvo-1 needs CIRCUITPY_SAFE_MODE_DELAY = 0 or every reset is safe mode).
+        self.settings = dict(cfg.get("settings", {}))
         self.uhubctl = host_cfg.get("uhubctl", "uhubctl")
 
     def __repr__(self):

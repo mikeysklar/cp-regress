@@ -19,6 +19,8 @@
 #   with no native USB and so no drive. Not for "small" boards: needs binascii. "web" is the
 #   web workflow's /fs/ API (Repl until it answers: found by MAC over mDNS, board_id checked,
 #   password farmlib.WEB_API_PASSWORD, which flashed_fs puts in settings.toml); needs "wifi".
+# settings (optional): settings.toml keys this board always needs, merged under each module's
+#   own by flashed_fs. Strings, integers or booleans.
 # flash: how flashed_firmware writes an image (uf2 copy, esptool + tinyuf2, or openocd over SWD).
 # run_tests / skip_tests (optional, pytest only): paths under test/ as a folder, a file or a
 #   test, after Brent's hil-boards.json. Only run_tests run on this board (omit for all);
@@ -177,6 +179,9 @@ caps = ["reset_ok"]
 fs = "repl"
 power = { r = 30, w = 500, settle = 15 }
 notes = "Console on the CP2102N (UART0). No wifi module in this build."
+# build 140 (2026-10-20) sees BOOT pressed on every reset: USER safe mode 4 of 4 without this,
+# 0 of 2 with it. The delay of 0 skips the button wait (supervisor/shared/safe_mode.c).
+settings = { CIRCUITPY_SAFE_MODE_DELAY = 0 }
 wiring = {}
 
 [[board]]

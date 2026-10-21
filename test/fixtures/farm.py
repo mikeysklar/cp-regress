@@ -39,7 +39,7 @@ NAME_RE = re.compile(r"^[A-Za-z0-9_.-]+$")  # used in lock paths, xdist groups a
 HEX_RE = re.compile(r"^0x[0-9a-fA-F]+$")
 
 KNOWN_KEYS = {"name", "board_id", "usb", "port", "caps", "power", "notes", "flash", "wiring",
-              "run_tests", "skip_tests", "dns_tests", "fs"}
+              "run_tests", "skip_tests", "dns_tests", "fs", "settings"}
 # Keys that would cache what must be resolved from `usb` at the moment of use.
 CACHED_KEYS = {"tty", "serial", "dev", "drive", "mount", "label", "circuitpy", "location"}
 KNOWN_CAPS = {"native_usb", "uf2", "wifi", "ble", "esp32spi", "usb_host", "reset_ok", "small"}
@@ -152,6 +152,14 @@ def validate_board_entry(entry, test_dir=None):
                               "(SAMD21) do not have" % (name, fs))
     if fs == "web" and "wifi" not in caps:
         raise FarmConfigError("board '%s': fs = \"web\" needs 'wifi' in caps" % name)
+
+    settings = entry.get("settings", {})
+    if not isinstance(settings, dict) or not all(
+            re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", k) and isinstance(v, (str, int, bool))
+            for k, v in settings.items()):
+        raise FarmConfigError("board '%s': 'settings' must be a table of settings.toml keys "
+                              "to strings, integers or booleans, like "
+                              "{ CIRCUITPY_SAFE_MODE_DELAY = 0 }, got %r" % (name, settings))
 
     power = entry.get("power", {})
     if not isinstance(power, dict):

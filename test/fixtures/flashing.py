@@ -625,7 +625,8 @@ def _fs_backups(request):
 def flashed_fs(request, board, secrets, flashed_firmware, _fs_backups):  # pylint: disable=unused-argument
     """Put the module's files on CIRCUITPY, copying only what changed. Returns the paths it
     wrote this time (empty when the board already had them)."""
-    tree = desired_tree(request.module, secrets, request.config.getoption("bundle"))
+    tree = desired_tree(request.module, dict(getattr(board, "settings", {}), **secrets),
+                        request.config.getoption("bundle"))
     bk = _fs_backups.setdefault(board.name, FsBackup(board))
     try:
         changed = apply_tree(board, tree, bk)

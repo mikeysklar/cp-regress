@@ -119,6 +119,13 @@ def test_fs_kinds_are_accepted():
     assert validate_board_entry(entry(fs="web", caps=["wifi"])) == []
 
 
+def test_board_settings_are_checked():
+    assert validate_board_entry(entry(settings={"CIRCUITPY_SAFE_MODE_DELAY": 0})) == []
+    for bad in ({"CIRCUITPY_SAFE_MODE_DELAY": 0.5}, {"a key": 1}, {"K": [1]}, "K = 1"):
+        with pytest.raises(FarmConfigError, match="'settings' must be a table"):
+            validate_board_entry(entry(settings=bad))
+
+
 def test_selectors_are_checked_against_test_dir():
     ok = entry(run_tests=["hardware/", "test/hardware/core_vm_test.py"],
                skip_tests=["hardware/core_vm_test.py::test_vid_pid"])
