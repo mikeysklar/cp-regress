@@ -182,7 +182,9 @@ except Exception as e:
 def results(board, device):
     """Run every benchmark once per board (0.2x sizes on "small" boards such as the SAMD21)."""
     scale = 0.2 if "small" in board.caps else 1.0
-    return device.run(DEVICE.replace("@@SCALE@@", str(scale)), timeout=60)
+    # 180 s: the SiWx917 DK takes 18 s for str_concat_5k alone (quadratic, 8 MB heap), and the
+    # whole set ran past 60 s, a DNF. A slow board belongs in the metrics, not a timeout.
+    return device.run(DEVICE.replace("@@SCALE@@", str(scale)), timeout=180)
 
 
 def test_present(board):
