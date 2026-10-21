@@ -20,6 +20,8 @@
 #   with no native USB and so no drive. Not for "small" boards: needs binascii. "web" is the
 #   web workflow's /fs/ API (Repl until it answers: found by MAC over mDNS, board_id checked,
 #   password farmlib.WEB_API_PASSWORD, which flashed_fs puts in settings.toml); needs "wifi".
+# console_baud (optional): the console is a real UART behind the tty (a CP2102N, a probe's
+#   CDC). Device code then goes in pieces of about 600 bytes, as on "small" boards.
 # settings (optional): settings.toml keys this board always needs, merged under each module's
 #   own by flashed_fs. Strings, integers or booleans.
 # flash: how flashed_firmware writes an image (uf2 copy, esptool + tinyuf2, or openocd over SWD).
@@ -180,6 +182,7 @@ usb = "3-6.4.2"
 port = "espressif"
 caps = ["reset_ok"]
 fs = "repl"
+console_baud = 115200
 power = { r = 30, w = 500, settle = 15 }
 notes = "Console on the CP2102N (UART0). No wifi module in this build."
 # build 140 (2026-10-20) sees BOOT pressed on every reset: USER safe mode 4 of 4 without this,
@@ -214,6 +217,7 @@ usb = "3-6.1.3"
 port = "zephyr-cp"
 caps = ["wifi", "ble", "reset_ok"]
 fs = "repl"
+console_baud = 115200
 power = { r = 30, w = 500, settle = 15 }
 notes = "zephyr-cp. usb is its J-Link OB: console on the OB's CDC, which stays on the bus through a reset. LittleFS, no drive."
 wiring = {}

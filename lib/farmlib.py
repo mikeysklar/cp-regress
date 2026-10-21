@@ -155,6 +155,9 @@ class Board:
         # Extra settings.toml keys this board always needs, merged under the module's own
         # (the S31 Korvo-1 needs CIRCUITPY_SAFE_MODE_DELAY = 0 or every reset is safe mode).
         self.settings = dict(cfg.get("settings", {}))
+        # A real UART behind the tty (a CP2102N, a probe's CDC). run_device sends such a board
+        # its code in pieces, as it does for "small" boards. None: a USB console.
+        self.console_baud = cfg.get("console_baud")
         self.uhubctl = host_cfg.get("uhubctl", "uhubctl")
 
     def __repr__(self):
@@ -771,12 +774,19 @@ class Repl:
 
         On boards with the "small" cap (SAMD21) the source is sent in pieces of whole
         top-level statements within one raw REPL session: buffering and compiling 7 KB at once
-        does not fit the heap.
+        does not fit the heap. A board whose console is a UART (console_baud) gets pieces too:
+        the SiWx917 DK garbled or lost raw REPL input past about 1.6 KB in one go, paced or not,
+        while pieces of about 1 KB (put_file's) came through every time.
         """
-        if "small" not in getattr(self.board, "caps", ()):
+        small = "small" in getattr(self.board, "caps", ())
+        if not small and not getattr(self.board, "console_baud", None):
             out, err = self.exec_raw(device_source(body), timeout=timeout)
             return parse_results(out), out, err
-        pieces = [device_source("")] + ["import gc\ngc.collect()\n" + c for c in split_source(body, limit=600)]
+        if small:
+            pieces = [device_source("")] + ["import gc\ngc.collect()\n" + c
+                                            for c in split_source(body, limit=600)]
+        else:
+            pieces = split_source(device_source(""), limit=600) + split_source(body, limit=600)
         outs, err = self.exec_raw_pieces(pieces, timeout=timeout)
         out = "".join(outs)
         return parse_results(out), out, err

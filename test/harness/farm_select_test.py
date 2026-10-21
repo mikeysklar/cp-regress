@@ -335,3 +335,10 @@ def test_power_cycle_cuts_the_also_ports(monkeypatch, tmp_path):
     split.power_cycle(wait=False)
     assert [(c[2], c[4], c[6]) for c in calls] == [("3-6.3.4", "4", "off"), ("3-6.1", "2", "off"),
                                                    ("3-6.3.4", "4", "on"), ("3-6.1", "2", "on")]
+
+
+def test_console_baud_is_checked():
+    assert validate_board_entry(entry(console_baud=115200)) == []
+    for bad in (0, "115200", True, 300):
+        with pytest.raises(FarmConfigError, match="console_baud"):
+            validate_board_entry(entry(console_baud=bad))
