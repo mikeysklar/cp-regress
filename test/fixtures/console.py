@@ -15,7 +15,7 @@ on check() results, use `device`; this is for tests that watch what the board pr
 
 Every test's capture is written on teardown, pass or fail, to
 <serial log dir>/<board>/<test node id>.serial.log, with lines stamped HH:MM:SS.mmm. The
-directory is --serial-log-dir (Brent's option name, hil/firmware/conftest.py:89 @ cf64e03) or
+directory is --serial-log-dir (Brent's option name, hil/firmware/conftest.py:125 @ 242a162) or
 results/pytest-<stamp>/serial, one per run, shared by all xdist workers. The path goes into the
 report (user_properties "serial_log", shown in --junitxml, and a "serial log" section on
 failures).

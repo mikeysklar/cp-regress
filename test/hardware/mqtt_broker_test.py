@@ -48,7 +48,7 @@ LIBS = ["adafruit_minimqtt", "adafruit_connection_manager", "adafruit_ticks"]
 PAYLOADS = [b"hello from cp-regress", bytes(range(256)), b"x" * 2000]
 B2D_PAYLOAD = b"\x00\x01b2d-from-protomq\xff"
 
-# His MISSING_BROKER_HOST and CLOSED_BROKER_PORT, conftest.py:337-338 @ eec4238. RFC 2606
+# His MISSING_BROKER_HOST and CLOSED_BROKER_PORT, conftest.py:419-420 @ 242a162. RFC 2606
 # reserves .invalid, so the name can reach no one's broker.
 MISSING_BROKER_HOST = "hil-no-such-broker.invalid"
 CLOSED_BROKER_PORT = 1
@@ -206,7 +206,7 @@ def test_b2d_received(exchange):
     exchange[0].expect("b2d_received")
 
 
-# Device-side, his expect_mqtt_gives_up (test_mqtt.py:59 @ eec4238) plus the recovery connect.
+# Device-side, his expect_mqtt_gives_up (test_mqtt.py:91 @ 242a162) plus the recovery connect.
 # str.format template: literal braces are doubled. Never call sys.exit() here.
 DEVICE_GIVES_UP = r"""
 import os
@@ -284,7 +284,7 @@ def _gives_up(board, device, bad_host=None, bad_port=None):
 
 
 def test_mqtt_invalid_broker_url(board, device, flashed_fs, broker):  # pylint: disable=unused-argument
-    """His test_mqtt_invalid_broker_url, test_mqtt.py:73 @ eec4238: the host never resolves,
+    """His test_mqtt_invalid_broker_url, test_mqtt.py:105 @ 242a162: the host never resolves,
     every attempt fails at DNS, connect() gives up, and the board can still reach the broker."""
     res = _gives_up(board, device, bad_host=MISSING_BROKER_HOST)
     res.expect_no_exception()
@@ -294,7 +294,7 @@ def test_mqtt_invalid_broker_url(board, device, flashed_fs, broker):  # pylint: 
 
 
 def test_mqtt_invalid_broker_port(board, device, flashed_fs, broker):  # pylint: disable=unused-argument
-    """His test_mqtt_invalid_broker_port, test_mqtt.py:105 @ eec4238: nothing listens on the
+    """His test_mqtt_invalid_broker_port, test_mqtt.py:137 @ 242a162: nothing listens on the
     ProtoMQ host's CLOSED_BROKER_PORT, so every attempt fails at the socket, connect() gives
     up, and the board can still reach the broker."""
     res = _gives_up(board, device, bad_port=CLOSED_BROKER_PORT)

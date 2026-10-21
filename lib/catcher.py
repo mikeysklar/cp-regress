@@ -28,7 +28,7 @@ only loads files from ~/protomq/scripts at first use (broker/script_runner.js lo
 which we never write to.
 
 The expect / assert_none / mark / records / dump names and their cursor rules follow Brent's
-SerialMonitor (hil_board_utils.py:757-1092 @ cf64e03), so a test reads the same against the
+SerialMonitor (hil_board_utils.py:836-1174 @ 242a162), so a test reads the same against the
 serial console or the catcher.
 
 No pytest in here: test/fixtures/broker.py (the catcher fixture) and tools/catcher.py both use it.
@@ -392,7 +392,7 @@ class Catcher:
         return {"client_id": self.client, "board": self.board, "run_id": self.run_id,
                 "nodeid": self.nodeid}
 
-    # -- matching (after Brent's SerialMonitor, hil_board_utils.py:973-1059 @ cf64e03) --------
+    # -- matching (after Brent's SerialMonitor, hil_board_utils.py:1055-1141 @ 242a162) --------
 
     def mark(self):
         """The index the next record will get."""

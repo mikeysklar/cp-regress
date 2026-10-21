@@ -51,7 +51,7 @@ PASSWORD = "CIRCUITPY_WIFI_PASSWORD"
 AIO_NAME = re.compile(r"(^|_)(AIO|ADAFRUIT_IO|IO_KEY|IO_USERNAME)(_|$)", re.I)
 AIO_KEY = re.compile(r"^aio_[A-Za-z0-9]{28}$")
 
-# Brent's names and his scenario layout (conftest.py:63-70 @ cf64e03)
+# Brent's names and his scenario layout (conftest.py:97-109 @ 242a162)
 HERE = Path(__file__).resolve().parents[2]
 DEFAULT_SECRETS_DIR = HERE / "data" / "settings-scenarios"
 SECRETS_DIR_ENV = "CPR_SECRETS_DIR"
@@ -65,7 +65,7 @@ NO_FS_IMAGE = "no_fs_image"          # his erased fs partition; not ported, see 
 # SSIDs a scenario may carry besides the allowed ones. None of them is a real network, and
 # scenario_guard refuses them next to the farm password.
 FAKE_SSID_PREFIX = "cpr-fake-"
-PLACEHOLDER_SSID = "YOUR_WIFI_SSID_HERE"  # his placeholders, conftest.py:292-293 @ cf64e03
+PLACEHOLDER_SSID = "YOUR_WIFI_SSID_HERE"  # his placeholders, conftest.py:397-398 @ 242a162
 PLACEHOLDER_PASSWORD = "YOUR_WIFI_PASS_HERE"
 WRONG_PASSWORD = "cpr-wrong-password"
 PLACEHOLDER = re.compile(rb"@@[A-Z_]+@@")
@@ -148,7 +148,7 @@ def pytest_runtest_makereport(item, call):  # pylint: disable=unused-argument
 
 
 def pytest_addoption(parser):
-    """--secrets-dir, his option name (conftest.py:84 @ cf64e03)."""
+    """--secrets-dir, his option name until 473c120 (he reads credentials from env vars now)."""
     parser.getgroup("cp-regress").addoption(
         "--secrets-dir", default="",
         help="settings.toml scenario dir (default: $%s, else %s)"
@@ -238,7 +238,7 @@ class SecretsError(Exception):
 
 def require_string(obj, key, name=None, allow_empty=False):
     """Raise SecretsError unless obj[key] is a string. His require_string
-    (hil_board_utils.py:272 @ cf64e03). name is how the message spells the key."""
+    (hil_board_utils.py:276 @ 242a162). name is how the message spells the key."""
     name = name or key
     if key not in obj:
         raise SecretsError(f"missing '{name}'")
@@ -250,7 +250,7 @@ def require_string(obj, key, name=None, allow_empty=False):
 
 def require_number(obj, key, lo, hi, integer=False):
     """Raise SecretsError unless obj[key] is a number (an integer when integer) in [lo, hi].
-    His require_number (hil_board_utils.py:282 @ cf64e03). Booleans are refused."""
+    His require_number (hil_board_utils.py:286 @ 242a162). Booleans are refused."""
     if key not in obj:
         raise SecretsError(f"missing '{key}'")
     value = obj[key]
@@ -263,7 +263,7 @@ def require_number(obj, key, lo, hi, integer=False):
 
 def validate_settings(settings):
     """Check a settings.toml dict has what a farm board needs. His validate_secrets
-    (hil_board_utils.py:293 @ cf64e03) checks secrets.json; ours checks settings.toml:
+    (hil_board_utils.py:297 @ 242a162) checks secrets.json; ours checks settings.toml:
 
       CIRCUITPY_WIFI_SSID      non-empty string (required)
       CIRCUITPY_WIFI_PASSWORD  string, may be empty (required)
@@ -283,7 +283,7 @@ def validate_settings(settings):
 def load_settings(path):
     """Read, parse and validate a settings.toml file and return the dict. Raises SecretsError
     naming the file for anything that would stop a board reading it. His load_secrets
-    (hil_board_utils.py:328 @ cf64e03)."""
+    (hil_board_utils.py:332 @ 242a162)."""
     try:
         with open(path, "rb") as f:
             data = tomllib.load(f)
@@ -333,7 +333,7 @@ def fill(data, subs):
 
 def _with_wifi(secrets, **changes):
     """A copy of secrets with changes applied; None deletes a key. His _with_wifi
-    (conftest.py:298 @ cf64e03) updates network_type_wifi; settings.toml is flat."""
+    (conftest.py:423 @ 242a162) updates network_type_wifi; settings.toml is flat."""
     secrets = copy.deepcopy(secrets)
     for key, value in changes.items():
         if value is None:

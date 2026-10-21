@@ -9,7 +9,7 @@ Adafruit_Wippersnapper_Python), adds the farm command-line options, and turns fa
 into a "board" parameter on every test that asks for one.
 
 farm.toml is checked at session start (fixtures.farm.validate_farm). A board entry can narrow
-which tests run on it, after Brent's run_tests/skip_tests (conftest.py:130-180 @ cf64e03), with
+which tests run on it, after Brent's run_tests/skip_tests (conftest.py:173-223 @ 242a162), with
 paths relative to test/: a folder ("hardware/"), a file ("hardware/wifi_join_test.py") or a test
 ("hardware/core_vm_test.py::test_vid_pid"):
 
@@ -186,7 +186,7 @@ def item_tier(item):
 def _test_selectors(entry, key):
     """The board entry's run_tests/skip_tests list, normalized, or None if it isn't set.
 
-    After Brent's _test_selectors (conftest.py:130 @ cf64e03). The type check is in
+    After Brent's _test_selectors (conftest.py:173 @ 242a162). The type check is in
     validate_board_entry, which load_farm has already run, so this only normalizes.
     """
     from fixtures.farm import normalize_selector  # pylint: disable=import-outside-toplevel
@@ -199,7 +199,7 @@ def _test_selectors(entry, key):
 
 def _matches(test_id, selectors):
     """Whether test_id (relative to test/) is in, or is, one of selectors: a folder, a file, or
-    a test with or without its params. Brent's _matches, conftest.py:144 @ cf64e03."""
+    a test with or without its params. Brent's _matches, conftest.py:187 @ 242a162."""
     return any(test_id == s or test_id.startswith((s + "/", s + "::", s + "["))
                for s in selectors)
 
@@ -226,7 +226,7 @@ def pytest_collection_modifyitems(config, items):
 
     run_tests/skip_tests are judged per item against the board it is parametrized with, so a
     module can run on one board and be skipped on another. Tests that take no board are never
-    touched by them, like Brent's tests outside FIRMWARE_DIR (conftest.py:164 @ cf64e03).
+    touched by them, like Brent's tests outside FIRMWARE_DIR (conftest.py:207 @ 242a162).
     """
     max_tier = TIERS.index(config.getoption("tier"))
     selectors = getattr(config, "cpr_selectors", {})

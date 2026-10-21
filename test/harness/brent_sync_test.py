@@ -215,7 +215,7 @@ def test_symbol_at_prefers_the_method():
 
 
 @pytest.mark.parametrize("text,hit", [
-    ("after Brent's X, hil_board_utils.py:757 @ cf64e03", ("hil_board_utils.py", "757")),
+    ("after Brent's X, hil_board_utils.py:836 @ 242a162", ("hil_board_utils.py", "836")),
     ("(hil/firmware/conftest.py:252-366 @ cf64e03)", ("hil/firmware/conftest.py", "252")),
     ("api/echo.js:12 @ 9e2e1bf", ("api/echo.js", "12")),
     ("supervisor/shared/safe_mode.c:153 @ 29e9b60", None),  # not one of his file types

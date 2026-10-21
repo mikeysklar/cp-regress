@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT-0
 """lib/catcher.py against a fake ProtoMQ HTTP API on 127.0.0.1 (harness/fakes.py): delivery
 capture, record matching with Brent's expect / assert_none cursor rules (SerialMonitor,
-hil_board_utils.py:973-1059 @ cf64e03), gaps, host stimulus, playback scripts and the jsonl
+hil_board_utils.py:1055-1141 @ 242a162), gaps, host stimulus, playback scripts and the jsonl
 dump. Only cpr/<board>/ topics; nothing goes near Adafruit IO."""
 import json
 import threading

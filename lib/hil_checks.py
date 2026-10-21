@@ -31,7 +31,7 @@ How a crash reaches the USB console:
   want those treated as failures pass python_errors=True.
 
 The serial monitor interface (package A's lib/serialmon.py, after Brent's SerialMonitor,
-hil_board_utils.py:757 @ cf64e03): mon.expect(pattern, timeout), mon.mark(),
+hil_board_utils.py:836 @ 242a162): mon.expect(pattern, timeout), mon.mark(),
 mon.assert_none(pattern, since=None, duration=0). The `serial` fixture (fixtures/console.py)
 now hands out that monitor. The older byte-stream monitor (expect only, mon.repl) is still
 accepted; see assert_no_crash().

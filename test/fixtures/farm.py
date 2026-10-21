@@ -32,7 +32,7 @@ LOCK_WAIT_S = 900
 
 # The sysfs path of a board's hub port: bus-port.port..., e.g. "3-3.2" or "3-3.3.4.1". At least
 # one '.', because Board.power_cycle() splits it into uhubctl's hub (-l) and port (-p). The same
-# idea as Brent's USB_HUB_RE (hil_board_utils.py:546 @ cf64e03), which checks the hub half of
+# idea as Brent's USB_HUB_RE (hil_board_utils.py:589 @ 242a162), which checks the hub half of
 # his {"hub", "port"} location.
 USB_PATH_RE = re.compile(r"^\d+-\d+(\.\d+)+$")
 NAME_RE = re.compile(r"^[A-Za-z0-9_.-]+$")  # used in lock paths, xdist groups and --boards
@@ -90,7 +90,7 @@ def _selectors(name, key, value, test_dir):
 def normalize_selector(s):
     """A run_tests/skip_tests entry relative to test/: trailing '/' and a leading 'test/' go.
 
-    Brent's are relative to his conftest dir (_test_selectors, conftest.py:130 @ cf64e03); ours
+    Brent's are relative to his conftest dir (_test_selectors, conftest.py:173 @ 242a162); ours
     take either "hardware/x_test.py" or the nodeid form "test/hardware/x_test.py".
     """
     s = s.strip().rstrip("/:")
@@ -104,7 +104,7 @@ def validate_board_entry(entry, test_dir=None):
     """Check one [[board]] table. Raises FarmConfigError on the first problem, else returns a
     list of warnings (unknown keys or caps, which may be newer than this check).
 
-    After Brent's validate_board_entry (hil_board_utils.py:552 @ cf64e03), widened to what a
+    After Brent's validate_board_entry (hil_board_utils.py:595 @ 242a162), widened to what a
     farm entry carries: usb path, flash method keys, uhubctl power values, test selectors.
     With test_dir, every run_tests/skip_tests path must exist under it.
     """

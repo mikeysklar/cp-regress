@@ -478,7 +478,7 @@ class Board:
         With confirm_off, the board must drop off the bus within off_timeout seconds of the
         ports going off, or FarmError (after switching them back on): some hubs report a port
         off while VBUS stays up (3-6.3 and 3-6 here), and a board on a battery stays up too.
-        After Brent's power_cycle_board(confirm_off=True), hil_board_utils.py:708 @ eec4238.
+        After Brent's power_cycle_board(confirm_off=True), hil_board_utils.py:751 @ 242a162.
         """
         hubs, stuck = {}, False
         for path in [self.usb] + list(self.power.get("also", [])):

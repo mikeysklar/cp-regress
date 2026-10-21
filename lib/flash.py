@@ -313,7 +313,7 @@ class EspPartition:
 
 def esp_parse_partitions(data):
     """Parse and validate an ESP32 binary partition table (Brent's esp_parse_partitions,
-    hil_board_utils.py:192 @ cf64e03): aa50 entries, an optional ebeb MD5 entry that must
+    hil_board_utils.py:196 @ 242a162): aa50 entries, an optional ebeb MD5 entry that must
     match, 0xFF padding to the end; at least one entry, no zero sizes, no overlaps."""
     if not data or len(data) % ESP_ENTRY_SIZE or len(data) > ESP_MAX_TABLE_SIZE:
         raise FarmError("partition table length %d is not a non-zero multiple of %d up to %#x"
@@ -387,7 +387,7 @@ def _flash_bytes(size):
 
 def esp_check_combined_image(path, chip):
     """0xFF padding up to the chip's bootloader offset, then the 0xE9 image magic: a merged
-    image meant for 0x0 (Brent's esp_check_combined_image, hil_board_utils.py:466 @ cf64e03)."""
+    image meant for 0x0 (Brent's esp_check_combined_image, hil_board_utils.py:509 @ 242a162)."""
     offset = ESP_BOOTLOADER_OFFSETS.get(chip)
     if offset is None:
         raise FarmError("unknown esp chip '%s'" % chip)

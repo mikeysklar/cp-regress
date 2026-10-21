@@ -49,7 +49,7 @@ WIFI_CONNECT_TIMEOUT = 30
 NOT_FOUND_TIMEOUT = 20
 MISSING_SSID = FAKE_SSID_PREFIX + "no-such-network"  # his MISSING_SSID, conftest.py:319
 MISSING_PASSWORD = "cpr-fake-password"
-# His WRONG_WIFI_PASSWORD, conftest.py:322 @ 90cd5af. The connect for it is bounded like the
+# His WRONG_WIFI_PASSWORD, conftest.py:416 @ 242a162. The connect for it is bounded like the
 # missing SSID's: no timeout, so one failure ends it.
 WRONG_WIFI_PASSWORD = "invalidpassword"
 BAD_PASSWORD_TIMEOUT = 20

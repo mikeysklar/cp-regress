@@ -59,7 +59,7 @@ lines, wire the CP2102 RX to the S2's TX (GPIO43 on UART0) and add its by-path t
 The banner and status lines are translated (MP_ERROR_TEXT); the patterns here are for English
 builds.
 
-SerialMonitor below is a minimal local port of Brent's (hil_board_utils.py:757 @ cf64e03). It is
+SerialMonitor below is a minimal local port of Brent's (hil_board_utils.py:836 @ 242a162). It is
 the fallback: monitor_class() returns lib/serialmon.SerialMonitor when that module is importable,
 opened with keep_input=True so pyserial's input flush does not drop the first boot bytes.
 """
@@ -152,7 +152,7 @@ class SerialLine:
 def wait_for_port(board, timeout=15, interval=0.05):
     """Poll until the board's console tty exists and is readable and writable; return its path.
 
-    After Brent's wait_for_port, hil_board_utils.py:716 @ cf64e03: the tty appears before udev
+    After Brent's wait_for_port, hil_board_utils.py:774 @ 242a162: the tty appears before udev
     has given it its group, so wait for access too. The path is looked up again on every poll.
     """
     deadline = time.monotonic() + timeout
@@ -283,7 +283,7 @@ class _Watch(threading.Thread):
 def power_cycle_board(board, delay=3):
     """Cut and restore the board's hub port; return {t0, uhubctl_s, devnum_before, watch}.
 
-    After Brent's power_cycle_board, hil_board_utils.py:708 @ cf64e03, but through
+    After Brent's power_cycle_board, hil_board_utils.py:751 @ 242a162, but through
     farmlib Board.power_cycle: the farm's flock on /tmp/uhubctl.lock, unprivileged uhubctl, and
     the board's own -r/-w. watch.gone / watch.back are time.time() stamps of the tty leaving
     and returning, or None if the watcher missed them (a cycle faster than its poll;
@@ -324,7 +324,7 @@ def monitor_class():
 class SerialMonitor:
     """A console tty captured as timestamped lines on a background thread.
 
-    Minimal local port of Brent's SerialMonitor (hil_board_utils.py:757 @ cf64e03) with the
+    Minimal local port of Brent's SerialMonitor (hil_board_utils.py:836 @ 242a162) with the
     same matching rules: str regexes searched one complete line at a time, a cursor that only
     moves forward, expect() raising SerialTimeout and assert_none() SerialUnexpectedError
     (both AssertionErrors), SerialError when the port drops. Differences for native USB:
@@ -485,7 +485,7 @@ class SerialMonitor:
     def soft_reset(self, timeout=20):
         """Ctrl-D at a synced prompt; return the boot start (the "soft reboot" line's index).
         The cursor moves there, so the next expect() only sees this boot. The farm's stand-in
-        for Brent's board_reset() (hil_board_utils.py:900 @ cf64e03)."""
+        for Brent's board_reset() (hil_board_utils.py:979 @ 242a162)."""
         self.prompt(timeout=timeout)
         start = self.mark()
         self.write(b"\x04")
@@ -499,7 +499,7 @@ class SerialMonitor:
     def port_reset(self, board, delay=3, timeout=60):
         """Power-cycle the board, wait for its tty, reopen; return the boot start.
 
-        After Brent's port_reset, hil_board_utils.py:934 @ cf64e03. The tty may come back under
+        After Brent's port_reset, hil_board_utils.py:1013 @ 242a162. The tty may come back under
         another name; self.port is updated. The first lines of the boot are lost (see the module
         docstring). Raises FarmError, PortError, or SerialError.
         """

@@ -20,7 +20,7 @@ AST, so comment and formatting changes do not count); ProtoMQ HTTP routes and JS
 
 A changed symbol is UNMAPPED when no row in the mapping or not-ported tables matches it. A
 new symbol that only matches a wildcard or file-level row is listed as "new" so someone
-confirms the row still fits. Citations like "hil_board_utils.py:757 @ cf64e03" anywhere in
+confirms the row still fits. Citations like "hil_board_utils.py:836 @ 242a162" anywhere in
 this repo are checked too: a cited symbol that changed or moved is reported with its new line.
 
 Read-only against GitHub: gh api GETs, git clone/fetch. Nothing is pushed or commented. The

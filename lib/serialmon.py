@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT-0
 """Console capture for one board: lines on a background thread, expect() / assert_none() on them.
 
-After Brent's SerialMonitor (hil_board_utils.py:738-1083 @ cf64e03, from his 9c5e6ac6 and
+After Brent's SerialMonitor (hil_board_utils.py:817-1165 @ 242a162, from his 9c5e6ac6 and
 3ca8a507). Same names and shapes, so his tests read the same here: SerialLine, mark(), boot,
 expect(), assert_none(), lines(), output, dump(), and his error split (SerialError for a lost
 port; SerialTimeout / SerialUnexpectedError are AssertionErrors, so pytest counts them as test
@@ -365,7 +365,7 @@ class SerialMonitor:
             self._partial_time = (now, mono)
         self._partial += data
         # Split at each newline, and at SERIAL_MAX_LINE bytes when no newline comes first.
-        # Brent's (hil_board_utils.py:870-876 @ cf64e03) checks the limit once, after the
+        # Brent's (hil_board_utils.py:949-955 @ 242a162) checks the limit once, after the
         # newlines: one read can bring several limits' worth (pyserial reads all of
         # in_waiting), and a long run that ends in a newline is never split, so a line could
         # grow well past the limit.
@@ -564,7 +564,7 @@ class SerialMonitor:
         """Power-cycle the board's hub port, wait for the console to re-enumerate, reopen it, and
         return the boot start (the cursor moves there). delay is how long power stays off.
 
-        After Brent's port_reset (hil_board_utils.py:934 @ cf64e03), but through
+        After Brent's port_reset (hil_board_utils.py:1013 @ 242a162), but through
         Board.power_cycle(): unprivileged uhubctl, serialized with the farm's other cycles by
         flock, with this board's -r/-w from farm.toml. Never sudo, no port cache. As with his,
         the first lines of the boot can be missed. confirm_off: FarmError unless the board

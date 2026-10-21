@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: 2026 Mikey Sklar
 # SPDX-License-Identifier: MIT-0
 """farm.toml validation (fixtures/farm.py, after Brent's validate_board_entry,
-hil_board_utils.py:552 @ cf64e03) and the per-board run_tests / skip_tests selection in the
-root conftest.py (his _test_selectors / _matches, conftest.py:130-180 @ cf64e03). Direct
+hil_board_utils.py:595 @ 242a162) and the per-board run_tests / skip_tests selection in the
+root conftest.py (his _test_selectors / _matches, conftest.py:173-223 @ 242a162). Direct
 function calls plus one `pytest --list-boards` subprocess, which reads sysfs and nothing else."""
 import copy
 import os
