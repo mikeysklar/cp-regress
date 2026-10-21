@@ -143,6 +143,62 @@ dns_tests = ["hardware/perf_core_test.py"]
 flash = { method = "swd", probe = "E6647C740327322C", target = "target/stm32f4x.cfg", speed = 1000, connect = "reset halt", bin_base = "0x08000000" }
 wiring = {}
 
+# ---- dev hub 3-6: boards with no native USB, and newer chips. They run whatever build is on
+# them (no flash method yet), so --firmware runs leave them out.
+
+[[board]]
+name = "feather_esp32c6"
+board_id = "adafruit_feather_esp32c6_4mbflash_nopsram"
+usb = "3-6.3.1"
+port = "espressif"
+caps = ["wifi", "ble", "reset_ok"]
+fs = "web"
+power = { r = 80, w = 300, settle = 15 }
+notes = "No native USB: console on the USB-JTAG/serial unit, files over the web workflow."
+wiring = {}
+
+[[board]]
+name = "esp32c5_devkitc"
+board_id = "espressif_esp32c5_devkitc_1_n8r8"
+usb = "3-6.4.3"
+port = "espressif"
+caps = ["wifi", "ble", "reset_ok"]
+fs = "web"
+power = { r = 80, w = 300, settle = 15 }
+notes = "No native USB: console on the USB-JTAG/serial port; its UART port (3-6.4.4) also powers it."
+wiring = {}
+
+[[board]]
+name = "korvo_esp32s31"
+board_id = "espressif_esp32s31_korvo_1"
+usb = "3-6.4.2"
+port = "espressif"
+caps = ["reset_ok"]
+fs = "repl"
+power = { r = 30, w = 500, settle = 15 }
+notes = "Console on the CP2102N (UART0). No wifi module in this build."
+wiring = {}
+
+[[board]]
+name = "p4gpio"
+board_id = "adafruit_p4gpio"
+usb = "3-6.3.4.4"
+port = "espressif"
+caps = ["native_usb", "reset_ok"]
+power = { r = 80, w = 300, settle = 15 }
+notes = "ESP32-P4, native USB on the high-speed port; its USB-JTAG unit is 3-6.3.4.3. No wifi module."
+wiring = {}
+
+[[board]]
+name = "nrf54lm20dk"
+board_id = "nordic_nrf54lm20dk"
+usb = "3-6.1.1"
+port = "zephyr-cp"
+caps = ["native_usb", "ble", "reset_ok"]
+power = { r = 30, w = 500, settle = 15 }
+notes = "zephyr-cp build. Its J-Link OB is not on this USB path."
+wiring = {}
+
 # Example wiring once jumpers are added (uncomment and adjust per board):
 # wiring = { gpio_pair = ["D5", "D6"], uart_loop = ["TX", "RX"], spi_loop = ["MOSI", "MISO"],
 #            pwm_count = ["D9", "D10"], i2c_sensor = "0x77", dac_adc = ["A0", "A1"],

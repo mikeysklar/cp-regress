@@ -120,6 +120,12 @@ FARM_TABLE = {
     "metro_rp2350": (0x10000000, False),
     "metro_esp32s3": (None, True),
     "feather_stm32f405": ("bin", True),        # ROM bootloader; bank 0 from 0x08000000
+    # dev hub boards: no flash method yet, so never erased
+    "feather_esp32c6": (None, False),
+    "esp32c5_devkitc": (None, False),
+    "korvo_esp32s31": (None, False),
+    "p4gpio": (None, False),
+    "nrf54lm20dk": (None, False),
 }
 
 
