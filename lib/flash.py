@@ -831,6 +831,16 @@ def rescue_swd(board, log):
     _openocd(board, board.flash["rescue_speed"], ["init", "reset run", "exit"], log, timeout=60)
 
 
+def swd_reset(board, log=lambda s: None):
+    """Reset over the board's probe, for a board a VBUS cycle does not bring back (the M4
+    AirLift was off the bus until init; reset run, 2026-10-20). True when openocd ran clean.
+    Never erases or writes, so it is safe on every swd board, nRF52840 included."""
+    if board.flash.get("method") != "swd":
+        return False
+    speed = board.flash.get("rescue_speed") or board.flash.get("speed", 1000)
+    return _openocd(board, speed, ["init", "reset run", "exit"], log, timeout=60).returncode == 0
+
+
 METHODS = {"uf2": flash_uf2, "esp_uf2": flash_esp_uf2, "swd": flash_swd}
 
 

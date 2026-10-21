@@ -96,6 +96,46 @@ def test_device_run_stops_when_recovery_fails(health):  # pylint: disable=unused
     assert res.crashed and b.runs == 1 and "power cycle: no tty" in res.crashed
 
 
+class SwdBoard(FlakyBoard):
+    """A FlakyBoard with a probe; `swd_good` says whether the SWD reset brings it back."""
+
+    def __init__(self, swd_good, **kw):
+        super().__init__(**kw)
+        self.flash = {"method": "swd"}
+        self.swd_good, self.swd_resets = swd_good, 0
+
+
+@pytest.fixture
+def swd(monkeypatch):
+    import flash as cpr_flash  # pylint: disable=import-outside-toplevel
+
+    def fake_reset(b, log=None):  # pylint: disable=unused-argument
+        b.swd_resets += 1
+        if b.swd_good:
+            b.good.add(b.cycles)
+        return True
+    monkeypatch.setattr(cpr_flash, "swd_reset", fake_reset)
+
+
+def test_recover_falls_back_to_an_swd_reset(health, swd):  # pylint: disable=unused-argument
+    b = SwdBoard(swd_good=True)
+    ok, why = cpr_run.recover(b)
+    assert ok and b.cycles == 1 and b.swd_resets == 1
+    assert why.startswith("healthy after an SWD reset")
+
+
+def test_recover_reports_a_failed_swd_reset(health, swd):  # pylint: disable=unused-argument
+    b = SwdBoard(swd_good=False)
+    ok, why = cpr_run.recover(b)
+    assert not ok and b.swd_resets == 1 and "after an SWD reset: no tty" in why
+
+
+def test_recover_needs_no_swd_reset_when_power_works(health, swd):  # pylint: disable=unused-argument
+    b = SwdBoard(swd_good=True, good={1})
+    assert cpr_run.recover(b) == (True, "")
+    assert b.swd_resets == 0
+
+
 @pytest.mark.parametrize("value", [0, -1, True, "3"])
 def test_tries_must_be_a_positive_integer(value):
     entry = {"name": "b", "board_id": "x", "usb": "3-3.2", "port": "stm", "caps": [],

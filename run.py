@@ -234,12 +234,26 @@ def recover(board):
             board.power_cycle()
             time.sleep(board.power.get("settle", 12))
         except Exception as e:  # noqa: BLE001
-            return False, "; ".join(whys + ["power cycle: %s" % e])
+            whys.append("power cycle: %s" % e)
+            break
         ok, why = board_health(board)
         if ok:
             return True, ("healthy after %d power cycles (%s)" % (len(whys) + 1, "; ".join(whys))
                           if whys else "")
         whys.append(why)
+    # A VBUS cycle does not reset every board (the M4 AirLift sat off the bus until an SWD
+    # init; reset run): the probe is the last rung, for boards that have one.
+    if (getattr(board, "flash", None) or {}).get("method") == "swd":
+        import flash as cpr_flash  # noqa: PLC0415  (pulls in openocd paths only when needed)
+        try:
+            ran = cpr_flash.swd_reset(board)
+        except Exception as e:  # noqa: BLE001
+            return False, "; ".join(whys + ["swd reset: %s" % e])
+        time.sleep(board.power.get("settle", 12))
+        ok, why = board_health(board)
+        if ok:
+            return True, "healthy after an SWD reset (%s)" % "; ".join(whys)
+        whys.append("after an SWD reset%s: %s" % ("" if ran else " (openocd failed)", why))
     return False, "; ".join(whys)
 
 
