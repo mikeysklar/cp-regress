@@ -496,16 +496,30 @@ class SerialMonitor:
         self.prompt()  # may recover the port, and with it the board's devnum
         devnum = self.board.devnum()
         self._event("hard reset (microcontroller.reset())")
+        with self._cond:
+            before = len(self._lines)
         try:
             self.write(b"import microcontroller; microcontroller.reset()\r\n")
         except SerialError:
             pass  # the port can vanish under the write; the wait below decides
+        # Without CircuitPython's own USB the console is a USB-JTAG unit, a probe's CDC or a
+        # UART bridge, and it stays on the bus through the reset (Feather ESP32-C6: ESP-ROM
+        # banner 36 ms after the write, same devnum). There the boot is the first line after
+        # the echoed command.
+        stays = "native_usb" not in getattr(self.board, "caps", {"native_usb"})
         end = time.monotonic() + 10
         while True:
             with self._cond:
                 gone = self._error is not None
+                after = [l for l in self._lines[before:]
+                         if l.text.strip() and "microcontroller.reset()" not in l.text]
             if gone or not self.board.present() or self.board.devnum() != devnum:
                 break
+            if stays and after:
+                with self._cond:
+                    self._boot = self._cursor = after[0].index
+                self._event("reset seen on the open console (it stays on USB)")
+                return self._boot
             if time.monotonic() >= end:
                 raise SerialError("%s: still on USB 10 s after microcontroller.reset()"
                                   % self._name())
