@@ -159,7 +159,12 @@ port = "espressif"
 caps = ["wifi", "ble", "reset_ok"]
 fs = "web"
 power = { r = 80, w = 300, settle = 15 }
-notes = "No native USB: console on the USB-JTAG/serial unit, files over the web workflow."
+notes = "No native USB: console on the USB-JTAG/serial unit, files over the web workflow. A LiPo is plugged in (MAX17048 VCELL 4.12 V), so no USB power cut resets it."
+# 2026-10-20: the console's output runs one write behind (each reply arrives with the next
+# input), and it survives microcontroller.reset(), an RTS reset, a watchdog reset and cuts on
+# 3-6.3 and 3-6 (uptime kept counting: the LiPo). Until the LiPo is unplugged for a real
+# power-on reset, nothing here can start reliably.
+dns_tests = ["hardware/"]
 wiring = {}
 
 [[board]]
