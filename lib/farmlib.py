@@ -779,11 +779,17 @@ class Repl:
         self.read_until(b"raw REPL; CTRL-B to exit\r\n>", timeout=self.raw_repl_wait())
         end = time.time() + timeout
         outs, err = [], ""
+        # A UART console has no flow control, and the board drains its receive FIFO only now
+        # and then: the S31 Korvo-1 garbled a 421-byte script 2 of 6 times at 4 KB/s and at
+        # 2 KB/s, never at 1 KB/s (6 of 6). So console_baud boards get about baud/144 bytes a
+        # second (800 at 115200), in 32-byte writes.
+        baud = getattr(self.board, "console_baud", None)
+        step, pause = (32, 32 * 144.0 / baud) if baud else (256, 0.01)
         for code in pieces:
             data = code.encode() if isinstance(code, str) else code
-            for i in range(0, len(data), 256):
-                self.write(data[i:i + 256])
-                time.sleep(0.01)
+            for i in range(0, len(data), step):
+                self.write(data[i:i + step])
+                time.sleep(pause)
             self.write(b"\x04")
             self.read_until(b"OK", timeout=10)
             out = self.read_until(b"\x04", timeout=max(5, end - time.time()))
