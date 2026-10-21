@@ -68,3 +68,8 @@ def test_build_keeps_the_placeholder_order():
     for rx, en in table["format"]:
         text = re.sub(rx, en, text)
     assert text == '  File "code.py", line 5, in <module>'
+
+
+def test_normalize_folds_the_s31_extra_cr():
+    assert cpstrings.normalize(b"print(7)\r\n7\r\r\n>>> ") == b"print(7)\r\n7\r\n>>> "
+    assert cpstrings.normalize("ソフトリブート\r\r\n") == "soft reboot\r\n"

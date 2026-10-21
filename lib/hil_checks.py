@@ -42,7 +42,7 @@ import re
 import time
 from dataclasses import dataclass
 
-from cpstrings import to_english
+from cpstrings import normalize
 
 # --- Brent's constants, his names and values (hil_checks.py:7-15 @ cf64e03) ---------------------
 
@@ -237,7 +237,7 @@ class Banner:
 
 def _text(s):
     """str in English: a translated build's supervisor lines are mapped back (cpstrings)."""
-    return to_english(s.decode(errors="replace") if isinstance(s, (bytes, bytearray)) else s)
+    return normalize(s.decode(errors="replace") if isinstance(s, (bytes, bytearray)) else s)
 
 
 def parse_banner(text):

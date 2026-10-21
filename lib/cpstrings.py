@@ -28,6 +28,15 @@ def _load():
     return _table
 
 
+def normalize(text):
+    """to_english(), and "\r\r\n" line ends folded to "\r\n": the ESP32-S31 Korvo-1 build
+    (11.0.0-alpha.1-140) ends every console line with an extra CR ("42\r\r\n")."""
+    text = to_english(text)
+    if isinstance(text, (bytes, bytearray)):
+        return bytes(text).replace(b"\r\r\n", b"\r\n")
+    return text.replace("\r\r\n", "\r\n")
+
+
 def to_english(text):
     """text (str or bytes) with known translations replaced by the English; same type back."""
     if isinstance(text, (bytes, bytearray)):

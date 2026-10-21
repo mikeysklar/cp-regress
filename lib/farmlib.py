@@ -702,7 +702,7 @@ class Repl:
         buf = self.pending
         end = time.time() + timeout
         while True:
-            buf = bytearray(cpstrings.to_english(buf))  # a translated build's supervisor lines
+            buf = bytearray(cpstrings.normalize(buf))  # translated lines, extra CRs
             i = buf.find(token)
             if i >= 0:
                 cut = i + len(token)
@@ -719,7 +719,7 @@ class Repl:
         end = time.time() + seconds
         while time.time() < end:
             buf += self._pull()
-        return cpstrings.to_english(bytes(buf))
+        return cpstrings.normalize(bytes(buf))
 
     def drain(self, quiet=0.3, limit=3):
         self.pending = bytearray()
@@ -752,7 +752,7 @@ class Repl:
                 continue
             start = len(self.transcript)
             self.drain(quiet=0.5, limit=2)
-            later = cpstrings.to_english(bytes(self.transcript[start:]))
+            later = cpstrings.normalize(bytes(self.transcript[start:]))
             if b"soft reboot" in later or b"Press any key" in later or b"Code done" in later:
                 continue
             return

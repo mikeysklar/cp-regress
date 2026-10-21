@@ -17,6 +17,9 @@ pytestmark = [
 
 PASTE_LINES = 75           # about 4 KB pasted (#417 broke pastes over 128 chars)
 LARGE_LINES = 2000         # 2000 x 100 chars = about 200 KB of output (#2686, #1630)
+# A UART console (console_baud) gets 500: the S31 Korvo-1 prints about 1 KB/s, so 2000 lines
+# would take over 3 minutes. 50 KB is still far past the #2686/#1630 stalls.
+UART_LARGE_LINES = 500
 
 
 def _paste_block():
@@ -82,11 +85,25 @@ def test_paste_4k(repl):
     repl.prompt()
     repl.write(b"\x05")
     repl.read_until(b"paste mode; Ctrl-C to cancel, Ctrl-D to finish", timeout=5)
-    # Read the echo as we go, like a terminal does, so it never backs up.
-    for i in range(0, len(block), 256):
-        repl.write(block[i:i + 256])
-        time.sleep(0.02)
-        repl.pending += repl._pull()  # pylint: disable=protected-access
+    if getattr(repl.board, "console_baud", None):
+        # A UART console has no flow control, and the board echoes every pasted line: on the
+        # S31 Korvo-1 the echo runs at about 1 KB/s, so input piled up and was lost even at
+        # 2/3 of the line rate. Send a line, then wait for the echo to finish (0.3 s quiet),
+        # like a person at a terminal. Not for "=== ": that build does not print it every line.
+        for line in block.splitlines(keepends=True):
+            repl.write(line)
+            last, end = time.time(), time.time() + 10
+            while time.time() < end and time.time() - last < 0.3:
+                chunk = repl._pull()  # pylint: disable=protected-access
+                if chunk:
+                    repl.pending += chunk
+                    last = time.time()
+    else:
+        # Read the echo as we go, like a terminal does, so it never backs up.
+        for i in range(0, len(block), 256):
+            repl.write(block[i:i + 256])
+            time.sleep(0.02)
+            repl.pending += repl._pull()  # pylint: disable=protected-access
     repl.write(b"\x04")
     want = ("PASTE_RESULT %d" % expect).encode()
     out = repl.read_until(b">>> ", timeout=15)
@@ -94,11 +111,16 @@ def test_paste_4k(repl):
     assert want in out, "expected %r; tail %r" % (want, out[-120:])
 
 
+def _large_lines(repl):
+    return UART_LARGE_LINES if getattr(repl.board, "console_baud", None) else LARGE_LINES
+
+
 @pytest.fixture(scope="module")
 def large_output(repl):
     """2000 lines of 100 chars from the raw REPL: (line numbers, stdout, stderr, seconds)."""
     repl.prompt()
-    body = "for i in range(%d):\n    print('L%%05d ' %% i + 'x' * 93)\n" % LARGE_LINES
+    lines = _large_lines(repl)
+    body = "for i in range(%d):\n    print('L%%05d ' %% i + 'x' * 93)\n" % lines
     t0 = time.time()
     out, err = repl.exec_raw(body, timeout=120)
     dt = max(time.time() - t0, 1e-6)
@@ -106,10 +128,10 @@ def large_output(repl):
     return nums, out, err, dt
 
 
-def test_large_output_count(large_output):
-    """Every one of the 2000 lines arrives."""
-    nums = large_output[0]
-    assert len(nums) == LARGE_LINES, "got %d/%d lines" % (len(nums), LARGE_LINES)
+def test_large_output_count(large_output, repl):
+    """Every one of the 2000 lines arrives (500 on a UART console)."""
+    nums, want = large_output[0], _large_lines(repl)
+    assert len(nums) == want, "got %d/%d lines" % (len(nums), want)
 
 
 def test_large_output_order(large_output):
