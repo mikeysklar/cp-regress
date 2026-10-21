@@ -204,6 +204,17 @@ power = { r = 30, w = 500, settle = 15 }
 notes = "zephyr-cp build. Its J-Link OB is not on this USB path."
 wiring = {}
 
+[[board]]
+name = "siwx917_dk2605a"
+board_id = "silabs_siwx917_dk2605a"
+usb = "3-6.1.3"
+port = "zephyr-cp"
+caps = ["wifi", "ble", "reset_ok"]
+fs = "repl"
+power = { r = 30, w = 500, settle = 15 }
+notes = "zephyr-cp. usb is its J-Link OB: console on the OB's CDC, which stays on the bus through a reset. LittleFS, no drive."
+wiring = {}
+
 # Example wiring once jumpers are added (uncomment and adjust per board):
 # wiring = { gpio_pair = ["D5", "D6"], uart_loop = ["TX", "RX"], spi_loop = ["MOSI", "MISO"],
 #            pwm_count = ["D9", "D10"], i2c_sensor = "0x77", dac_adc = ["A0", "A1"],

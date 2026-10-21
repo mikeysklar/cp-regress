@@ -126,6 +126,7 @@ FARM_TABLE = {
     "korvo_esp32s31": (None, False),
     "p4gpio": (None, False),
     "nrf54lm20dk": (None, False),
+    "siwx917_dk2605a": (None, False),
 }
 
 
