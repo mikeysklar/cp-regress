@@ -505,6 +505,13 @@ class Board:
     def repl(self, iface=0):
         return Repl(self, iface)
 
+    def repl_reset(self):
+        """microcontroller.reset() from a synced friendly prompt; returns once it is sent."""
+        with self.repl() as r:
+            r.prompt()
+            r.write(b"import microcontroller; microcontroller.reset()\r\n")
+            time.sleep(0.5)
+
     def add_missing_settings(self):
         """Append the farm.toml settings keys settings.toml does not set. Returns the keys
         added. Only adds: a key the file already has is left as it is."""
@@ -678,7 +685,7 @@ class Repl:
         end = time.time() + seconds
         while time.time() < end:
             buf += self._pull()
-        return bytes(buf)
+        return cpstrings.to_english(bytes(buf))
 
     def drain(self, quiet=0.3, limit=3):
         self.pending = bytearray()
@@ -696,7 +703,14 @@ class Repl:
         end = time.time() + timeout
         tail = b""
         while time.time() < end:
-            self.write(b"\r\x03\x03")
+            try:
+                self.write(b"\r\x03\x03")
+            except serial.SerialTimeoutException as e:
+                # An ESP32 USB-JTAG console takes no input while the chip boots (Feather
+                # ESP32-C6: 2.6 s to 10 s after a reset): poke again until the deadline.
+                tail = str(e).encode()
+                time.sleep(0.5)
+                continue
             try:
                 self.read_until(b">>> ", timeout=1.5)
             except FarmError as e:

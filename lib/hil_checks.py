@@ -371,7 +371,12 @@ def expect_identity(mon_or_board, board, expect_version=None, timeout=20, poke=F
     if mon_or_board is not board and hasattr(mon_or_board, "expect"):
         console = expect_banner(mon_or_board, timeout=timeout, poke=poke)
     try:
-        boot = parse_boot_out(board.boot_out())
+        if console is not None and getattr(board, "fs", "drive") != "drive":
+            # No drive, so boot_out() asks the REPL, but the monitor's reader holds the tty
+            # and would take the answer: ask through the monitor.
+            boot = parse_boot_out(_boot_out_over_console(mon_or_board, timeout))
+        else:
+            boot = parse_boot_out(board.boot_out())
     except Exception as e:  # pylint: disable=broad-except
         # farmlib.FarmError when the drive holds a different board's boot_out.txt
         pytest.fail("%s: boot_out.txt: %s: %s" % (board.name, type(e).__name__, e),
@@ -391,6 +396,17 @@ def expect_identity(mon_or_board, board, expect_version=None, timeout=20, poke=F
     if problems:
         pytest.fail("%s: %s" % (board.name, "; ".join(problems)), pytrace=False)
     return Identity(boot.board_id, version, boot.banner, console, boot.uid)
+
+
+def _boot_out_over_console(mon, timeout=20):
+    """boot_out.txt as the board reads it, through an open serial monitor. Each line comes
+    back prefixed, and the end marker is built on the board, so the echo cannot match."""
+    start = mon.mark()
+    mon.send("print('\\n'.join('CPR' + 'BO|' + l for l in "
+             "open('/boot_out.txt').read().splitlines() + ['END']))")
+    mon.expect(re.compile(r"^CPRBO\|END$"), timeout=timeout)
+    lines = [l.text[len("CPRBO|"):] for l in mon.lines(since=start) if l.text.startswith("CPRBO|")]
+    return "\n".join(lines[:-1]) + "\n"
 
 
 # --- Crash watch ----------------------------------------------------------------------------

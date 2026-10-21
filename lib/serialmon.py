@@ -67,6 +67,12 @@ class SerialError(FarmError):
     """The port could not be opened, or dropped and did not come back. A test error."""
 
 
+class SerialWriteTimeout(SerialError):
+    """A write did not go out within write_timeout. The port is still there: an ESP32 USB-JTAG
+    console takes no input while the chip boots (Feather ESP32-C6: 2.6 s to 10 s after a
+    reset, 3 of 3), so the caller may poke again."""
+
+
 class SerialTimeout(SerialError, AssertionError):
     """expect() saw no matching line (or the board gave no prompt); a test failure."""
 
@@ -391,7 +397,9 @@ class SerialMonitor:
         # write_timeout raises SerialTimeoutException; flush() is a bare tcdrain(), which raises
         # termios.error (not an OSError) when the board resets under it
         except (OSError, AttributeError, termios.error) as e:
-            raise SerialError("%s: write failed: %s" % (self._name(), e)) from e
+            kind = (SerialWriteTimeout if serial is not None
+                    and isinstance(e, serial.SerialTimeoutException) else SerialError)
+            raise kind("%s: write failed: %s" % (self._name(), e)) from e
 
     def _raw_mark(self):
         with self._cond:
@@ -444,6 +452,9 @@ class SerialMonitor:
             sent = self._raw_mark()
             try:
                 self.write(b"\r\x03\x03")
+            except SerialWriteTimeout:
+                time.sleep(0.5)  # booting; it takes input again once the console runs
+                continue
             except SerialError:
                 if not self.reopen:
                     raise

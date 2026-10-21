@@ -237,6 +237,17 @@ def recover(board):
             whys.append("settings: %s" % e)
     if added:  # the S31 Korvo-1 sits in safe mode until CIRCUITPY_SAFE_MODE_DELAY is there
         whys.append("added %s to settings.toml" % ", ".join(added))
+        # A reset from the REPL first: cutting the S31's CP2102N port does not reset the board.
+        if "reset_ok" in board.caps:
+            try:
+                board.repl_reset()
+                time.sleep(board.power.get("settle", 12))
+                ok, why = board_health(board)
+                if ok:
+                    return True, "healthy after a REPL reset (%s)" % "; ".join(whys)
+                whys.append("after a REPL reset: %s" % why)
+            except Exception as e:  # noqa: BLE001
+                whys.append("REPL reset: %s" % e)
     for n in range(1, tries + 1):
         try:
             board.power_cycle()

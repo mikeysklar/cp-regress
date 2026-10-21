@@ -146,6 +146,7 @@ def test_tries_must_be_a_positive_integer(value):
 
 def test_recover_adds_the_board_settings_first(health):  # pylint: disable=unused-argument
     b = FlakyBoard(good={1})
+    b.caps = set()
     b.settings = {"CIRCUITPY_SAFE_MODE_DELAY": 0}
     b.add_missing_settings = lambda: ["CIRCUITPY_SAFE_MODE_DELAY"]
     ok, why = cpr_run.recover(b)
@@ -163,3 +164,13 @@ def test_add_missing_settings_only_adds(monkeypatch):
     assert b.add_missing_settings() == ["B", "CIRCUITPY_SAFE_MODE_DELAY"]
     assert files["settings.toml"] == b'A = "keep"\nB = true\nCIRCUITPY_SAFE_MODE_DELAY = 0\n'
     assert b.add_missing_settings() == []
+
+
+def test_recover_resets_over_the_repl_after_adding_settings(health):  # pylint: disable=unused-argument
+    b = FlakyBoard(good={0})  # healthy once reset, with no power cycle
+    b.caps = {"reset_ok"}
+    b.settings = {"CIRCUITPY_SAFE_MODE_DELAY": 0}
+    b.add_missing_settings = lambda: ["CIRCUITPY_SAFE_MODE_DELAY"]
+    b.repl_reset = lambda: None
+    ok, why = cpr_run.recover(b)
+    assert ok and b.cycles == 0 and why.startswith("healthy after a REPL reset")
