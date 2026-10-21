@@ -229,6 +229,11 @@ fs = "repl"
 console_baud = 115200
 power = { r = 30, w = 500, settle = 15 }
 notes = "zephyr-cp. usb is its J-Link OB: console on the OB's CDC, which stays on the bus through a reset. LittleFS, no drive."
+# Build 11.0.0-alpha.1-78-g5474786a3f-dirty: growing a heap block past a few KB corrupts memory
+# (fresh boot: 800 list.append()s fine, 2000 raise AttributeError "'list' object has no attribute
+# 'LED'"; a 300-key dict or 250 names in one compile hang). These modules need such blocks.
+dns_tests = ["hardware/perf_core_test.py", "hardware/settings_toml_test.py",
+             "hardware/displayio_headless_test.py"]
 wiring = {}
 
 # Example wiring once jumpers are added (uncomment and adjust per board):

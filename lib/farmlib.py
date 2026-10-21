@@ -805,9 +805,12 @@ class Repl:
 
         On boards with the "small" cap (SAMD21) the source is sent in pieces of whole
         top-level statements within one raw REPL session: buffering and compiling 7 KB at once
-        does not fit the heap. A board whose console is a UART (console_baud) gets pieces too:
-        the SiWx917 DK garbled or lost raw REPL input past about 1.6 KB in one go, paced or not,
-        while pieces of about 1 KB (put_file's) came through every time.
+        does not fit the heap. A board whose console is a UART (console_baud) gets pieces too.
+        On the SiWx917 DK one paste past about 1.6 KB came back as a SyntaxError or never
+        finished, while ~1 KB pieces always worked. The cause turned out to be on the board
+        (growing a heap block past a few KB corrupts memory: 2000 list.append()s raised
+        AttributeError 'list' has no 'LED'), and the raw REPL's input buffer is such a block;
+        small pieces keep it small.
         """
         small = "small" in getattr(self.board, "caps", ())
         if not small and not getattr(self.board, "console_baud", None):
