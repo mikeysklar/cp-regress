@@ -270,14 +270,28 @@ def expect_banner(mon, timeout=20, poke=False):
     the test's own Act step must lead to the REPL.
     """
     __tracebackhide__ = True  # pylint: disable=unused-variable
-    if poke:
-        _write(mon, b"\x03")
-        time.sleep(0.3)
-        _write(mon, b"\r")
-        time.sleep(0.3)
-        _write(mon, b"\x02")
     pattern = BANNER_RE if _is_line_monitor(mon) else BANNER_STREAM_RE
-    m = mon.expect(pattern, timeout=timeout)
+    if not poke:
+        m = mon.expect(pattern, timeout=timeout)
+    else:
+        # Poke until the banner shows. An ESP32 USB-JTAG console takes no input while the chip
+        # boots (ESP32-C5/C6: writes time out for about 7 s after a reset), so a single poke
+        # sent then is lost, and its write timeout is no failure.
+        deadline = time.monotonic() + timeout
+        while True:
+            for key in (b"\x03", b"\r", b"\x02"):
+                try:
+                    _write(mon, key)
+                except Exception as e:  # pylint: disable=broad-except
+                    if "Timeout" not in type(e).__name__:
+                        raise
+                time.sleep(0.3)
+            try:
+                m = mon.expect(pattern, timeout=min(4, max(0.5, deadline - time.monotonic())))
+                break
+            except AssertionError:
+                if time.monotonic() >= deadline:
+                    raise
     banner = parse_banner(_text(m.group(0)))
     assert banner is not None, "banner matched but did not parse: %r" % m.group(0)
     return banner

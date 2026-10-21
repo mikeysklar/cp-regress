@@ -532,10 +532,28 @@ class SerialMonitor:
                 self._event("reset seen on the open console (it stays on USB)")
                 return self._boot
             if time.monotonic() >= end:
+                if stays and self._uptime_after_reset() is not None:
+                    # A board that prints nothing at boot (the SiWx917 DK with the farm's idle
+                    # code.py): its uptime says it reset.
+                    with self._cond:
+                        self._boot = self._cursor = before
+                    self._event("reset confirmed by uptime (console stays on USB, quiet boot)")
+                    return self._boot
                 raise SerialError("%s: still on USB 10 s after microcontroller.reset()"
                                   % self._name())
             time.sleep(0.05)
         return self._reopen_after_reset(timeout)
+
+    def _uptime_after_reset(self, limit=30):
+        """time.monotonic() from the board when it is under limit seconds, else None."""
+        try:
+            start = self.mark()
+            self.send("import time; print('CPR' + 'UP', time.monotonic())")
+            m = self._wait_line(self._compile(r"^CPRUP ([0-9.]+)"), start, 10)[1]
+            up = float(m.group(1))
+        except (SerialError, ValueError):
+            return None
+        return up if up < limit else None
 
     def port_reset(self, delay=3, timeout=None):
         """Power-cycle the board's hub port, wait for the console to re-enumerate, reopen it, and
