@@ -736,13 +736,17 @@ class Repl:
         # left to wake it. The first keystroke there is eaten, so each poke sends several.
         end = time.time() + timeout
         tail = b""
+        extended = False
         while time.time() < end:
             try:
                 self.write(b"\r\x03\x03")
             except serial.SerialTimeoutException as e:
                 # An ESP32 USB-JTAG console takes no input while the chip boots (Feather
-                # ESP32-C6: 2.6 s to 10 s after a reset): poke again until the deadline.
+                # ESP32-C6: 2.6 s to 10 s after a reset) or sits in a blocking WiFi join (the
+                # ESP32-C5 took 18 s from reset to code.py): poke again, with 25 s more once.
                 tail = str(e).encode()
+                if not extended:
+                    end, extended = end + 25, True
                 time.sleep(0.5)
                 continue
             try:

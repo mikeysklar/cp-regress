@@ -448,12 +448,17 @@ class SerialMonitor:
         self._check_open()
         start = self.mark()
         deadline = time.monotonic() + timeout
+        extended = False
         while time.monotonic() < deadline:
             sent = self._raw_mark()
             try:
                 self.write(b"\r\x03\x03")
             except SerialWriteTimeout:
-                time.sleep(0.5)  # booting; it takes input again once the console runs
+                # booting or in a blocking WiFi join (ESP32-C5: 18 s from reset to code.py);
+                # it takes input again once the console runs, so 25 s more, once
+                if not extended:
+                    deadline, extended = deadline + 25, True
+                time.sleep(0.5)
                 continue
             except SerialError:
                 if not self.reopen:

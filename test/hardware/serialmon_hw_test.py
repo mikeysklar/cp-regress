@@ -96,7 +96,9 @@ def test_hard_reset_reopens(board, serial):
     boot = serial.hard_reset()
     took = time.monotonic() - t0
     assert boot == serial.boot
-    hil_checks.expect_banner(serial, poke=True)
+    # A WiFi board joins before code.py, and a USB-JTAG one takes no input meanwhile
+    # (ESP32-C5: 18 s from the reset to code.py): 40 s for the banner there.
+    hil_checks.expect_banner(serial, poke=True, timeout=40 if "wifi" in board.caps else 20)
     serial.assert_none(hil_checks.CRASH_RE, duration=hil_checks.CRASH_WINDOW)
     assert took < 60 + board.power.get("settle", 12), "reopen took %.1f s" % took
 
