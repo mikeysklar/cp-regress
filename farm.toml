@@ -180,6 +180,10 @@ fs = "web"
 # write 10 s after that timed out, so a longer settle.
 power = { r = 80, w = 300, settle = 20, also = ["3-6.4.4"] }
 notes = "No native USB: console on the USB-JTAG/serial port; its UART port (3-6.4.4) also powers it."
+# In a full smoke run, after microcontroller.reset() its USB-JTAG console takes no input for
+# over 40 s once code.py starts (writes time out; 3 of 3 runs, 2026-10-20), while the module
+# alone passes 2 of 2. The two-port power cycle brings it back each time. Cause unknown.
+dns_tests = ["hardware/serialmon_hw_test.py::test_hard_reset_reopens"]
 wiring = {}
 
 [[board]]
