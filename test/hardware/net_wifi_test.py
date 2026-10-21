@@ -19,6 +19,8 @@ where his tests read serial lines, these read the radio over the REPL.
   test_ssid_not_found   connect() to an SSID that does not exist raises ConnectionError
                         "No network with that ssid" (shared-bindings/wifi/Radio.c:551) without
                         hanging, and the radio can join the farm network again afterwards
+  test_scan_results_stay_out_of_logs  no nearby network's SSID is in this run's serial logs
+                        (his test_hil_hides_ssid_scan_results @ eec4238)
 
 The boot-time half of ssid_not_found (an unknown SSID in settings.toml) is the unknown_ssid
 scenario in settings_scenarios_test.py.
@@ -26,6 +28,9 @@ scenario in settings_scenarios_test.py.
 Credentials come from base_secrets (the prod-guarded .env values), like his $HIL_WIFI_*.
 Never print ssid or password: they are only formatted into the device code.
 """
+import binascii
+import os
+
 import pytest
 
 from fixtures.flashing import hard_reset
@@ -77,6 +82,25 @@ if seen is not None:
     check("channel_plausible", isinstance(channel, int) and 1 <= channel <= 14,
           "channel=" + str(channel))
     metric("rssi", rssi, "dBm", "higher")
+"""
+
+# Nearby SSIDs come back hex-encoded on NEIGHBOR lines, so not even the raw REPL text holds one
+# in the clear; the host keeps them in memory only.
+NEIGHBOR = "CPRN "
+DEVICE_NEIGHBORS = r"""
+import binascii
+import wifi
+
+ssid = {ssid!r}
+names = set()
+for net in wifi.radio.start_scanning_networks():
+    name = net.ssid.decode() if isinstance(net.ssid, bytes) else net.ssid
+    if name and name != ssid:
+        names.add(name)
+wifi.radio.stop_scanning_networks()
+for name in names:
+    print({tag!r} + binascii.hexlify(name.encode()).decode())
+check("neighbor_scan", True, "nearby networks: " + str(len(names)))
 """
 
 DEVICE_CONNECTED = r"""
@@ -274,3 +298,41 @@ def test_ssid_not_found(creds, flashed_fs, device):  # pylint: disable=unused-ar
         results.expect(name)
     if "rejoin" in results.checks:
         results.expect("rejoin")
+
+
+def test_scan_results_stay_out_of_logs(request, creds, flashed_fs, device):  # pylint: disable=unused-argument
+    """His test_hil_hides_ssid_scan_results (test_wifi.py:160 @ eec4238): serial logs get shared,
+    so the neighbors' SSIDs must stay out of them. His firmware dumps nearby networks when the
+    SSID is missing; CircuitPython prints none, so here the danger is test code that does.
+    The message names files and counts, never an SSID."""
+    # --- Arrange ------------------------------------------------------
+    # 1. This module's scans have run; every serial log of the run so far is on disk.
+    ssid, _ = creds
+    log_dir = getattr(request.config, "cpr_serial_log_dir", "")
+
+    # --- Act ----------------------------------------------------------
+    # 2. Scan again and take the nearby SSIDs back hex-encoded.
+    results = _run(device, DEVICE_NEIGHBORS.format(ssid=ssid, tag=NEIGHBOR), timeout=60)
+    results.expect("neighbor_scan")
+    names = set()
+    for line in results.out.splitlines():
+        if line.startswith(NEIGHBOR):
+            names.add(binascii.unhexlify(line[len(NEIGHBOR):].strip()).decode("utf-8", "replace"))
+    if not names:
+        pytest.skip("no nearby networks to look for")
+    if not os.path.isdir(log_dir):
+        pytest.skip("no serial logs yet (%s)" % (log_dir or "no --serial-log-dir"))
+
+    # --- Assert -------------------------------------------------------
+    # 3. None of them is in any serial log of the run.
+    leaked, hits = set(), []
+    for root, _, files in os.walk(log_dir):
+        for f in files:
+            with open(os.path.join(root, f), encoding="utf-8", errors="replace") as fh:
+                text = fh.read()
+            found = {n for n in names if n in text}
+            if found:
+                leaked |= found
+                hits.append(os.path.relpath(os.path.join(root, f), log_dir))
+    assert not leaked, "%d of %d nearby SSIDs appear in %d serial log(s): %s" % (
+        len(leaked), len(names), len(hits), ", ".join(sorted(hits)[:5]))
