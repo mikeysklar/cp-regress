@@ -23,9 +23,12 @@ pytestmark = [
 
 
 def _iface_of(tty):
-    """The USB interface a tty belongs to, from sysfs: e.g. '3-3.3.4.2:1.0'."""
+    """The USB interface a tty belongs to, from sysfs: e.g. '3-3.3.4.2:1.0'. A UART bridge's
+    tty (ttyUSB0) hangs one level lower, under a usb-serial port device, so walk up to it."""
     name = os.path.basename(os.path.realpath(tty))
     dev = os.path.realpath("/sys/class/tty/%s/device" % name)
+    while dev != "/" and not re.match(r"^\d+-[\d.]+:\d+\.\d+$", os.path.basename(dev)):
+        dev = os.path.dirname(dev)
     return os.path.basename(dev)
 
 

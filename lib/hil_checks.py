@@ -360,7 +360,8 @@ class Identity:
     uid: str
 
 
-def expect_identity(mon_or_board, board, expect_version=None, timeout=20, poke=False):
+def expect_identity(mon_or_board, board, expect_version=None, timeout=20, poke=False,
+                    via=None):
     """Check that the board answering is the farm.toml board, running the expected firmware.
 
     After Brent's expect_identity (hil_checks.py:22 @ cf64e03), which checks the IO user and
@@ -376,7 +377,9 @@ def expect_identity(mon_or_board, board, expect_version=None, timeout=20, poke=F
       and not rewritten, main.c:938-944) or the tty and the drive are two different boards.
 
     boot_out.txt is read through board.boot_out(), which resolves the drive from the sysfs USB
-    path at the moment of use. Returns an Identity; fails the test with pytest.fail otherwise.
+    path at the moment of use; on a board with no drive, through the open monitor (via, or
+    mon_or_board) instead, whose reader would take a REPL's answer. Returns an Identity;
+    fails the test with pytest.fail otherwise.
     """
     __tracebackhide__ = True  # pylint: disable=unused-variable
     import pytest  # pylint: disable=import-outside-toplevel
@@ -385,10 +388,11 @@ def expect_identity(mon_or_board, board, expect_version=None, timeout=20, poke=F
     if mon_or_board is not board and hasattr(mon_or_board, "expect"):
         console = expect_banner(mon_or_board, timeout=timeout, poke=poke)
     try:
-        if console is not None and getattr(board, "fs", "drive") != "drive":
+        reader = via or (mon_or_board if console is not None else None)
+        if reader is not None and getattr(board, "fs", "drive") != "drive":
             # No drive, so boot_out() asks the REPL, but the monitor's reader holds the tty
             # and would take the answer: ask through the monitor.
-            boot = parse_boot_out(_boot_out_over_console(mon_or_board, timeout))
+            boot = parse_boot_out(_boot_out_over_console(reader, timeout))
         else:
             boot = parse_boot_out(board.boot_out())
     except Exception as e:  # pylint: disable=broad-except

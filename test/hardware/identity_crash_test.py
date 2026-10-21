@@ -65,7 +65,8 @@ def test_soft_reset_no_crash_banner_and_identity(board, device_uid, serial):
     hil_checks.assert_no_crash(serial, since=boot, duration=hil_checks.CRASH_WINDOW,
                                port=board.port)
     banner = hil_checks.expect_banner(serial, timeout=20, poke=True)
-    ident = hil_checks.expect_identity(board, board)  # boot_out.txt against farm.toml
+    # boot_out.txt against farm.toml; a board with no drive answers through the open monitor
+    ident = hil_checks.expect_identity(board, board, via=serial)
     assert banner == ident.banner, "console banner %s, boot_out.txt %s" % (banner, ident.banner)
     assert ident.uid == uid, "after soft reset boot_out.txt UID %r, device_uid %r" % (
         ident.uid, uid)
