@@ -174,3 +174,11 @@ def test_recover_resets_over_the_repl_after_adding_settings(health):  # pylint: 
     b.repl_reset = lambda: None
     ok, why = cpr_run.recover(b)
     assert ok and b.cycles == 0 and why.startswith("healthy after a REPL reset")
+
+
+def test_recover_tries_an_rts_reset_first(health):  # pylint: disable=unused-argument
+    b = FlakyBoard(good={0})
+    b.reset = "rts"
+    b.line_reset = lambda: None
+    ok, why = cpr_run.recover(b)
+    assert ok and b.cycles == 0 and why == "healthy after an RTS reset"

@@ -342,3 +342,9 @@ def test_console_baud_is_checked():
     for bad in (0, "115200", True, 300):
         with pytest.raises(FarmConfigError, match="console_baud"):
             validate_board_entry(entry(console_baud=bad))
+
+
+def test_reset_is_checked():
+    assert validate_board_entry(entry(reset="rts")) == []
+    with pytest.raises(FarmConfigError, match="reset must be"):
+        validate_board_entry(entry(reset="dtr"))

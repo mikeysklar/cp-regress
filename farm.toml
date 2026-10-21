@@ -22,6 +22,8 @@
 #   password farmlib.WEB_API_PASSWORD, which flashed_fs puts in settings.toml); needs "wifi".
 # console_baud (optional): the console is a real UART behind the tty (a CP2102N, a probe's
 #   CDC). Device code then goes in pieces of about 600 bytes, as on "small" boards.
+# reset (optional): "rts", EN wired to the UART bridge's RTS. recover() pulses it first, for a
+#   board its USB port does not power.
 # settings (optional): settings.toml keys this board always needs, merged under each module's
 #   own by flashed_fs. Strings, integers or booleans.
 # flash: how flashed_firmware writes an image (uf2 copy, esptool + tinyuf2, or openocd over SWD).
@@ -188,6 +190,8 @@ port = "espressif"
 caps = ["reset_ok"]
 fs = "repl"
 console_baud = 115200
+# Cutting the CP2102N's port does not reset the board (powered elsewhere); RTS does.
+reset = "rts"
 power = { r = 30, w = 500, settle = 15 }
 notes = "Console on the CP2102N (UART0). No wifi module in this build."
 # build 140 (2026-10-20) sees BOOT pressed on every reset: USER safe mode 4 of 4 without this,

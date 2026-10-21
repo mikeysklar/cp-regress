@@ -158,6 +158,9 @@ class Board:
         # A real UART behind the tty (a CP2102N, a probe's CDC). run_device sends such a board
         # its code in pieces, as it does for "small" boards. None: a USB console.
         self.console_baud = cfg.get("console_baud")
+        # "rts": EN is wired to the UART bridge's RTS (esptool's auto-reset circuit), the one
+        # reset that reaches a board its USB port does not power (the S31 Korvo-1).
+        self.reset = cfg.get("reset")
         self.uhubctl = host_cfg.get("uhubctl", "uhubctl")
 
     def __repr__(self):
@@ -216,6 +219,19 @@ class Board:
                     devs.append("/dev/" + dev)
                     break
         return devs
+
+    def mount_readonly(self):
+        """True when this board's drive is mounted and the mount is read-only."""
+        devs = set(self.block_devs())
+        try:
+            with open("/proc/mounts") as f:
+                for line in f:
+                    dev, _, _, opts = line.split()[:4]
+                    if dev in devs:
+                        return "ro" in opts.split(",")
+        except OSError:
+            pass
+        return False
 
     def mount(self, timeout=20, check_id=True):
         """Return the CIRCUITPY mount point, mounting through udisks if needed."""
@@ -507,6 +523,21 @@ class Board:
 
     def repl(self, iface=0):
         return Repl(self, iface)
+
+    def line_reset(self):
+        """Pulse EN through the console's RTS with DTR (IO0) released: a clean boot, not the
+        ROM bootloader. Opening the port asserts both, which the auto-reset circuit ignores."""
+        path = self.tty()
+        if not path:
+            raise FarmError("%s: no tty for an RTS reset" % self.name)
+        s = serial.Serial(path, 115200, timeout=0.1, write_timeout=5)
+        try:
+            s.dtr = False
+            s.rts = True
+            time.sleep(0.2)
+            s.rts = False
+        finally:
+            s.close()
 
     def repl_reset(self):
         """microcontroller.reset() from a synced friendly prompt; returns once it is sent."""

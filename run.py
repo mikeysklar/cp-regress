@@ -222,6 +222,11 @@ def board_health(board):
             return False, "safe mode: " + line[7:].strip()
     if "cpr 42" not in out:
         return False, "REPL eval returned %r %r" % (out[-60:], err[-60:])
+    # A board that enumerates while CircuitPython is still starting can report its drive write
+    # protected, and the host mounts it read-only until it re-enumerates (P4 GPIO, Feather
+    # ESP32-S3 and QT Py ESP32-S2 after a hub power cut, 2026-10-20).
+    if getattr(board, "fs", "drive") == "drive" and board.mount_readonly():
+        return False, "drive mounted read-only (write protect at enumeration)"
     return True, ""
 
 
@@ -248,6 +253,17 @@ def recover(board):
                 whys.append("after a REPL reset: %s" % why)
             except Exception as e:  # noqa: BLE001
                 whys.append("REPL reset: %s" % e)
+    if getattr(board, "reset", None) == "rts":
+        try:
+            board.line_reset()
+            time.sleep(board.power.get("settle", 12))
+            ok, why = board_health(board)
+            if ok:
+                return True, "healthy after an RTS reset%s" % (" (%s)" % "; ".join(whys)
+                                                               if whys else "")
+            whys.append("after an RTS reset: %s" % why)
+        except Exception as e:  # noqa: BLE001
+            whys.append("RTS reset: %s" % e)
     for n in range(1, tries + 1):
         try:
             board.power_cycle()

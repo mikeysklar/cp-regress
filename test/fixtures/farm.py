@@ -40,7 +40,7 @@ HEX_RE = re.compile(r"^0x[0-9a-fA-F]+$")
 
 KNOWN_KEYS = {"name", "board_id", "usb", "port", "caps", "power", "notes", "flash", "wiring",
               "run_tests", "skip_tests", "dns_tests", "fs", "settings",
-              "console_baud"}
+              "console_baud", "reset"}
 # Keys that would cache what must be resolved from `usb` at the moment of use.
 CACHED_KEYS = {"tty", "serial", "dev", "drive", "mount", "label", "circuitpy", "location"}
 KNOWN_CAPS = {"native_usb", "uf2", "wifi", "ble", "esp32spi", "usb_host", "reset_ok", "small"}
@@ -158,6 +158,9 @@ def validate_board_entry(entry, test_dir=None):
                                     or entry["console_baud"] < 1200):
         raise FarmConfigError("board '%s': console_baud must be the UART's baud rate, an "
                               "integer such as 115200, got %r" % (name, entry["console_baud"]))
+    if entry.get("reset", "rts") != "rts":
+        raise FarmConfigError("board '%s': reset must be \"rts\" (EN on the UART bridge's RTS), "
+                              "got %r" % (name, entry["reset"]))
     settings = entry.get("settings", {})
     if not isinstance(settings, dict) or not all(
             re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", k) and isinstance(v, (str, int, bool))
