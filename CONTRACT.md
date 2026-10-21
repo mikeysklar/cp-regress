@@ -40,10 +40,14 @@ pyserial. No other host packages.
 
 `present() vid_pid() devnum() interfaces() tty() data_tty() ttys() block_devs() mount()
 boot_out() version() write_file(rel, data) read_file(rel, binary) remove_file(rel)
-power_cycle() wait_ready(timeout, need_mount) repl() preserved(files)`, attributes
-`name board_id usb port caps wiring power fs`. On an `fs = "repl"` or `"web"` board there
-is no drive: `mount()` finds nothing, and the file methods go over the raw REPL, or the web
-workflow (`board.web()`, a `WebFs` with `get put delete`) once it answers.
+power_cycle() wait_ready(timeout, need_mount) repl() preserved(files) mount_readonly()
+repl_reset() line_reset() add_missing_settings()`, attributes
+`name board_id usb port caps wiring power fs settings console_baud reset`. On an
+`fs = "repl"` or `"web"` board there is no drive: `mount()` finds nothing, and the file
+methods go over the raw REPL, or the web workflow (`board.web()`, a `WebFs` with
+`get put delete`) once it answers. A `console_baud` board's console is a real UART: raw REPL
+input is paced and device code goes in pieces. Serial text reaches tests in English with
+plain `\r\n` line ends (`lib/cpstrings.py`), whatever language the build prints.
 
 `Repl`: `prompt() exec_raw(code, timeout) run_device(body, timeout) soft_reboot()
 read_until(token, timeout) read_for(seconds) write(bytes) drain()
