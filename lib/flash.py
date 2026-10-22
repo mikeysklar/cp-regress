@@ -474,10 +474,16 @@ def _copy_uf2(image, vol, log):
 
 
 def _enter_uf2(board, log, tries=2):
+    """The bootloader drive's mount point, or None. A board already in its bootloader has no
+    tty to touch: with seven boards flashing, udisks took 31 s to mount an RP2040's and an
+    RP2350's drive (2026-10-21), so the next try found the board there and no tty."""
     for attempt in range(tries):
+        vol = board.boot_volume(timeout=0.5)
+        if vol:
+            return vol
         if not board.touch1200():
             raise FarmError("%s: no tty for the 1200-baud touch" % board.name)
-        vol = board.boot_volume(timeout=30)
+        vol = board.boot_volume(timeout=60)
         if vol:
             return vol
         log("no bootloader drive after touch %d" % (attempt + 1))
