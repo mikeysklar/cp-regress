@@ -231,11 +231,14 @@ def write_settings(board, backups, data):
 
 @pytest.fixture(scope="module")
 def farm_settings(board, flashed_fs, secrets, _fs_backups):  # pylint: disable=unused-argument
-    """After the module, put the farm's settings.toml (from `secrets`) back, the way flashed_fs
-    wrote it, so the next module does not boot with the last scenario."""
+    """After the module, put the farm's settings.toml (from `secrets` and the board's farm.toml
+    settings) back, the way flashed_fs wrote it, so the next module does not boot with the last
+    scenario. Without the board's settings the S31 Korvo-1 lost CIRCUITPY_SAFE_MODE_DELAY and
+    every sleep_alarm wake after this module was safe mode (2026-10-22)."""
     yield
     try:
-        changed = write_settings(board, _fs_backups, settings_toml(secrets).encode())
+        settings = dict(getattr(board, "settings", {}), **secrets)
+        changed = write_settings(board, _fs_backups, settings_toml(settings).encode())
         if changed and "wifi" in board.caps and not hard_reset(board):
             pytest.fail("%s did not come back after restoring settings.toml" % board.name,
                         pytrace=False)
