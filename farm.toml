@@ -172,6 +172,21 @@ wiring = {}
 # wiring = {}
 
 [[board]]
+name = "feather_esp32_v2"
+board_id = "adafruit_feather_esp32_v2"
+usb = "3-6.3.1"
+port = "espressif"
+# No "ble": the Picos on 3-6.3 are doing BLE work (2026-10-23).
+caps = ["wifi", "reset_ok"]
+fs = "web"
+console_baud = 115200
+# CH9102 auto-reset circuit: opening the port resets the board (POWERON_RESET in the boot log).
+reset = "rts"
+power = { r = 30, w = 500, settle = 15 }
+notes = "No native USB: console on the CH9102F (1a86:55d4), files over the web workflow. 11.0.0-alpha.1 as found 2026-10-23."
+wiring = {}
+
+[[board]]
 name = "esp32c5_devkitc"
 board_id = "espressif_esp32c5_devkitc_1_n8r8"
 usb = "3-6.4.3"
