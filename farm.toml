@@ -185,6 +185,10 @@ reset = "rts"
 power = { r = 30, w = 500, settle = 15 }
 notes = "No native USB: console on the CH9102F (1a86:55d4), files over the web workflow. 11.0.0-alpha.1 as found 2026-10-23."
 wiring = {}
+# A0 is GPIO26, on ADC2, which the ESP32 cannot read while WiFi is on: AnalogIn(A0).value
+# raises IDFError "Operation timed out" (smoke run, 2026-10-23).
+skip_tests = ["hardware/peripherals_selfcheck_test.py::test_analog_read",
+              "hardware/peripherals_selfcheck_test.py::test_analog_range"]
 
 [[board]]
 name = "esp32c5_devkitc"
