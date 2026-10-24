@@ -249,7 +249,7 @@ def farm_settings(board, flashed_fs, secrets, _fs_backups):  # pylint: disable=u
 @pytest.mark.destructive
 @pytest.mark.parametrize("secrets_name", PARAMS, indirect=True)
 def test_scenario(request, board, farm_settings, flashed_firmware, _fs_backups, secrets_name,
-                  secrets_path, secrets_scenarios, good_secrets, serial, device, record_property):
+                  secrets_path, secrets_scenarios, good_secrets, device, record_property):
     """One settings.toml scenario on one board: what CircuitPython printed, read and joined."""
     # pylint: disable=unused-argument,too-many-arguments,too-many-locals
     why = not_applicable(request.node, board)  # needs("wifi") on wifi-only scenarios
@@ -267,11 +267,14 @@ def test_scenario(request, board, farm_settings, flashed_firmware, _fs_backups, 
                         or "unchanged")
     except farmlib.FarmError as e:
         pytest.fail(str(e), pytrace=False)
+    # The monitor opens after the write: a board with no drive is written over its REPL, on
+    # the console port, and a second reader there splits the bytes (2026-10-23, the V2, C5 and
+    # S31 failed every scenario after the first few with "cannot hash files on the board").
+    serial = request.getfixturevalue("serial")
 
     # --- Act ----------------------------------------------------------
     # 2. Hard reset on wifi boards (a soft reload keeps the supervisor's WiFi connection),
     #    then a soft reboot everywhere, capturing what the supervisor prints before code.py.
-    #    The monitor stays open across the write: the write only reloads CIRCUITPY.
     try:
         if wifi_board:
             serial.hard_reset()
