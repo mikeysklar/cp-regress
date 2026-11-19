@@ -2,15 +2,19 @@
 
 Automatic checks for CircuitPython on real boards.
 
-[![Watch the 2:36 video: the sweep, the fixtures, the results](images/story-poster.jpg)](https://mikeysklar.github.io/cp-regress/media/cp-regress-story.mp4)
+[![Watch the 2:53 video: how cp-regress works](images/how-it-works-poster.jpg)](https://mikeysklar.github.io/cp-regress/media/cp-regress-how-it-works.mp4)
 
-*Click to play: 2:36, music, no voice. A shorter run-only cut is [here](https://mikeysklar.github.io/cp-regress/media/cp-regress-first-run.mp4).*
-
-[![Watch the 5:20 deep dive: how past bugs became fixtures](images/fixtures-poster.jpg)](https://mikeysklar.github.io/cp-regress/media/cp-regress-fixtures.mp4)
-
-*Deep dive, 5:20: each fixture, and the real PRs and issues from the sweep it is built to catch again.*
+*Click to play: 2:53, narrated. The farm, farm.toml, a test, the `@@R` result line, recovery, pytest, and the first run.*
 
 **[See the first-run results page →](https://claude.ai/artifact/HB8Lj4rmAnzNZhMCkiKWX3)**
+
+## Contents
+
+- [Why](#why) · [What](#what) · [How](#how) · [Tested](#tested)
+- [First run](#first-run) · [Getting there](#getting-there)
+- [What it covers](#what-it-covers) · [Research to results](#research-to-results)
+- [Run it](#run-it) · [Or with pytest](#or-with-pytest)
+- [Design and reference docs](#design-and-reference-docs)
 
 ## Why
 
@@ -77,3 +81,17 @@ pytest -n 8 --dist loadgroup test/
 ```
 
 Details: [docs/PYTEST.md](docs/PYTEST.md).
+
+## Design and reference docs
+
+| Doc | What it holds |
+|---|---|
+| [docs/DESIGN.md](docs/DESIGN.md) | How it works: board addressing, flashing, recovery, tests, fixtures, pytest, results and posting |
+| [docs/USAGE.md](docs/USAGE.md) | Running `run.py`: tiers, options, output |
+| [docs/PYTEST.md](docs/PYTEST.md) | Running under pytest: options, markers, workers per board |
+| [CONTRACT.md](CONTRACT.md) | Writing a test: `META` keys, the `ctx` and `board` APIs, hard rules |
+| [docs/fixtures/](docs/fixtures/) | One page per test: what it checks and the issues it targets |
+| [docs/FINDINGS-TO-TESTS.md](docs/FINDINGS-TO-TESTS.md) | Every sweep finding, the test built for it, and its result (built by `tools/trace.py`) |
+| [docs/FIRST-RUN.md](docs/FIRST-RUN.md) | The first hardware run, round by round, and the STM32F405 crash |
+| [docs/BRENT-SYNC.md](docs/BRENT-SYNC.md) | What is ported from Brent's HIL repo, what is equivalent, what is watched |
+| [docs/BE-MORE-LIKE-BRENT.md](docs/BE-MORE-LIKE-BRENT.md) | The plan for aligning with Brent's harness |
