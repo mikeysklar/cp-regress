@@ -103,7 +103,7 @@ def load_farm(path):
     errors, warnings = validate_farm(cfg, str(TEST_DIR))
     if errors:
         raise pytest.UsageError("%s:\n  %s" % (path, "\n  ".join(errors)))
-    boards = [farmlib.Board(b, cfg.get("host", {})) for b in cfg.get("board", [])]
+    boards = [farmlib.make_board(b, cfg.get("host", {})) for b in cfg.get("board", [])]
     return cfg, boards, warnings
 
 

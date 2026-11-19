@@ -851,7 +851,8 @@ def load_boards(config, names):
         import tomli as tomllib  # type: ignore  # pylint: disable=import-outside-toplevel
     with open(config, "rb") as f:
         cfg = tomllib.load(f)
-    boards = [farmlib.Board(b, cfg.get("host", {})) for b in cfg.get("board", [])]
+    # A CP Desktop Lab (a lab table) sits on no hub port: nothing to cut.
+    boards = [farmlib.Board(b, cfg.get("host", {})) for b in cfg.get("board", []) if "lab" not in b]
     if names == "all":
         return boards
     by = {b.name: b for b in boards}

@@ -69,6 +69,36 @@ UNSUPPORTED rather than failing. Seven negative controls run first; if any is mi
 the tool exits 2 without running fixtures. On main (2026-10-13): 8 PASS, 4 SKIPPED, 22 UNSUPPORTED.
 Not exercised on unix: TileGrid / Group, TilePaletteMapper, `supervisor.get_setting()`.
 
+## Before the farm: a CP Desktop Lab board
+
+The [CP Desktop Lab](https://github.com/MakerClassCZ/cp-desktop-lab) (ports/desktop;
+a release's `circuitpython-linux-i386` is 32-bit like a board, `size_t`, pointers and small ints
+included, and needs the i386 SDL2, `libsdl2-2.0-0:i386`) runs the supervisor itself on the
+host: code.py and boot.py, auto-reload, settings.toml, safe mode, `board`, displayio. A
+`[[board]]` with a `lab` table is such a board (`lib/desklab.py`); run.py, the fixtures and the
+pytest tests use it with no changes of their own:
+
+```toml
+[[board]]
+name = "desklab"
+board_id = "virtual"
+usb = "lab-1"                  # any unique name: it only names the lock files
+port = "desktop"
+caps = ["reset_ok"]
+power = { settle = 0 }
+lab = { bin = "~/lab/circuitpython", drive = "~/lab/CIRCUITPY" }
+```
+
+CIRCUITPY is that folder, the console a pseudo-terminal, a power cycle a new process.
+`python3 run.py --config lab.toml` keeps it apart from the farm. The first look for the board
+(`--list-boards` too) starts it, and it stays up between runs, as a board stays plugged in,
+until `python3 lib/desklab.py stop ~/lab/CIRCUITPY`; a new program at `bin`, other `args` or a
+new `lib/desklab.py` start it again. With `CPR_LAB_BIN` set, `test/harness/desklab_test.py`
+starts one too.
+
+It has no USB, so `native_usb` tests skip and `vid_pid()` is `("0000", "0000")`. Deep sleep is a
+board's without USB: a key on the console resets it, so sleep_alarm's deep sleep check fails.
+
 ## Safety
 
 - Files a fixture rewrites (code.py, boot.py, settings.toml) are backed up and restored with
