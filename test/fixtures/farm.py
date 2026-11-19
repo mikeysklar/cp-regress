@@ -40,7 +40,7 @@ HEX_RE = re.compile(r"^0x[0-9a-fA-F]+$")
 
 KNOWN_KEYS = {"name", "board_id", "usb", "port", "caps", "power", "notes", "flash", "wiring",
               "run_tests", "skip_tests", "dns_tests", "fs", "settings",
-              "console_baud", "reset"}
+              "console_baud", "reset", "lab"}
 # Keys that would cache what must be resolved from `usb` at the moment of use.
 CACHED_KEYS = {"tty", "serial", "dev", "drive", "mount", "label", "circuitpy", "location"}
 KNOWN_CAPS = {"native_usb", "uf2", "wifi", "ble", "esp32spi", "usb_host", "reset_ok", "small"}
@@ -87,6 +87,28 @@ def _selectors(name, key, value, test_dir):
                                       % (name, key, s, test_dir))
 
 
+def _lab(name, entry):
+    """A CP Desktop Lab board (lib/desklab.py): `usb` only names its lock files, so any name does;
+    the drive is a folder, so fs stays "drive" and nothing is flashed or power switched."""
+    usb, lab = entry.get("usb"), entry["lab"]
+    if not isinstance(usb, str) or not NAME_RE.match(usb):
+        raise FarmConfigError("board '%s': a lab board's 'usb' must be a name of letters, digits, "
+                              "'_', '.' or '-' (it names the lock files), got %r" % (name, usb))
+    if not isinstance(lab, dict) or not isinstance(lab.get("drive"), str) \
+            or not lab["drive"].strip():
+        raise FarmConfigError("board '%s': 'lab' must be a table with drive = \"<folder>\", "
+                              "got %r" % (name, lab))
+    if not isinstance(lab.get("bin", ""), str):
+        raise FarmConfigError("board '%s': lab.bin must be the lab program's path" % name)
+    args = lab.get("args", [])
+    if not isinstance(args, list) or not all(isinstance(a, str) for a in args):
+        raise FarmConfigError("board '%s': lab.args must be a list of strings, got %r"
+                              % (name, args))
+    for key in ("flash", "fs", "console_baud", "reset"):
+        if key in entry and not (key == "fs" and entry[key] == "drive"):
+            raise FarmConfigError("board '%s': a lab board has no '%s'" % (name, key))
+
+
 def normalize_selector(s):
     """A run_tests/skip_tests entry relative to test/: trailing '/' and a leading 'test/' go.
 
@@ -120,7 +142,9 @@ def validate_board_entry(entry, test_dir=None):
         raise FarmConfigError("board '%s': 'board_id' must be set (the boot_out.txt board id, "
                               "checked before anything is written)" % name)
     usb = entry.get("usb")
-    if not isinstance(usb, str) or not USB_PATH_RE.match(usb):
+    if "lab" in entry:
+        _lab(name, entry)
+    elif not isinstance(usb, str) or not USB_PATH_RE.match(usb):
         hint = (" (never a tty or drive: those are resolved from usb at the moment of use)"
                 if isinstance(usb, str) and usb.startswith("/") else "")
         raise FarmConfigError("board '%s': 'usb' must be the sysfs path of its port on a hub "

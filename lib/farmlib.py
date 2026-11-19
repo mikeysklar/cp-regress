@@ -138,6 +138,9 @@ else:
 
 
 class Board:
+    # On a hub port, found from its sysfs path; a CP Desktop Lab (lib/desklab.py) is not.
+    on_hub = True
+
     def __init__(self, cfg, host_cfg):
         self.name = cfg["name"]
         self.board_id = cfg["board_id"]
@@ -1026,6 +1029,14 @@ def parse_results(text):
             except ValueError:
                 out.append({"name": "parse_error", "ok": False, "detail": line[:200]})
     return out
+
+
+def make_board(cfg, host_cfg):
+    """The Board for a [[board]] entry: with a lab table, a CP Desktop Lab (lib/desklab.py)."""
+    if "lab" in cfg:
+        import desklab  # noqa: PLC0415
+        return desklab.LabBoard(cfg, host_cfg)
+    return Board(cfg, host_cfg)
 
 
 def host_ip():

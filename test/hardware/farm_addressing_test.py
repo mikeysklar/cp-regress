@@ -32,7 +32,13 @@ def _iface_of(tty):
     return os.path.basename(dev)
 
 
+def _on_hub(board):
+    if not board.on_hub:
+        pytest.skip("%s is not on a USB hub (a CP Desktop Lab)" % board.name)
+
+
 def test_console_resolves_from_usb_path(board):
+    _on_hub(board)
     ttys = board.ttys()
     assert ttys, "%s: no tty under /dev/serial/by-path for %s" % (board.name, board.usb)
     console = ttys[0]
@@ -53,6 +59,7 @@ def test_empty_usb_path_has_no_tty():
 def test_uhubctl_reports_board_port_powered(board):
     """uhubctl, unprivileged, sees the board's hub port with power on and a device connected.
     Status only: no -a, so nothing is switched."""
+    _on_hub(board)
     hub, port = board.usb.rsplit(".", 1)
     res = subprocess.run([board.uhubctl, "-l", hub, "-p", port], capture_output=True,
                          text=True, timeout=30)

@@ -27,6 +27,8 @@
 # settings (optional): settings.toml keys this board always needs, merged under each module's
 #   own by flashed_fs. Strings, integers or booleans.
 # flash: how flashed_firmware writes an image (uf2 copy, esptool + tinyuf2, or openocd over SWD).
+# lab (optional): { bin, drive, args } makes the board a CP Desktop Lab on this host
+#   (lib/desklab.py, docs/USAGE.md); its usb is then any unique name. Best in a config of its own.
 # run_tests / skip_tests (optional, pytest only): paths under test/ as a folder, a file or a
 #   test, after Brent's hil-boards.json. Only run_tests run on this board (omit for all);
 #   skip_tests are reported as skipped. Both narrow --tier and the markers, never widen them.

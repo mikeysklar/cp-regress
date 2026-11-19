@@ -62,6 +62,7 @@ For running it, see [USAGE.md](USAGE.md) and [PYTEST.md](PYTEST.md). For writing
 | `settings` | `settings.toml` keys this board always needs |
 | `flash` | `uf2`, `esp_uf2`, or `swd`, with method keys |
 | `run_tests` / `skip_tests` / `dns_tests` | pytest selectors (folder, file or `::test`) |
+| `lab` | `{ bin, drive, args }`: a CP Desktop Lab on this host (`lib/desklab.py`, [USAGE.md](USAGE.md)); `usb` is then any unique name |
 
 Every entry is validated at session start (`test/fixtures/farm.py` `validate_board_entry`,
 `validate_farm`): no duplicate name, usb or probe, no board's hub path below another's, and

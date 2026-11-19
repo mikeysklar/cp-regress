@@ -431,7 +431,7 @@ def main():
 
     with open(a.config, "rb") as f:
         cfg = tomllib.load(f)
-    boards = [farmlib.Board(b, cfg.get("host", {})) for b in cfg.get("board", [])]
+    boards = [farmlib.make_board(b, cfg.get("host", {})) for b in cfg.get("board", [])]
     if a.boards != "all":
         want = set(a.boards.split(","))
         boards = [b for b in boards if b.name in want]
